@@ -1,129 +1,78 @@
 import { auth, db } from "./firebase.js";
 import {
   onAuthStateChanged,
-  signInWithEmailAndPassword,
-  createUserWithEmailAndPassword
+  signOut,
+  sendPasswordResetEmail
 } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-auth.js";
 
 import {
-  doc, setDoc, getDoc
+  doc, getDoc
 } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-firestore.js";
 
 const $ = (id) => document.getElementById(id);
 
-function setMessage(t) {
-  const el = $("msg");
-  if (el) el.textContent = t || "";
+function showModal(show){
+  const m = $("profileModal");
+  if (!m) return;
+  if (show) m.classList.add("show");
+  else m.classList.remove("show");
 }
 
-// ✅ debug ว่าไฟล์รันจริง
-console.log("app.js loaded ✅");
-
-function normalizeUsername(v) {
-  return (v || "").trim().toLowerCase();
+function fmtDate(ms){
+  if(!ms) return "-";
+  try{
+    return new Date(ms).toLocaleString("th-TH");
+  }catch{ return String(ms); }
 }
 
-function isValidUsername(u) {
-  return /^[a-z0-9._-]{3,20}$/.test(u);
-}
+// ====== หน้า app.html ======
+if ($("btnLogout")) {
+  const logoutAll = async () => {
+    await signOut(auth);
+    window.location.href = "index.html";
+  };
 
-// แปลง username เป็น email จำลอง
-function usernameToEmail(u) {
-  return `${u}@tjc.local`;
-}
+  $("btnLogout").addEventListener("click", logoutAll);
+  $("btnLogout2")?.addEventListener("click", logoutAll);
 
-function humanFirebaseError(e) {
-  const code = e?.code || "";
-  switch (code) {
-    case "auth/weak-password": return "รหัสผ่านต้องมีอย่างน้อย 6 ตัวอักษร";
-    case "auth/email-already-in-use": return "Username นี้ถูกใช้แล้ว";
-    case "auth/user-not-found": return "ไม่พบ Username นี้";
-    case "auth/wrong-password": return "รหัสผ่านไม่ถูกต้อง";
-    case "auth/operation-not-allowed": return "ยังไม่ได้เปิด Email/Password ใน Firebase";
-    case "auth/unauthorized-domain": return "โดเมนนี้ยังไม่ได้เพิ่มใน Authorized domains";
-    default: return e?.message || "เกิดข้อผิดพลาด";
-  }
-}
+  // modal close
+  $("btnProfile")?.addEventListener("click", () => showModal(true));
+  $("profileClose")?.addEventListener("click", () => showModal(false));
+  $("profileX")?.addEventListener("click", () => showModal(false));
 
-async function ensureUserProfile(user, username) {
-  const ref = doc(db, "users", user.uid);
-  const snap = await getDoc(ref);
-  if (!snap.exists()) {
-    await setDoc(ref, {
-      username,
-      email: user.email, // email จำลอง
-      role: "user",
-      createdAt: Date.now()
+  onAuthStateChanged(auth, async (user) => {
+    if(!user){
+      window.location.href = "index.html";
+      return;
+    }
+
+    // โหลดโปรไฟล์จาก Firestore
+    const snap = await getDoc(doc(db, "users", user.uid));
+    const profile = snap.exists() ? snap.data() : {};
+
+    // subtitle บน header
+    const who = $("whoami");
+    if (who) who.textContent = `${profile.username || user.email} • role: ${profile.role || "user"}`;
+
+    // admin link เฉพาะ admin
+    const adminLink = $("adminLink");
+    if (adminLink && profile.role === "admin") adminLink.style.display = "inline-flex";
+
+    // เติมข้อมูลใน Profile Modal
+    $("pfUsername") && ($("pfUsername").textContent = profile.username || "-");
+    $("pfRole") && ($("pfRole").textContent = profile.role || "user");
+    $("pfEmail") && ($("pfEmail").textContent = user.email || "-");
+    $("pfCreated") && ($("pfCreated").textContent = fmtDate(profile.createdAt));
+
+    // Reset password (จะส่งไป email จำลอง)
+    $("btnResetPassword")?.addEventListener("click", async () => {
+      try{
+        $("pfMsg").textContent = "กำลังส่งลิงก์รีเซ็ตรหัสผ่าน...";
+        await sendPasswordResetEmail(auth, user.email);
+        $("pfMsg").textContent = "ส่งลิงก์ Reset Password แล้ว (ตรวจกล่องจดหมายของ email ภายในระบบ)";
+      }catch(e){
+        $("pfMsg").textContent = `ส่งไม่สำเร็จ: ${e?.message || e}`;
+      }
     });
-  }
+  });
 }
-
-const btnLogin = $("btnLogin");
-const btnRegister = $("btnRegister");
-
-if (!btnLogin || !btnRegister) {
-  console.log("Buttons not found ❌ ตรวจ id ใน index.html");
-}
-
-btnLogin?.addEventListener("click", async () => {
-  console.log("Login clicked ✅");
-  try {
-    setMessage("");
-    const username = normalizeUsername($("username")?.value);
-    const password = $("password")?.value || "";
-
-    if (!username || !password) {
-      setMessage("กรุณากรอก Username และ Password");
-      return;
-    }
-    if (!isValidUsername(username)) {
-      setMessage("Username ต้องเป็น a-z 0-9 และ . _ - ความยาว 3-20 ตัว");
-      return;
-    }
-
-    setMessage("กำลังเข้าสู่ระบบ...");
-    await signInWithEmailAndPassword(auth, usernameToEmail(username), password);
-    setMessage("Login สำเร็จ ✅");
-    window.location.href = "app.html";
-  } catch (e) {
-    setMessage("Login ไม่สำเร็จ: " + humanFirebaseError(e) + ` (${e?.code || "-"})`);
-    console.error(e);
-  }
-});
-
-btnRegister?.addEventListener("click", async () => {
-  console.log("Register clicked ✅");
-  try {
-    setMessage("");
-    const username = normalizeUsername($("username")?.value);
-    const password = $("password")?.value || "";
-
-    if (!username || !password) {
-      setMessage("กรุณากรอก Username และ Password ก่อนสมัคร");
-      return;
-    }
-    if (!isValidUsername(username)) {
-      setMessage("Username ต้องเป็น a-z 0-9 และ . _ - ความยาว 3-20 ตัว");
-      return;
-    }
-    if (password.length < 6) {
-      setMessage("รหัสผ่านต้องมีอย่างน้อย 6 ตัวอักษร");
-      return;
-    }
-
-    setMessage("กำลังสมัครสมาชิก...");
-    const cred = await createUserWithEmailAndPassword(auth, usernameToEmail(username), password);
-    await ensureUserProfile(cred.user, username);
-
-    setMessage("สมัครสำเร็จ ✅ กำลังพาไปหน้าเมนู...");
-    window.location.href = "app.html";
-  } catch (e) {
-    setMessage("Register ไม่สำเร็จ: " + humanFirebaseError(e) + ` (${e?.code || "-"})`);
-    console.error(e);
-  }
-});
-
-// กันรีเฟรชแล้วเด้งออก
-onAuthStateChanged(auth, (user) => {
-  if (user) console.log("Already logged in ✅", user.uid);
-});
