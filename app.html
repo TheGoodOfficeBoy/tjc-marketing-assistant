@@ -32,6 +32,51 @@
     <div class="modal-head">
       <div>
         <div class="h2" id="profileTitle">โปรไฟล์</div>
+        <div class="muted" id="profileSubtitle">ข้อมูลบัญชีผู้ใช้</div>
+      </div>
+      <button class="btn ghost" id="profileX" type="button">✕</button>
+    </div>
+
+    <div class="modal-body">
+      <div class="row">
+        <div>
+          <div style="font-weight:800">Username</div>
+          <div class="muted" id="pfUsername">-</div>
+        </div>
+        <div class="badge" id="pfRole">user</div>
+      </div>
+
+      <div class="row">
+        <div>
+          <div style="font-weight:800">Email (ภายในระบบ)</div>
+          <div class="muted" id="pfEmail">-</div>
+        </div>
+      </div>
+
+      <div class="row">
+        <div>
+          <div style="font-weight:800">Created</div>
+          <div class="muted" id="pfCreated">-</div>
+        </div>
+      </div>
+
+      <p class="note" id="pfMsg"></p>
+    </div>
+
+    <div class="modal-foot">
+      <button class="btn" id="btnResetPassword" type="button">Reset Password</button>
+      <button class="btn danger" id="btnLogout2" type="button">Logout</button>
+    </div>
+  </div>
+</div>
+
+<!-- ✅ Profile Modal -->
+<div class="modal" id="profileModal" aria-hidden="true">
+  <div class="modal-backdrop" id="profileClose"></div>
+  <div class="modal-card" role="dialog" aria-modal="true" aria-labelledby="profileTitle">
+    <div class="modal-head">
+      <div>
+        <div class="h2" id="profileTitle">โปรไฟล์</div>
         <div class="muted"
 
   <main class="container">
@@ -69,3 +114,4 @@
 </body>
 
 </html>
+
