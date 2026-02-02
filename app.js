@@ -1,36 +1,32 @@
 import { auth, db } from "./firebase.js";
-import {
-  onAuthStateChanged,
-  signOut,
-  sendPasswordResetEmail
-} from "https://www.gstatic.com/firebasejs/10.12.5/firebase-auth.js";
-
-import {
-  doc, getDoc
-} from "https://www.gstatic.com/firebasejs/10.12.5/firebase-firestore.js";
+import { onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-auth.js";
+import { doc, getDoc } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-firestore.js";
 
 const $ = (id) => document.getElementById(id);
 
-function showModal(show){
-  const m = $("profileModal");
-  if (!m) return;
-  if (show) m.classList.add("show");
-  else m.classList.remove("show");
+async function doLogout(){
+  await signOut(auth);
+  window.location.href = "index.html";
 }
 
-function fmtDate(ms){
-  if(!ms) return "-";
-  try{
-    return new Date(ms).toLocaleString("th-TH");
-  }catch{ return String(ms); }
-}
+$("btnLogout")?.addEventListener("click", doLogout);
 
-// ====== หน้า app.html ======
-if ($("btnLogout")) {
-  const logoutAll = async () => {
-    await signOut(auth);
+onAuthStateChanged(auth, async (user) => {
+  if(!user){
     window.location.href = "index.html";
-  };
+    return;
+  }
+
+  const snap = await getDoc(doc(db, "users", user.uid));
+  const profile = snap.exists() ? snap.data() : {};
+
+  const who = $("whoami");
+  if (who) who.textContent = `${profile.username || user.email} • role: ${profile.role || "user"}`;
+
+  const adminLink = $("adminLink");
+  if (adminLink && profile.role === "admin") adminLink.style.display = "inline-flex";
+});
+
 
   $("btnLogout").addEventListener("click", logoutAll);
   $("btnLogout2")?.addEventListener("click", logoutAll);
@@ -76,3 +72,4 @@ if ($("btnLogout")) {
     });
   });
 }
+
