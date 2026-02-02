@@ -10,19 +10,29 @@
   <div class="bg"></div>
 
   <header class="topbar">
-    <div class="brand">
-      <div class="logo">TJC</div>
-      <div>
-        <div class="title">TJC ทีมประมูล</div>
-        <div class="subtitle" id="whoami">กำลังโหลด...</div>
-      </div>
+  <div class="brand">
+    <div class="logo">TJC</div>
+    <div>
+      <div class="title">TJC ทีมประมูล</div>
+      <div class="subtitle" id="whoami">กำลังโหลด...</div>
     </div>
+  </div>
 
-    <div class="actions">
-      <a class="btn ghost" id="adminLink" href="admin.html" style="display:none;">Admin</a>
-      <button class="btn danger" id="btnLogout">Logout</button>
-    </div>
-  </header>
+  <div class="actions">
+    <button class="btn ghost" id="btnProfile" type="button">Profile</button>
+    <a class="btn ghost" id="adminLink" href="admin.html" style="display:none;">Admin</a>
+    <button class="btn danger" id="btnLogout" type="button">Logout</button>
+  </div>
+</header>
+
+<!-- ✅ Profile Modal -->
+<div class="modal" id="profileModal" aria-hidden="true">
+  <div class="modal-backdrop" id="profileClose"></div>
+  <div class="modal-card" role="dialog" aria-modal="true" aria-labelledby="profileTitle">
+    <div class="modal-head">
+      <div>
+        <div class="h2" id="profileTitle">โปรไฟล์</div>
+        <div class="muted"
 
   <main class="container">
     <section class="card">
@@ -57,4 +67,5 @@
   <script type="module" src="firebase.js"></script>
   <script type="module" src="app.js"></script>
 </body>
+
 </html>
