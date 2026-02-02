@@ -1,0 +1,60 @@
+<!doctype html>
+<html lang="th">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>TJC ทีมประมูล | Menu</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <div class="bg"></div>
+
+  <header class="topbar">
+    <div class="brand">
+      <div class="logo">TJC</div>
+      <div>
+        <div class="title">TJC ทีมประมูล</div>
+        <div class="subtitle" id="whoami">กำลังโหลด...</div>
+      </div>
+    </div>
+
+    <div class="actions">
+      <a class="btn ghost" id="adminLink" href="admin.html" style="display:none;">Admin</a>
+      <button class="btn danger" id="btnLogout">Logout</button>
+    </div>
+  </header>
+
+  <main class="container">
+    <section class="card">
+      <h1 class="h1">ลิงก์ใช้งาน</h1>
+      <p class="muted">กดปุ่มเพื่อไปยังหน้าที่ต้องการ</p>
+
+      <div class="buttons">
+        <a class="btn primary" href="https://tjc-report.oo.gd/Announcement.php" target="_blank" rel="noopener">TJC Group</a>
+
+        <a class="btn" href="https://192-168-100-2.thegood-918.direct.quickconnect.to:5001/#/signin" target="_blank" rel="noopener">
+          ลิ้งค์ TJC นอกสถานที่
+        </a>
+
+        <a class="btn" href="https://thegoodofficeboy.github.io/tjc-delivery-notice/" target="_blank" rel="noopener">
+          แจ้งงานทีมจัดส่ง
+        </a>
+
+        <a class="btn" href="https://chatgpt.com/" target="_blank" rel="noopener">ChatGPT</a>
+        <a class="btn" href="https://gemini.google.com/" target="_blank" rel="noopener">Gemini</a>
+      </div>
+    </section>
+
+    <section class="card soft">
+      <h2 class="h2">ความปลอดภัย</h2>
+      <ul class="list">
+        <li>หน้าเมนูนี้เข้าดูได้เฉพาะผู้ที่ Login แล้ว</li>
+        <li>สิทธิ์ Admin ใช้สำหรับจัด role ของผู้ใช้</li>
+      </ul>
+    </section>
+  </main>
+
+  <script type="module" src="firebase.js"></script>
+  <script type="module" src="app.js"></script>
+</body>
+</html>

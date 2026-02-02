@@ -1,0 +1,61 @@
+<!doctype html>
+<html lang="th">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>TJC ทีมประมูล | Login</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <div class="bg"></div>
+
+  <header class="topbar">
+    <div class="brand">
+      <div class="logo">TJC</div>
+      <div>
+        <div class="title">TJC ทีมประมูล</div>
+        <div class="subtitle">Portal สำหรับลิงก์ใช้งาน</div>
+      </div>
+    </div>
+  </header>
+
+  <main class="container">
+    <section class="card">
+      <h1 class="h1">เข้าสู่ระบบ</h1>
+      <p class="muted">ใช้บัญชีแยกคนได้ (Email + Password)</p>
+
+      <div class="grid">
+        <div class="field">
+          <label>Email</label>
+          <input id="email" type="email" placeholder="name@company.com" autocomplete="username" />
+        </div>
+        <div class="field">
+          <label>Password</label>
+          <input id="password" type="password" placeholder="••••••••" autocomplete="current-password" />
+        </div>
+      </div>
+
+      <button class="btn primary" id="btnLogin">Login</button>
+
+      <div class="divider"><span>หรือ</span></div>
+
+      <h2 class="h2">สมัครสมาชิก</h2>
+      <p class="muted">สมัครแล้วระบบจะให้สิทธิ์เป็น “user” อัตโนมัติ (Admin ปรับสิทธิ์ได้)</p>
+      <button class="btn" id="btnRegister">Register</button>
+
+      <p class="note" id="msg"></p>
+    </section>
+
+    <section class="card soft">
+      <h2 class="h2">หมายเหตุ</h2>
+      <ul class="list">
+        <li>ระบบนี้เหมาะกับ GitHub Pages (static) โดยใช้ Firebase เป็นระบบ Login</li>
+        <li>Login แล้วจะค้าง session ไม่ต้อง login ใหม่เมื่อ refresh</li>
+      </ul>
+    </section>
+  </main>
+
+  <script type="module" src="firebase.js"></script>
+  <script type="module" src="app.js"></script>
+</body>
+</html>
