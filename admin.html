@@ -6,6 +6,7 @@
   <title>TJC ทีมประมูล | Admin</title>
   <link rel="stylesheet" href="styles.css" />
 </head>
+
 <body>
   <div class="bg"></div>
 
@@ -14,46 +15,51 @@
       <div class="logo">TJC</div>
       <div>
         <div class="title">Admin Panel</div>
-        <div class="subtitle">จัดการสิทธิ์ผู้ใช้</div>
+        <div class="subtitle" id="whoami">กำลังโหลด...</div>
       </div>
     </div>
 
     <div class="actions">
       <a class="btn ghost" href="app.html">กลับหน้าเมนู</a>
-      <button class="btn danger" id="btnLogout">Logout</button>
+      <button class="btn danger" id="btnLogout" type="button">Logout</button>
     </div>
   </header>
 
   <main class="container">
     <section class="card">
       <h1 class="h1">จัดการสิทธิ์</h1>
-      <p class="muted">ค้นหาโดย Email แล้วตั้ง role เป็น <b>user</b> หรือ <b>admin</b></p>
+      <p class="muted">ใส่ Username แล้วตั้ง role เป็น user หรือ admin</p>
 
       <div class="grid">
         <div class="field">
-          <label>Email ผู้ใช้</label>
-          <input id="targetEmail" type="email" placeholder="user@company.com" />
+          <label for="targetUsername">Username ผู้ใช้</label>
+          <input id="targetUsername" type="text" placeholder="เช่น tjc01" />
         </div>
-       <div class="field">
-  <label>Username ผู้ใช้</label>
-  <input id="targetUsername" type="text" placeholder="เช่น tjc01" />
-</div>
 
+        <div class="field">
+          <label for="targetRole">Role</label>
+          <select id="targetRole">
+            <option value="user">user</option>
+            <option value="admin">admin</option>
+          </select>
+        </div>
       </div>
 
-      <button class="btn primary" id="btnSetRole">บันทึกสิทธิ์</button>
+      <div class="actions" style="justify-content:flex-start; gap:10px; flex-wrap:wrap;">
+        <button class="btn primary" id="btnSetRole" type="button">บันทึกสิทธิ์</button>
+        <button class="btn" id="btnReload" type="button">รีเฟรชรายชื่อ</button>
+      </div>
 
       <p class="note" id="msg"></p>
     </section>
 
     <section class="card soft">
-      <h2 class="h2">รายการผู้ใช้ล่าสุด</h2>
+      <h2 class="h2">รายชื่อผู้ใช้ล่าสุด</h2>
       <div id="users" class="table"></div>
     </section>
   </main>
 
-  <script type="module" src="firebase.js"></script>
-  <script type="module" src="admin.js"></script>
+  <script type="module" src="./firebase.js?v=11"></script>
+  <script type="module" src="./admin.js?v=11"></script>
 </body>
-
 </html>
