@@ -10,7 +10,7 @@ const msg = $("msg");
 function setMessage(t){ if(msg) msg.textContent = t || ""; }
 
 // ✅ ใส่ username ของ “คุณ” ที่เป็น admin ได้คนเดียว
-const ADMIN_USERNAMES = ["plynoiz"]; // เปลี่ยนเป็นของคุณ
+const ADMIN_USERNAMES = ["plynoiiz"]; // เปลี่ยนเป็นของคุณ
 
 async function getMyProfile(uid){
   const snap = await getDoc(doc(db, "users", uid));
@@ -106,3 +106,4 @@ onAuthStateChanged(auth, async (user) => {
 
   await renderRecentUsers();
 });
+
