@@ -14,6 +14,22 @@ async function doLogout(){
     const el = $("pageMsg");
     if(el) el.textContent = "Logout ไม่สำเร็จ: " + (e?.message || e);
     console.error(e);
+    import { doc, setDoc, getDoc } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-firestore.js";
+
+async function ensureUserProfile(user){
+  const ref = doc(db, "users", user.uid);
+  const snap = await getDoc(ref);
+  if(!snap.exists()){
+    await setDoc(ref, {
+      username: (user.email || "").split("@")[0],
+      email: user.email || "",
+      role: "user",
+      createdAt: Date.now()
+    });
+  }
+  return (await getDoc(ref)).data();
+}
+
   }
 }
 
@@ -28,6 +44,8 @@ onAuthStateChanged(auth, async (user) => {
 
     const snap = await getDoc(doc(db, "users", user.uid));
     const profile = snap.exists() ? snap.data() : {};
+    const profile = await ensureUserProfile(user);
+
 
     const who = $("whoami");
     if (who) who.textContent = `${profile.username || user.email} • role: ${profile.role || "user"}`;
