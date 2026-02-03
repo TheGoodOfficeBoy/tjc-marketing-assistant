@@ -2,22 +2,19 @@ import { auth, db } from "./firebase.js";
 import {
   onAuthStateChanged,
   signInWithEmailAndPassword,
-  createUserWithEmailAndPassword
+  createUserWithEmailAndPassword,
 } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-auth.js";
 
-import { doc, setDoc, getDoc } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-firestore.js";
+import {
+  doc, setDoc, getDoc
+} from "https://www.gstatic.com/firebasejs/10.12.5/firebase-firestore.js";
 
-async function ensureUserProfile(user, usernameGuess){
-  const ref = doc(db, "users", user.uid);
-  const snap = await getDoc(ref);
-  if(!snap.exists()){
-    await setDoc(ref, {
-      username: usernameGuess || (user.email || "").split("@")[0],
-      email: user.email || "",
-      role: "user",
-      createdAt: Date.now()
-    });
-  }
+// ===== Helpers =====
+const $ = (id) => document.getElementById(id);
+
+function setMessage(t) {
+  const el = $("msg");
+  if (el) el.textContent = t || "";
 }
 
 function normalizeUsername(v) {
@@ -45,25 +42,32 @@ function humanFirebaseError(e) {
   }
 }
 
-async function ensureUserProfile(user, username) {
+// ✅ สร้างโปรไฟล์ ถ้ายังไม่มี (สำคัญ: ให้ admin page เห็นผู้ใช้)
+async function ensureUserProfile(user, usernameGuess) {
+  if (!user?.uid) return;
+
   const ref = doc(db, "users", user.uid);
   const snap = await getDoc(ref);
+
   if (!snap.exists()) {
     await setDoc(ref, {
-      username,
-      email: user.email,
+      username: usernameGuess || (user.email || "").split("@")[0],
+      email: user.email || "",
       role: "user",
-      createdAt: Date.now()
+      createdAt: Date.now(),
     });
   }
 }
 
 console.log("login.js loaded ✅");
 
+// ===== Login =====
 $("btnLogin")?.addEventListener("click", async () => {
   console.log("Login clicked ✅");
+
   try {
     setMessage("");
+
     const username = normalizeUsername($("username")?.value);
     const password = $("password")?.value || "";
 
@@ -72,9 +76,9 @@ $("btnLogin")?.addEventListener("click", async () => {
 
     setMessage("กำลังเข้าสู่ระบบ...");
     await signInWithEmailAndPassword(auth, usernameToEmail(username), password);
-    await ensureUserProfile(auth.currentUser, username);
-    window.location.href = "app.html";
 
+    // ✅ สร้างโปรไฟล์ให้ชัวร์ก่อนเด้งหน้า
+    await ensureUserProfile(auth.currentUser, username);
 
     window.location.href = "app.html";
   } catch (e) {
@@ -83,10 +87,13 @@ $("btnLogin")?.addEventListener("click", async () => {
   }
 });
 
+// ===== Register =====
 $("btnRegister")?.addEventListener("click", async () => {
   console.log("Register clicked ✅");
+
   try {
     setMessage("");
+
     const username = normalizeUsername($("username")?.value);
     const password = $("password")?.value || "";
 
@@ -97,7 +104,7 @@ $("btnRegister")?.addEventListener("click", async () => {
     setMessage("กำลังสมัครสมาชิก...");
     const cred = await createUserWithEmailAndPassword(auth, usernameToEmail(username), password);
 
-    // ✅ สร้างโปรไฟล์ของตัวเอง (rules อนุญาต)
+    // ✅ สร้างโปรไฟล์ของตัวเอง
     await ensureUserProfile(cred.user, username);
 
     window.location.href = "app.html";
@@ -107,7 +114,12 @@ $("btnRegister")?.addEventListener("click", async () => {
   }
 });
 
-// ถ้า login อยู่แล้วให้เด้งไป app.html
-onAuthStateChanged(auth, (user) => {
-  if (user) window.location.href = "app.html";
+// ===== Already logged in =====
+// กันเด้งเร็วเกิน: ไม่ redirect ถ้ายังอยู่หน้า index เฉย ๆ ก็พอ
+onAuthStateChanged(auth, async (user) => {
+  if (user) {
+    // ✅ ensure โปรไฟล์เผื่อเคสเก่า ๆ ที่ไม่มี doc
+    await ensureUserProfile(user, (user.email || "").split("@")[0]);
+    window.location.href = "app.html";
+  }
 });
