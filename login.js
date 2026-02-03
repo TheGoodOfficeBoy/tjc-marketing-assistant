@@ -5,9 +5,7 @@ import {
   createUserWithEmailAndPassword
 } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-auth.js";
 
-import {
-  doc, setDoc, getDoc, query, collection, where, getDocs
-} from "https://www.gstatic.com/firebasejs/10.12.5/firebase-firestore.js";
+import { doc, setDoc, getDoc } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-firestore.js";
 
 const $ = (id) => document.getElementById(id);
 
@@ -54,12 +52,6 @@ async function ensureUserProfile(user, username) {
   }
 }
 
-async function isUsernameTaken(username) {
-  const qy = query(collection(db, "users"), where("username", "==", username));
-  const snaps = await getDocs(qy);
-  return !snaps.empty;
-}
-
 console.log("login.js loaded ✅");
 
 $("btnLogin")?.addEventListener("click", async () => {
@@ -69,19 +61,12 @@ $("btnLogin")?.addEventListener("click", async () => {
     const username = normalizeUsername($("username")?.value);
     const password = $("password")?.value || "";
 
-    if (!username || !password) {
-      setMessage("กรุณากรอก Username และ Password");
-      return;
-    }
-    if (!isValidUsername(username)) {
-      setMessage("Username ต้องเป็น a-z 0-9 และ . _ - ความยาว 3-20 ตัว");
-      return;
-    }
+    if (!username || !password) return setMessage("กรุณากรอก Username และ Password");
+    if (!isValidUsername(username)) return setMessage("Username ต้องเป็น a-z 0-9 และ . _ - ความยาว 3-20 ตัว");
 
     setMessage("กำลังเข้าสู่ระบบ...");
     await signInWithEmailAndPassword(auth, usernameToEmail(username), password);
 
-    setMessage("Login สำเร็จ ✅");
     window.location.href = "app.html";
   } catch (e) {
     setMessage(`Login ไม่สำเร็จ: ${humanFirebaseError(e)} (${e?.code || "-"})`);
@@ -96,29 +81,16 @@ $("btnRegister")?.addEventListener("click", async () => {
     const username = normalizeUsername($("username")?.value);
     const password = $("password")?.value || "";
 
-    if (!username || !password) {
-      setMessage("กรุณากรอก Username และ Password ก่อนสมัคร");
-      return;
-    }
-    if (!isValidUsername(username)) {
-      setMessage("Username ต้องเป็น a-z 0-9 และ . _ - ความยาว 3-20 ตัว");
-      return;
-    }
-    if (password.length < 6) {
-      setMessage("รหัสผ่านต้องมีอย่างน้อย 6 ตัวอักษร");
-      return;
-    }
-
-    if (await isUsernameTaken(username)) {
-      setMessage("Username นี้ถูกใช้แล้ว");
-      return;
-    }
+    if (!username || !password) return setMessage("กรุณากรอก Username และ Password ก่อนสมัคร");
+    if (!isValidUsername(username)) return setMessage("Username ต้องเป็น a-z 0-9 และ . _ - ความยาว 3-20 ตัว");
+    if (password.length < 6) return setMessage("รหัสผ่านต้องมีอย่างน้อย 6 ตัวอักษร");
 
     setMessage("กำลังสมัครสมาชิก...");
     const cred = await createUserWithEmailAndPassword(auth, usernameToEmail(username), password);
+
+    // ✅ สร้างโปรไฟล์ของตัวเอง (rules อนุญาต)
     await ensureUserProfile(cred.user, username);
 
-    setMessage("สมัครสำเร็จ ✅");
     window.location.href = "app.html";
   } catch (e) {
     setMessage(`Register ไม่สำเร็จ: ${humanFirebaseError(e)} (${e?.code || "-"})`);
