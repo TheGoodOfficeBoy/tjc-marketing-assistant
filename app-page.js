@@ -1,62 +1,56 @@
-import { auth, db } from "./firebase.js";
+import { auth } from "./firebase.js";
 import { onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-auth.js";
-import { doc, getDoc } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-firestore.js";
+import { db } from "./firebase.js";
+import { doc, getDoc, setDoc } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-firestore.js";
 
 const $ = (id) => document.getElementById(id);
 
 console.log("app-page.js loaded ✅");
 
-async function doLogout(){
-  try{
+// ===== Logout (ผูกทันที) =====
+$("btnLogout")?.addEventListener("click", async () => {
+  console.log("Logout clicked ✅");
+  try {
     await signOut(auth);
     window.location.href = "index.html";
-  }catch(e){
-    const el = $("pageMsg");
-    if(el) el.textContent = "Logout ไม่สำเร็จ: " + (e?.message || e);
+  } catch (e) {
+    alert("Logout ไม่สำเร็จ: " + (e?.message || e));
     console.error(e);
-    import { doc, setDoc, getDoc } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-firestore.js";
+  }
+});
 
-async function ensureUserProfile(user){
+// ===== Guard + load profile =====
+async function ensureUserProfile(user) {
   const ref = doc(db, "users", user.uid);
   const snap = await getDoc(ref);
-  if(!snap.exists()){
+  if (!snap.exists()) {
     await setDoc(ref, {
       username: (user.email || "").split("@")[0],
       email: user.email || "",
       role: "user",
-      createdAt: Date.now()
+      createdAt: Date.now(),
     });
   }
   return (await getDoc(ref)).data();
 }
 
-  }
-}
-
-$("btnLogout")?.addEventListener("click", doLogout);
-
 onAuthStateChanged(auth, async (user) => {
-  try{
-    if(!user){
-      window.location.href = "index.html";
-      return;
-    }
+  if (!user) {
+    window.location.href = "index.html";
+    return;
+  }
 
-    const snap = await getDoc(doc(db, "users", user.uid));
-    const profile = snap.exists() ? snap.data() : {};
-    const profile = await ensureUserProfile(user);
+  const profile = await ensureUserProfile(user);
 
+  // แสดงชื่อผู้ใช้
+  const who = $("whoami");
+  if (who) {
+    who.textContent = `${profile.username || user.email} • role: ${profile.role || "user"}`;
+  }
 
-    const who = $("whoami");
-    if (who) who.textContent = `${profile.username || user.email} • role: ${profile.role || "user"}`;
-
-    const adminLink = $("adminLink");
-    if (adminLink && profile.role === "admin") adminLink.style.display = "inline-flex";
-  }catch(e){
-    const who = $("whoami");
-    if (who) who.textContent = "โหลดข้อมูลไม่สำเร็จ (ดู Console)";
-    const el = $("pageMsg");
-    if(el) el.textContent = "Error: " + (e?.message || e);
-    console.error(e);
+  // แสดง Admin link ถ้าเป็น admin
+  const adminLink = $("adminLink");
+  if (adminLink && profile.role === "admin") {
+    adminLink.style.display = "inline-flex";
   }
 });
