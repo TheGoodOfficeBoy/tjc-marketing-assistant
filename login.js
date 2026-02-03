@@ -7,11 +7,17 @@ import {
 
 import { doc, setDoc, getDoc } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-firestore.js";
 
-const $ = (id) => document.getElementById(id);
-
-function setMessage(t) {
-  const el = $("msg");
-  if (el) el.textContent = t || "";
+async function ensureUserProfile(user, usernameGuess){
+  const ref = doc(db, "users", user.uid);
+  const snap = await getDoc(ref);
+  if(!snap.exists()){
+    await setDoc(ref, {
+      username: usernameGuess || (user.email || "").split("@")[0],
+      email: user.email || "",
+      role: "user",
+      createdAt: Date.now()
+    });
+  }
 }
 
 function normalizeUsername(v) {
@@ -66,6 +72,9 @@ $("btnLogin")?.addEventListener("click", async () => {
 
     setMessage("กำลังเข้าสู่ระบบ...");
     await signInWithEmailAndPassword(auth, usernameToEmail(username), password);
+    await ensureUserProfile(auth.currentUser, username);
+    window.location.href = "app.html";
+
 
     window.location.href = "app.html";
   } catch (e) {
