@@ -1,19 +1,65 @@
-rules_version = '2';
-service cloud.firestore {
-  match /databases/{database}/documents {
+<!doctype html>
+<html lang="th">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>TJC ทีมประมูล | Profile</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
 
-    match /users/{userId} {
-      allow read: if request.auth != null && request.auth.uid == userId;
-      allow create: if request.auth != null && request.auth.uid == userId;
+<body>
+  <div class="bg"></div>
 
-      // update role ได้เฉพาะ admin
-      allow update, delete: if isAdmin();
+  <header class="topbar">
+    <div class="brand">
+      <div class="logo">TJC</div>
+      <div>
+        <div class="title">โปรไฟล์</div>
+        <div class="subtitle" id="whoami">กำลังโหลด...</div>
+      </div>
+    </div>
 
-      function isAdmin() {
-        return request.auth != null
-          && exists(/databases/$(database)/documents/users/$(request.auth.uid))
-          && get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == "admin";
-      }
-    }
-  }
-}
+    <div class="actions">
+      <a class="btn ghost" href="app.html">กลับหน้าเมนู</a>
+      <a class="btn ghost" id="adminLink" href="admin.html" style="display:none;">Admin</a>
+      <button class="btn danger" id="btnLogout" type="button">Logout</button>
+    </div>
+  </header>
+
+  <main class="container">
+    <section class="card">
+      <h1 class="h1">ข้อมูลบัญชี</h1>
+      <p class="muted">แสดงข้อมูลผู้ใช้และสิทธิ์การใช้งาน</p>
+
+      <div class="table">
+        <div class="row">
+          <div>
+            <div style="font-weight:800">Username</div>
+            <div class="muted" id="pfUsername">-</div>
+          </div>
+          <div class="badge" id="pfRole">user</div>
+        </div>
+
+        <div class="row">
+          <div>
+            <div style="font-weight:800">Email (ภายในระบบ)</div>
+            <div class="muted" id="pfEmail">-</div>
+          </div>
+        </div>
+
+        <div class="row">
+          <div>
+            <div style="font-weight:800">Created</div>
+            <div class="muted" id="pfCreated">-</div>
+          </div>
+        </div>
+      </div>
+
+      <p class="note" id="msg"></p>
+    </section>
+  </main>
+
+  <script type="module" src="./firebase.js?v=9"></script>
+  <script type="module" src="./profile.js?v=9"></script>
+</body>
+</html>
