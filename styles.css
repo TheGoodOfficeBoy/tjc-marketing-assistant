@@ -125,3 +125,94 @@ body{
 /* icons for ChatGPT / Gemini */
 .icon{display:inline-flex; width:18px; height:18px}
 .icon svg{width:18px; height:18px; fill: currentColor}
+}
+/* Chat floating button */
+.chat-fab{
+  position: fixed;
+  right: 22px;
+  bottom: 22px;
+  width: 58px;
+  height: 58px;
+  border-radius: 50%;
+  border: none;
+  cursor: pointer;
+  font-size: 22px;
+  color: #fff;
+  background: linear-gradient(135deg, var(--pink), #ff2a8e);
+  box-shadow: 0 14px 30px rgba(255,79,163,.45);
+  z-index: 9999;
+  transition: transform .15s ease, box-shadow .15s ease;
+}
+.chat-fab:hover{ transform: translateY(-2px) scale(1.05); box-shadow: 0 18px 36px rgba(255,79,163,.55); }
+
+.chat-popup{
+  position: fixed;
+  right: 22px;
+  bottom: 92px;
+  width: min(420px, calc(100vw - 44px));
+  height: 520px;
+  display: none;
+  z-index: 9999;
+  border-radius: 18px;
+  border: 1px solid var(--stroke);
+  background: linear-gradient(180deg, rgba(255,255,255,.10), rgba(255,255,255,.06));
+  backdrop-filter: blur(10px);
+  box-shadow: 0 18px 60px rgba(0,0,0,.35);
+  overflow: hidden;
+}
+.chat-popup.show{ display: flex; flex-direction: column; }
+
+.chat-head{
+  display:flex;
+  align-items:flex-start;
+  justify-content:space-between;
+  gap: 10px;
+  padding: 12px;
+  border-bottom: 1px solid rgba(255,255,255,.12);
+}
+.chat-title{ font-weight: 900; }
+.chat-subtitle{ font-size: 12px; color: var(--muted); margin-top: 2px; }
+
+.chat-body{
+  flex: 1;
+  padding: 12px;
+  overflow: auto;
+  display: grid;
+  gap: 10px;
+}
+.chat-msg{
+  max-width: 85%;
+  padding: 10px 12px;
+  border-radius: 14px;
+  border: 1px solid rgba(255,255,255,.14);
+  background: rgba(255,255,255,.08);
+  line-height: 1.35;
+  white-space: pre-wrap;
+}
+.chat-msg.me{
+  justify-self: end;
+  background: rgba(255,79,163,.16);
+  border-color: rgba(255,79,163,.30);
+}
+.chat-msg.ai{
+  justify-self: start;
+}
+
+.chat-foot{
+  display:flex;
+  gap: 10px;
+  padding: 12px;
+  border-top: 1px solid rgba(255,255,255,.12);
+}
+.chat-input{
+  flex: 1;
+  padding: 12px 12px;
+  border-radius: 14px;
+  border: 1px solid rgba(255,255,255,.16);
+  background: rgba(0,0,0,.18);
+  color: var(--text);
+  outline: none;
+}
+.chat-input::placeholder{ color: rgba(255,255,255,.55); }
+
+
