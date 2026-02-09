@@ -12,10 +12,9 @@ const firebaseConfig = {
   measurementId: "G-LK4CG6NJD0"
 };
 
-const app = initializeApp(firebaseConfig);
-
+export const app = initializeApp(firebaseConfig);
 export const auth = getAuth(app);
 export const db = getFirestore(app);
 
-// ✅ ให้ login แล้วค้างอยู่แม้ refresh/ปิดเปิดใหม่
+// ให้ login ค้าง session
 setPersistence(auth, browserLocalPersistence).catch(console.error);
