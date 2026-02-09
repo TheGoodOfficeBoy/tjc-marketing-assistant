@@ -85,8 +85,67 @@
 
   <script type="module" src="./firebase.js?v=40"></script>
   <script type="module" src="./app-page.js?v=40"></script>
+  
+<!-- Floating AI Chat Button -->
+<button id="btnAIChat" class="chat-fab" type="button" title="AI Chat">💬</button>
+
+<!-- AI Chat Popup -->
+<div id="chatPopup" class="chat-popup" aria-hidden="true">
+  <div class="chat-head">
+    <div>
+      <div class="chat-title">AI Chat</div>
+      <div class="chat-subtitle" id="chatStatus">พร้อมใช้งาน</div>
+    </div>
+    <button id="chatClose" class="btn ghost" type="button">✕</button>
+  </div>
+
+  <div id="chatBody" class="chat-body"></div>
+
+  <div class="chat-foot">
+    <input id="chatInput" class="chat-input" type="text" placeholder="พิมพ์คำถาม..." />
+    <button id="chatSend" class="btn primary" type="button">ส่ง</button>
+  </div>
+</div>
+
+<script>
+  const btn = document.getElementById("btnAIChat");
+  const pop = document.getElementById("chatPopup");
+  const closeBtn = document.getElementById("chatClose");
+  const sendBtn = document.getElementById("chatSend");
+  const input = document.getElementById("chatInput");
+  const body = document.getElementById("chatBody");
+
+  function openChat(){ pop.classList.add("show"); pop.setAttribute("aria-hidden","false"); input.focus(); }
+  function closeChat(){ pop.classList.remove("show"); pop.setAttribute("aria-hidden","true"); }
+
+  btn?.addEventListener("click", openChat);
+  closeBtn?.addEventListener("click", closeChat);
+
+  function addMsg(role, text){
+    const div = document.createElement("div");
+    div.className = "chat-msg " + role;
+    div.textContent = text;
+    body.appendChild(div);
+    body.scrollTop = body.scrollHeight;
+  }
+
+  async function send(){
+    const text = (input.value || "").trim();
+    if(!text) return;
+    input.value = "";
+    addMsg("me", text);
+
+    // TODO: ตรงนี้ค่อยเชื่อม AI (ผ่าน Firebase Function)
+    addMsg("ai", "ตอนนี้เป็น UI ทดลอง — ยังไม่ได้เชื่อม AI");
+  }
+
+  sendBtn?.addEventListener("click", send);
+  input?.addEventListener("keydown", (e)=>{ if(e.key==="Enter") send(); });
+</script>
+
 </body>
 </html>
+
 
 
 
