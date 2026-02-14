@@ -1,9 +1,6 @@
 <!doctype html>
 <html lang="th">
 <head>
-  <a href="team-members.html" class="brand-logo" target="_blank" rel="noopener">
-  <img src="TJC_320x320.png" alt="TJC Group" />
-</a>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>TJC ทีมประมูล | Menu</title>
@@ -15,7 +12,10 @@
 
   <header class="topbar">
     <div class="brand">
-      <div class="logo">TJC</div>
+      <!-- เปลี่ยนโลโก้ที่นี่ -->
+      <a href="team-members.html" class="brand-logo" target="_blank" rel="noopener">
+        <img src="/mnt/data/fb25c171-332c-4864-a4cf-c5788899f6d5.png" alt="TJC Group" />  <!-- ใส่ URL ของโลโก้ที่อัปโหลด -->
+      </a>
       <div>
         <div class="title">TJC ทีมประมูล</div>
         <div class="subtitle" id="whoami">กำลังโหลด...</div>
@@ -34,11 +34,11 @@
       <p class="muted">กดปุ่มเพื่อไปยังหน้าที่ต้องการ</p>
 
       <div class="menuGrid">
-        <a class="btn primary wide" href="https://tjc-report.oo.gd/Announcement.php"target="_blank" rel="noopener">
+        <a class="btn primary wide" href="https://tjc-report.oo.gd/Announcement.php" target="_blank" rel="noopener">
           TJC WebApps
         </a>
 
-        <a class="btn wide" href="https://192-168-100-2.thegood-918.direct.quickconnect.to:5001/#/signin"target="_blank" rel="noopener"">
+        <a class="btn wide" href="https://192-168-100-2.thegood-918.direct.quickconnect.to:5001/#/signin" target="_blank" rel="noopener">
           ลิ้งค์ NAS นอกสถานที่
         </a>
 
@@ -58,13 +58,15 @@
           Brands Pricelist
         </a>        
        
-        <a class="btn wide" href="https://drive.google.com/drive/folders/1eyvXrI_grxBX6UoC8zWSOezskrHs_zF8?usp=drive_link"target="_blank" rel="noopener">
+        <a class="btn wide" href="https://drive.google.com/drive/folders/1eyvXrI_grxBX6UoC8zWSOezskrHs_zF8?usp=drive_link" target="_blank" rel="noopener">
           TOR Stock
         </a> 
-                <a class="btn wide" href="http://192.168.100.2:5000/oo/r/vTlrAOTkV1df10VG7vCfcvRWEfGb89iK"target="_blank" rel="noopener">
+        
+        <a class="btn wide" href="http://192.168.100.2:5000/oo/r/vTlrAOTkV1df10VG7vCfcvRWEfGb89iK" target="_blank" rel="noopener">
           ข้อมูลรวมตารางราคา
         </a> 
-                <a class="btn wide" href="https://calendar.google.com/calendar/u/0?cid=Y19iNjg5YjlhOTcwNzYxOTBkM2FmNGU4N2Q4OTUwNWE3MmYzNzZkODU4NTU3MjQzMjRhNWY0NmVjNGVhY2U5ZjZiQGdyb3VwLmNhbGVuZGFyLmdvb2dsZS5jb20"target="_blank" rel="noopener">
+        
+        <a class="btn wide" href="https://calendar.google.com/calendar/u/0?cid=Y19iNjg5YjlhOTcwNzYxOTBkM2FmNGU4N2Q4OTUwNWE3MmYzNzZkODU4NTU3MjQzMjRhNWY0NmVjNGVhY2U5ZjZiQGdyb3VwLmNhbGVuZGFyLmdvb2dsZS5jb20" target="_blank" rel="noopener">
           ปฏิทินงานทีมประมูล TJC
         </a>  
         
@@ -92,72 +94,62 @@
   <script type="module" src="./firebase.js?v=40"></script>
   <script type="module" src="./app-page.js?v=40"></script>
   
-<!-- Floating AI Chat Button -->
-<button id="btnAIChat" class="chat-fab" type="button" title="AI Chat">💬</button>
+  <!-- Floating AI Chat Button -->
+  <button id="btnAIChat" class="chat-fab" type="button" title="AI Chat">💬</button>
 
-<!-- AI Chat Popup -->
-<div id="chatPopup" class="chat-popup" aria-hidden="true">
-  <div class="chat-head">
-    <div>
-      <div class="chat-title">ChatTJC</div>
-      <div class="chat-subtitle" id="chatStatus">พร้อมใช้งาน</div>
+  <!-- AI Chat Popup -->
+  <div id="chatPopup" class="chat-popup" aria-hidden="true">
+    <div class="chat-head">
+      <div>
+        <div class="chat-title">ChatTJC</div>
+        <div class="chat-subtitle" id="chatStatus">พร้อมใช้งาน</div>
+      </div>
+      <button id="chatClose" class="btn ghost" type="button">✕</button>
     </div>
-    <button id="chatClose" class="btn ghost" type="button">✕</button>
+
+    <div id="chatBody" class="chat-body"></div>
+
+    <div class="chat-foot">
+      <input id="chatInput" class="chat-input" type="text" placeholder="พิมพ์คำถาม..." />
+      <button id="chatSend" class="btn primary" type="button">ส่ง</button>
+    </div>
   </div>
 
-  <div id="chatBody" class="chat-body"></div>
+  <script>
+    const btn = document.getElementById("btnAIChat");
+    const pop = document.getElementById("chatPopup");
+    const closeBtn = document.getElementById("chatClose");
+    const sendBtn = document.getElementById("chatSend");
+    const input = document.getElementById("chatInput");
+    const body = document.getElementById("chatBody");
 
-  <div class="chat-foot">
-    <input id="chatInput" class="chat-input" type="text" placeholder="พิมพ์คำถาม..." />
-    <button id="chatSend" class="btn primary" type="button">ส่ง</button>
-  </div>
-</div>
+    function openChat() { pop.classList.add("show"); pop.setAttribute("aria-hidden","false"); input.focus(); }
+    function closeChat() { pop.classList.remove("show"); pop.setAttribute("aria-hidden","true"); }
 
-<script>
-  const btn = document.getElementById("btnAIChat");
-  const pop = document.getElementById("chatPopup");
-  const closeBtn = document.getElementById("chatClose");
-  const sendBtn = document.getElementById("chatSend");
-  const input = document.getElementById("chatInput");
-  const body = document.getElementById("chatBody");
+    btn?.addEventListener("click", openChat);
+    closeBtn?.addEventListener("click", closeChat);
 
-  function openChat(){ pop.classList.add("show"); pop.setAttribute("aria-hidden","false"); input.focus(); }
-  function closeChat(){ pop.classList.remove("show"); pop.setAttribute("aria-hidden","true"); }
+    function addMsg(role, text) {
+      const div = document.createElement("div");
+      div.className = "chat-msg " + role;
+      div.textContent = text;
+      body.appendChild(div);
+      body.scrollTop = body.scrollHeight;
+    }
 
-  btn?.addEventListener("click", openChat);
-  closeBtn?.addEventListener("click", closeChat);
+    async function send() {
+      const text = (input.value || "").trim();
+      if (!text) return;
+      input.value = "";
+      addMsg("me", text);
 
-  function addMsg(role, text){
-    const div = document.createElement("div");
-    div.className = "chat-msg " + role;
-    div.textContent = text;
-    body.appendChild(div);
-    body.scrollTop = body.scrollHeight;
-  }
+      // TODO: ตรงนี้ค่อยเชื่อม AI (ผ่าน Firebase Function)
+      addMsg("ai", "ตอนนี้เป็น UI ทดลอง — ขี้เกียจทำต่อ ไม่พัฒนาแล้ว :) ");
+    }
 
-  async function send(){
-    const text = (input.value || "").trim();
-    if(!text) return;
-    input.value = "";
-    addMsg("me", text);
-
-    // TODO: ตรงนี้ค่อยเชื่อม AI (ผ่าน Firebase Function)
-    addMsg("ai", "ตอนนี้เป็น UI ทดลอง — ขี้เกียจทำต่อ ไม่พัฒนาแล้ว :) ");
-  }
-
-  sendBtn?.addEventListener("click", send);
-  input?.addEventListener("keydown", (e)=>{ if(e.key==="Enter") send(); });
-</script>
+    sendBtn?.addEventListener("click", send);
+    input?.addEventListener("keydown", (e) => { if (e.key === "Enter") send(); });
+  </script>
 
 </body>
 </html>
-
-
-
-
-
-
-
-
-
-
