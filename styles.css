@@ -1,127 +1,175 @@
-/* ================================
-   ✅ TOPBAR BALANCED (GRID 3 COL)
-================================ */
+<!doctype html>
+<html lang="th">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>TJC ทีมประมูล | Menu</title>
+  <link rel="stylesheet" href="./styles.css?v=40" />
+</head>
 
-/* เปลี่ยนจาก flex → grid ให้กลางอยู่กลางจริง */
-.topbar{
-  position: sticky;
-  top: 0;
-  z-index: 10;
+<body>
+  <div class="bg"></div>
 
-  display: grid;
-  grid-template-columns: 1fr auto 1fr; /* ซ้าย-กลาง-ขวา */
-  align-items: center;
-  gap: 16px;
+  <header class="topbar">
+    <div class="brand">
+      <!-- โลโก้ -->
+      <a href="team-members.html" class="brand-logo" rel="noopener">
+        <img src="TJC_320x320.png" alt="TJC Group" />
+      </a>
 
-  padding: 14px 18px;
-  border-bottom: 1px solid rgba(255, 255, 255, .10);
-  background: linear-gradient(180deg, rgba(0, 0, 0, .30), rgba(0, 0, 0, .10));
-  backdrop-filter: blur(10px);
-}
+      <div>
+        <div class="title">TJC ทีมประมูล</div>
+        <div class="subtitle" id="whoami">กำลังโหลด...</div>
+      </div>
+    </div>
 
-/* วางตำแหน่งลูกแต่ละฝั่ง */
-.topbar .brand{ justify-self: start; min-width: 0; }
-.topbar .company-mini{ justify-self: center; }
-.topbar .actions{ justify-self: end; }
+    <!-- กล่องข้อมูลบริษัท -->
+    <div class="company-mini">
+      <div class="company-name">บริษัท ทีเจซี คอร์ปอเรชั่น จำกัด</div>
+      <div class="company-sub">
+        311/1 หมู่ 4 ต.คำน้ำแซบ อ.วารินชำราบ จ.อุบลราชธานี 34190
+      </div>
+      <div class="company-sub">เลขผู้เสียภาษี: 0325563000203</div>
+    </div>
 
-/* brand layout */
-.brand{
-  display: flex;
-  gap: 12px;
-  align-items: center;
-  min-width: 0;
-}
+    <div class="actions">
+      <a class="btn ghost" href="profile.html">Profile</a>
+      <button class="btn danger" id="btnLogout" type="button">Logout</button>
+    </div>
+  </header>
 
-/* ✅ รองรับโลโก้แบบ <a class="brand-logo"><img/></a> */
-.brand-logo{
-  display: inline-flex;
-  align-items: center;
-  text-decoration: none;
-}
-.brand-logo img{
-  width: 64px;
-  height: 64px;
-  object-fit: contain;
-  border-radius: 14px;
-  display: block;
-  filter: drop-shadow(0 10px 24px rgba(0,0,0,.35));
-}
+  <main class="container">
+    <section class="card">
+      <h1 class="h1">TJC Marketing Assistant</h1>
+      <p class="muted">กดปุ่มเพื่อไปยังหน้าที่ต้องการ</p>
 
-/* (ถ้ายังใช้ .logo ตัวอักษร TJC อยู่ก็ยังไม่พัง) */
-.logo{
-  width: 44px;
-  height: 44px;
-  border-radius: 14px;
-  display: grid;
-  place-items: center;
-  font-weight: 900;
-  background: linear-gradient(135deg, var(--pink), #ff2a8e);
-  box-shadow: 0 12px 30px rgba(255,79,163,.22);
-}
+      <div class="menuGrid">
+        <a class="btn primary wide" href="https://tjc-report.oo.gd/Announcement.php" target="_blank" rel="noopener">
+          TJC ONE
+        </a>
 
-.title{
-  font-weight: 900;
-  letter-spacing: .2px;
-}
-.subtitle{
-  color: var(--muted);
-  font-size: 12px;
-  margin-top: 2px;
-}
+        <a class="btn wide" href="https://192-168-100-2.thegood-918.direct.quickconnect.to:5001/#/signin" target="_blank" rel="noopener">
+          ลิ้งค์ NAS นอกสถานที่
+        </a>
 
-/* actions */
-.actions{
-  display: flex;
-  gap: 10px;
-  align-items: center;
-}
+        <a class="btn wide" href="https://thegoodofficeboy.github.io/tjc-delivery-notice/" target="_blank" rel="noopener">
+          แจ้งคิวงานทีมจัดส่ง
+        </a>
 
-/* ✅ กล่องข้อมูลบริษัทตรงกลาง (Glass) */
-.company-mini{
-  width: min(720px, 52vw); /* คุมความกว้างไม่ให้ยาวเกิน */
-  padding: 12px 14px;
-  border-radius: 16px;
+        <a class="btn wide" href="https://docs.google.com/forms/d/e/1FAIpQLSdKiak_1-ZHw3l1OcOfRp107MMOTna5DWzM95jr4KWAoD-khA/viewform" target="_blank" rel="noopener">
+          ลิ้งค์ เบิกสินค้า IT
+        </a>
 
-  background: rgba(255,255,255,.08);
-  border: 1px solid rgba(255,255,255,.14);
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
+        <a class="btn wide" href="https://docs.google.com/forms/d/e/1FAIpQLSdrUtYurzsDa6wYFRStj9ms_zwqpQTFg1juDKotIbFCTGU2Ig/viewform" target="_blank" rel="noopener">
+          ลิ้งค์ เบิกสต๊อก PD
+        </a>
 
-  box-shadow: 0 14px 40px rgba(0,0,0,.22);
-  text-align: center;
-  overflow: hidden;
-}
+        <a class="btn wide" href="https://drive.google.com/drive/folders/1epvdX538AReQgI7m6Kn9xgMKRRtPs1TT?usp=sharing" target="_blank" rel="noopener">
+          Brands Pricelist
+        </a>
 
-.company-name{
-  font-weight: 900;
-  font-size: 13px;
-  color: rgba(255,255,255,.92);
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-.company-sub{
-  margin-top: 4px;
-  font-size: 12px;
-  color: rgba(255,255,255,.70);
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
+        <a class="btn wide" href="https://drive.google.com/drive/folders/1eyvXrI_grxBX6UoC8zWSOezskrHs_zF8?usp=drive_link" target="_blank" rel="noopener">
+          TOR Stock
+        </a>
 
-/* ✅ มือถือ: ให้กล่องบริษัทลงบรรทัดใหม่ ไม่เบียด */
-@media (max-width: 860px){
-  .topbar{
-    grid-template-columns: 1fr 1fr;
-    grid-template-areas:
-      "brand actions"
-      "company company";
-  }
-  .topbar .brand{ grid-area: brand; }
-  .topbar .actions{ grid-area: actions; }
-  .topbar .company-mini{
-    grid-area: company;
-    width: 100%;
-    text-align: left;
-  }
-}
+        <a class="btn wide" href="http://192.168.100.2:5000/oo/r/vTlrAOTkV1df10VG7vCfcvRWEfGb89iK" target="_blank" rel="noopener">
+          ข้อมูลรวมตารางราคา
+        </a>
+
+        <a class="btn wide" href="https://calendar.google.com/calendar/u/0?cid=Y19iNjg5YjlhOTcwNzYxOTBkM2FmNGU4N2Q4OTUwNWE3MmYzNzZkODU4NTU3MjQzMjRhNWY0NmVjNGVhY2U5ZjZiQGdyb3VwLmNhbGVuZGFyLmdvb2dsZS5jb20" target="_blank" rel="noopener">
+          ปฏิทินงานทีมประมูล TJC
+        </a>
+
+        <a class="btn wide" href="https://chatgpt.com/" target="_blank" rel="noopener">
+          <span class="icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24">
+              <path d="M12 2.2a4.9 4.9 0 0 1 4.7 3.4 4.6 4.6 0 0 1 5 5.2 4.8 4.8 0 0 1-2.3 8.5 4.8 4.8 0 0 1-8.9 2.2 4.8 4.8 0 0 1-8.2-4.1A4.8 4.8 0 0 1 3.9 6.7 4.8 4.8 0 0 1 12 2.2Z" />
+            </svg>
+          </span>
+          ChatGPT
+        </a>
+
+        <a class="btn wide" href="https://gemini.google.com/" target="_blank" rel="noopener">
+          <span class="icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24">
+              <path d="M12 2l1.6 6.1L20 10l-6.4 1.9L12 18l-1.6-6.1L4 10l6.4-1.9L12 2z" />
+            </svg>
+          </span>
+          Gemini
+        </a>
+      </div>
+    </section>
+  </main>
+
+  <script type="module" src="./firebase.js?v=40"></script>
+  <script type="module" src="./app-page.js?v=40"></script>
+
+  <!-- Floating AI Chat Button -->
+  <button id="btnAIChat" class="chat-fab" type="button" title="AI Chat">💬</button>
+
+  <!-- AI Chat Popup -->
+  <div id="chatPopup" class="chat-popup" aria-hidden="true">
+    <div class="chat-head">
+      <div>
+        <div class="chat-title">ChatTJC</div>
+        <div class="chat-subtitle" id="chatStatus">พร้อมใช้งาน</div>
+      </div>
+      <button id="chatClose" class="btn ghost" type="button">✕</button>
+    </div>
+
+    <div id="chatBody" class="chat-body"></div>
+
+    <div class="chat-foot">
+      <input id="chatInput" class="chat-input" type="text" placeholder="พิมพ์คำถาม..." />
+      <button id="chatSend" class="btn primary" type="button">ส่ง</button>
+    </div>
+  </div>
+
+  <script>
+    const btn = document.getElementById("btnAIChat");
+    const pop = document.getElementById("chatPopup");
+    const closeBtn = document.getElementById("chatClose");
+    const sendBtn = document.getElementById("chatSend");
+    const input = document.getElementById("chatInput");
+    const body = document.getElementById("chatBody");
+
+    function openChat() {
+      pop.classList.add("show");
+      pop.setAttribute("aria-hidden", "false");
+      input.focus();
+    }
+
+    function closeChat() {
+      pop.classList.remove("show");
+      pop.setAttribute("aria-hidden", "true");
+    }
+
+    btn?.addEventListener("click", openChat);
+    closeBtn?.addEventListener("click", closeChat);
+
+    function addMsg(role, text) {
+      const div = document.createElement("div");
+      div.className = "chat-msg " + role;
+      div.textContent = text;
+      body.appendChild(div);
+      body.scrollTop = body.scrollHeight;
+    }
+
+    async function send() {
+      const text = (input.value || "").trim();
+      if (!text) return;
+
+      input.value = "";
+      addMsg("me", text);
+
+      // TODO: ตรงนี้ค่อยเชื่อม AI (ผ่าน Firebase Function)
+      addMsg("ai", "ตอนนี้เป็น UI ทดลอง — ขี้เกียจทำต่อ ไม่พัฒนาแล้ว :) ");
+    }
+
+    sendBtn?.addEventListener("click", send);
+    input?.addEventListener("keydown", (e) => {
+      if (e.key === "Enter") send();
+    });
+  </script>
+</body>
+</html>
