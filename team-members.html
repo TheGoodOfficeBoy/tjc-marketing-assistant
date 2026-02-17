@@ -1,120 +1,240 @@
 <!DOCTYPE html>
 <html lang="th">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>แนะนำสมาชิกทีมประมูล</title>
-    <div class="box">
-      <h3>ข้อมูลบริษัท</h3>
-      <p>บริษัท ทีเจซี คอร์ปอเรชั่น จำกัด</p>
-      <p>311/1 หมู่ 4 ต.คำน้ำแซบ อ.วารินชำราบ</p>
-      <p>จ.อุบลราชธานี 34190</p>
-      <p>เลขผู้เสียภาษี: 0325563000203</p>
-<style>
-body{
-  font-family: "Segoe UI", sans-serif;
-  background: #f4f4f4;
-  margin:0;
-  padding:40px 20px;
-  text-align:center;
-}
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ทีมงานประมูล TJC Group</title>
 
-h1{
-  margin-bottom:40px;
-}
+  <style>
+    :root{
+      --bg:#f4f4f4;
+      --card:#ffffff;
+      --muted:#666;
+      --shadow: 0 10px 30px rgba(0,0,0,0.08);
+      --radius: 16px;
+      --stroke: rgba(0,0,0,0.08);
+    }
 
-/* ====== จัดเรียงแนวนอน ====== */
-.container{
-  display:flex;
-  justify-content:center;
-  gap:30px;
-  flex-wrap:wrap; /* ถ้าจอเล็กจะขึ้นบรรทัดใหม่ */
-}
+    *{ box-sizing:border-box; }
 
-/* ====== กล่อง Fix Size ====== */
-.team-member{
-  width:360px;          /* Fix ความกว้าง */
-  height:620px;         /* Fix ความสูง */
-  background:#fff;
-  border-radius:16px;
-  box-shadow:0 10px 30px rgba(0,0,0,0.08);
-  padding:25px;
-  display:flex;
-  flex-direction:column;
-  align-items:center;
-}
+    body{
+      margin:0;
+      font-family: "Segoe UI", system-ui, -apple-system, Arial, sans-serif;
+      background: var(--bg);
+      color:#222;
+    }
 
-/* รูปโปรไฟล์ */
-.team-member img{
-  width:140px;
-  height:140px;
-  border-radius:50%;
-  object-fit:cover;
-  margin-bottom:15px;
-}
+    .page{
+      width: min(1100px, 92vw);
+      margin: 0 auto;
+      padding: 34px 0 50px;
+    }
 
-.team-member h2{
-  margin:10px 0;
-  font-size:20px;
-}
+    .page h1{
+      margin: 0 0 14px;
+      text-align:center;
+      font-size: 28px;
+      letter-spacing: .2px;
+    }
 
-.info{
-  font-size:15px;
-  margin:5px 0;
-}
+    .subtitle{
+      text-align:center;
+      color: var(--muted);
+      margin: 0 0 22px;
+      font-size: 14px;
+    }
 
-/* กล่องข้อมูลบริษัท */
-.box{
-  margin-top:auto;   /* ดันไปล่างสุด */
-  background:#f1f1f1;
-  padding:15px;
-  border-radius:12px;
-  width:100%;
-  font-size:14px;
-}
+    /* ===== Company box ===== */
+    .company-box{
+      background: var(--card);
+      border: 1px solid var(--stroke);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      padding: 18px 18px;
+      margin: 0 auto 26px;
+      max-width: 820px;
+      text-align: left;
+    }
+    .company-box h3{
+      margin:0 0 10px;
+      font-size: 18px;
+    }
+    .company-grid{
+      display:grid;
+      grid-template-columns: 1fr;
+      gap: 8px;
+      color:#333;
+      font-size: 14px;
+      line-height: 1.55;
+    }
 
-.box h3{
-  margin-top:0;
-}
-</style>
+    /* ===== Members grid ===== */
+    .members{
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 18px;
+      align-items: stretch;
+    }
+
+    @media (max-width: 980px){
+      .members{ grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    }
+    @media (max-width: 620px){
+      .members{ grid-template-columns: 1fr; }
+    }
+
+    /* ===== Member card ===== */
+    .member{
+      background: var(--card);
+      border: 1px solid var(--stroke);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      padding: 18px 18px 16px;
+      display:flex;
+      flex-direction: column;
+      min-height: 520px;  /* ความสูง Fix ให้ใกล้กัน */
+      text-align:center;
+    }
+
+    .avatar{
+      width: 132px;
+      height: 132px;
+      border-radius: 999px;
+      object-fit: cover;
+      margin: 4px auto 12px;
+      border: 4px solid rgba(0,0,0,0.04);
+      background:#fff;
+    }
+
+    .name{
+      margin: 4px 0 6px;
+      font-size: 18px;
+      font-weight: 800;
+    }
+
+    .role{
+      margin: 0 0 14px;
+      color: var(--muted);
+      font-size: 14px;
+      font-weight: 600;
+    }
+
+    .info{
+      text-align:left;
+      font-size: 14px;
+      line-height: 1.7;
+      color:#333;
+      display:grid;
+      gap: 6px;
+      padding: 0 4px;
+    }
+
+    .info b{ font-weight: 800; }
+
+    .actions{
+      margin-top: auto; /* ดันปุ่มไปล่างสุดเสมอ */
+      display:flex;
+      gap:10px;
+      justify-content:center;
+      padding-top: 14px;
+    }
+
+    .btn{
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      padding: 10px 12px;
+      border-radius: 12px;
+      border: 1px solid rgba(0,0,0,0.12);
+      background: #fff;
+      cursor:pointer;
+      text-decoration:none;
+      color:#222;
+      font-weight:700;
+      font-size: 13px;
+      transition: transform .12s ease, box-shadow .12s ease;
+    }
+    .btn:hover{
+      transform: translateY(-1px);
+      box-shadow: 0 10px 20px rgba(0,0,0,0.08);
+    }
+
+    /* ช่วยให้กดโทร/เมลบนมือถือได้ */
+    a.link{ color: inherit; text-decoration: none; border-bottom: 1px dashed rgba(0,0,0,0.25); }
+    a.link:hover{ border-bottom-style: solid; }
+  </style>
 </head>
 
 <body>
+  <main class="page">
+    <h1>ทีมงานประมูล TJC Group</h1>
+    <p class="subtitle">ข้อมูลทีมงานสำหรับการประสานงานและติดต่ออย่างรวดเร็ว</p>
 
-<h1>ทีมงานประมูล TJC Group</h1>
+    <!-- ✅ กล่องข้อมูลบริษัท (แยก 1 กล่อง ไม่ต้องซ้ำทุกคน) -->
+    <section class="company-box">
+      <h3>ข้อมูลบริษัท</h3>
+      <div class="company-grid">
+        <div><b>บริษัท:</b> บริษัท ทีเจซี คอร์ปอเรชั่น จำกัด</div>
+        <div><b>ที่อยู่:</b> 311/1 หมู่ 4 ต.คำน้ำแซบ อ.วารินชำราบ จ.อุบลราชธานี 34190</div>
+        <div><b>เลขผู้เสียภาษี:</b> 0325563000203</div>
+      </div>
+    </section>
 
-<div class="container">
+    <!-- ✅ รายชื่อสมาชิก (เพิ่มได้เรื่อยๆ โดย copy <article class="member">) -->
+    <section class="members">
 
-  <!-- Member 1 -->
-  <div class="team-member">
-    <img src="พี่โอ_399x416.png" alt="Member 1">
-    <h2>นายเศรษฐมงคล พวงทอง (โอ)</h2>
-    <p class="info">ตำแหน่ง: รองประธานกรรมการ</p>
-    <p class="info">เบอร์โทร: 061-183-5533, 080-503-0409</p>
-    <p class="info">Email: theart.office001@gmail.com</p>
+      <!-- Member 1 -->
+      <article class="member">
+        <img class="avatar" src="พี่โอ_399x416.png" alt="นายเศรษฐมงคล พวงทอง (โอ)">
+        <div class="name">นายเศรษฐมงคล พวงทอง (โอ)</div>
+        <div class="role">รองประธานกรรมการ</div>
 
-    </div>
-  </div>
+        <div class="info">
+          <div><b>โทร:</b> <a class="link" href="tel:0611835533">061-183-5533</a>, <a class="link" href="tel:0805030409">080-503-0409</a></div>
+          <div><b>Email:</b> <a class="link" href="mailto:theart.office001@gmail.com">theart.office001@gmail.com</a></div>
+        </div>
 
-  <!-- Member 2 -->
-  <div class="team-member">
-    <img src="YUY_196x196.png" alt="Member 2">
-    <h2>ศิริลักษณ์ ทุมมากรณ์ (ยุ้ย)</h2>
-    <p class="info">ตำแหน่ง: หัวหน้าทีมประมูล</p>
-    <p class="info">เบอร์โทร: 063-883-2464</p>
-    <p class="info">Email: thegood.office21@gmail.com</p>
+        <div class="actions">
+          <a class="btn" href="tel:0611835533">โทร</a>
+          <a class="btn" href="mailto:theart.office001@gmail.com">อีเมล</a>
+        </div>
+      </article>
 
-  </div>
-  <!-- Member 3 -->
-  <div class="team-member">
-    <img src="James_237x237.png" alt="Member 2">
-    <h2>อำพล แสงจันทร์เทศ (เจมส์)</h2>
-    <p class="info">ตำแหน่ง: รองหัวหน้าทีมประมูล</p>
-    <p class="info">เบอร์โทร: 099-364-2422</p>
-    <p class="info">Email: theart.office005@gmail.com</p>
+      <!-- Member 2 -->
+      <article class="member">
+        <img class="avatar" src="YUY_196x196.png" alt="ศิริลักษณ์ ทุมมากรณ์ (ยุ้ย)">
+        <div class="name">ศิริลักษณ์ ทุมมากรณ์ (ยุ้ย)</div>
+        <div class="role">หัวหน้าทีมประมูล</div>
 
-  </div>
-</div>
+        <div class="info">
+          <div><b>โทร:</b> <a class="link" href="tel:0638832464">063-883-2464</a></div>
+          <div><b>Email:</b> <a class="link" href="mailto:thegood.office21@gmail.com">thegood.office21@gmail.com</a></div>
+        </div>
 
+        <div class="actions">
+          <a class="btn" href="tel:0638832464">โทร</a>
+          <a class="btn" href="mailto:thegood.office21@gmail.com">อีเมล</a>
+        </div>
+      </article>
+
+      <!-- Member 3 -->
+      <article class="member">
+        <img class="avatar" src="James_237x237.png" alt="อำพล แสงจันทร์เทศ (เจมส์)">
+        <div class="name">อำพล แสงจันทร์เทศ (เจมส์)</div>
+        <div class="role">รองหัวหน้าทีมประมูล</div>
+
+        <div class="info">
+          <div><b>โทร:</b> <a class="link" href="tel:0993642422">099-364-2422</a></div>
+          <div><b>Email:</b> <a class="link" href="mailto:theart.office005@gmail.com">theart.office005@gmail.com</a></div>
+        </div>
+
+        <div class="actions">
+          <a class="btn" href="tel:0993642422">โทร</a>
+          <a class="btn" href="mailto:theart.office005@gmail.com">อีเมล</a>
+        </div>
+      </article>
+
+    </section>
+  </main>
 </body>
 </html>
