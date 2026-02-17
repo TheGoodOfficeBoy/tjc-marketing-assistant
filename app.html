@@ -10,23 +10,33 @@
 <body>
   <div class="bg"></div>
 
-  <header class="topbar">
-    <div class="brand">
-      <!-- เปลี่ยนโลโก้ที่นี่ -->
-      <a href="team-members.html" class="brand-logo" target="_blank" rel="noopener">
-        <img src="TJC_320x320.png" alt="TJC Group" style="width: 120px; height: auto;" />  <!-- ใส่ URL ของโลโก้ที่อัปโหลด -->
-      </a>
-      <div>
-        <div class="title">TJC ทีมประมูล</div>
-        <div class="subtitle" id="whoami">กำลังโหลด...</div>
-      </div>
-    </div>
+ <header class="topbar">
+  <div class="brand">
+    <!-- โลโก้ + ชื่อเดิมของคุณ -->
+    <a href="team-members.html" class="brand-logo" rel="noopener">
+      <img src="TJC_320x320.png" alt="TJC Group" />
+    </a>
 
-    <div class="actions">
-      <a class="btn ghost" href="profile.html">Profile</a>
-      <button class="btn danger" id="btnLogout" type="button">Logout</button>
+    <div>
+      <div class="title">TJC ทีมประมูล</div>
+      <div class="subtitle" id="whoami">กำลังโหลด...</div>
     </div>
-  </header>
+  </div>
+
+  <!-- ✅ กล่องข้อมูลบริษัท (ตรงกรอบแดง) -->
+  <div class="company-mini">
+    <div class="company-name">บริษัท ทีเจซี คอร์ปอเรชั่น จำกัด</div>
+    <div class="company-sub">
+      311/1 หมู่ 4 ต.คำน้ำแซบ อ.วารินชำราบ จ.อุบลราชธานี 34190
+    </div>
+    <div class="company-sub">เลขผู้เสียภาษี: 0325563000203</div>
+  </div>
+
+  <div class="actions">
+    <a class="btn ghost" href="profile.html">Profile</a>
+    <button class="btn danger" id="btnLogout" type="button">Logout</button>
+  </div>
+</header>
 
   <main class="container">
     <section class="card">
@@ -153,6 +163,7 @@
 
 </body>
 </html>
+
 
 
 
