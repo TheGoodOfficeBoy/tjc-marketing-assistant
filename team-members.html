@@ -1,92 +1,118 @@
 <!DOCTYPE html>
 <html lang="th">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>แนะนำสมาชิกทีมประมูล</title>
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      background-color: #f4f4f4;
-      color: #333;
-      margin: 0;
-      padding: 0;
-    }
-    .container {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      padding: 20px;
-    }
-    .team-member {
-      background-color: #fff;
-      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-      margin: 20px;
-      padding: 20px;
-      border-radius: 8px;
-      width: 300px;
-      text-align: center;
-    }
-    .team-member img {
-      width: 100px;
-      height: 100px;
-      border-radius: 50%;
-      margin-bottom: 10px;
-    }
-    .info {
-      font-size: 16px;
-      margin: 5px 0;
-    }
-    .box {
-      background-color: #f1f1f1;
-      padding: 10px;
-      margin: 15px 0;
-      border-radius: 8px;
-      width: 100%;
-    }
-  </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>แนะนำสมาชิกทีมประมูล</title>
+
+<style>
+body{
+  font-family: "Segoe UI", sans-serif;
+  background: #f4f4f4;
+  margin:0;
+  padding:40px 20px;
+  text-align:center;
+}
+
+h1{
+  margin-bottom:40px;
+}
+
+/* ====== จัดเรียงแนวนอน ====== */
+.container{
+  display:flex;
+  justify-content:center;
+  gap:30px;
+  flex-wrap:wrap; /* ถ้าจอเล็กจะขึ้นบรรทัดใหม่ */
+}
+
+/* ====== กล่อง Fix Size ====== */
+.team-member{
+  width:360px;          /* Fix ความกว้าง */
+  height:620px;         /* Fix ความสูง */
+  background:#fff;
+  border-radius:16px;
+  box-shadow:0 10px 30px rgba(0,0,0,0.08);
+  padding:25px;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+}
+
+/* รูปโปรไฟล์ */
+.team-member img{
+  width:140px;
+  height:140px;
+  border-radius:50%;
+  object-fit:cover;
+  margin-bottom:15px;
+}
+
+.team-member h2{
+  margin:10px 0;
+  font-size:20px;
+}
+
+.info{
+  font-size:15px;
+  margin:5px 0;
+}
+
+/* กล่องข้อมูลบริษัท */
+.box{
+  margin-top:auto;   /* ดันไปล่างสุด */
+  background:#f1f1f1;
+  padding:15px;
+  border-radius:12px;
+  width:100%;
+  font-size:14px;
+}
+
+.box h3{
+  margin-top:0;
+}
+</style>
 </head>
+
 <body>
 
-  <div class="container">
-    <h1>ทีมงานประมูล TJC Group</h1>
+<h1>ทีมงานประมูล TJC Group</h1>
 
-    <!-- Member 1 -->
-    <div class="team-member">
-      <img src="พี่โอ_399x416.png" alt="Member 1">
-      <h2>นายเศรษฐมงคล พวงทอง (โอ)</h2>
-      <p class="info">ตำแหน่ง: รองประธานกรรมการ</p>
-      <p class="info">เบอร์โทร: 061-183-5533,080-503-0409</p>
-      <p class="info">Email: theart.office001@gmail.com</p>
-      
-      <!-- Company Info -->
-      <div class="box">
-        <h3>ข้อมูลบริษัท</h3>
-        <p>บริษัท ทีเจซี คอร์ปอเรชั่น จำกัด</p>
-        <p>ที่อยู่: เลขที่ 311/1 หมู่ที่ 4 ตำบล/แขวงคำน้ำแซบ อำเภอ/เขตวารินชำราบ จังหวัดอุบลราชธานี 34190 </p>
-        <p>เลขผู้เสียภาษี  : 0325563000203 </p>
-      </div>
+<div class="container">
+
+  <!-- Member 1 -->
+  <div class="team-member">
+    <img src="พี่โอ_399x416.png" alt="Member 1">
+    <h2>นายเศรษฐมงคล พวงทอง (โอ)</h2>
+    <p class="info">ตำแหน่ง: รองประธานกรรมการ</p>
+    <p class="info">เบอร์โทร: 061-183-5533, 080-503-0409</p>
+    <p class="info">Email: theart.office001@gmail.com</p>
+
+    <div class="box">
+      <h3>ข้อมูลบริษัท</h3>
+      <p>บริษัท ทีเจซี คอร์ปอเรชั่น จำกัด</p>
+      <p>311/1 หมู่ 4 ต.คำน้ำแซบ อ.วารินชำราบ</p>
+      <p>จ.อุบลราชธานี 34190</p>
+      <p>เลขผู้เสียภาษี: 0325563000203</p>
     </div>
-
-    <!-- Member 2 -->
-    <div class="team-member">
-      <img src="team_member_2.jpg" alt="Member 2">
-      <h2>ชื่อสมาชิก 2</h2>
-      <p class="info">ตำแหน่ง: Director</p>
-      <p class="info">เบอร์โทร: 098-765-4321</p>
-      <p class="info">Email: another@example.com</p>
-      
-      <!-- Company Info -->
-      <div class="box">
-        <h3>ข้อมูลบริษัท</h3>
-        <p>บริษัท TJC Group</p>
-        <p>ที่อยู่: ถนน XYZ, กรุงเทพมหานคร</p>
-      </div>
-    </div>
-
-    <!-- Add more team members as needed -->
-
   </div>
+
+  <!-- Member 2 -->
+  <div class="team-member">
+    <img src="team_member_2.jpg" alt="Member 2">
+    <h2>ชื่อสมาชิก 2</h2>
+    <p class="info">ตำแหน่ง: Director</p>
+    <p class="info">เบอร์โทร: 098-765-4321</p>
+    <p class="info">Email: another@example.com</p>
+
+    <div class="box">
+      <h3>ข้อมูลบริษัท</h3>
+      <p>บริษัท TJC Group</p>
+      <p>ที่อยู่: ถนน XYZ, กรุงเทพมหานคร</p>
+    </div>
+  </div>
+
+</div>
 
 </body>
 </html>
