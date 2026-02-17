@@ -6,7 +6,7 @@
   <title>ทีมงานประมูล TJC Group</title>
 
   <style>
-    :root{
+:root{
   --bg1:#2a0a1a;
   --bg2:#0b0612;
   --glass: rgba(255,255,255,.10);
@@ -22,7 +22,6 @@ body{
   margin:0;
   font-family: "Segoe UI", system-ui, -apple-system, Arial, sans-serif;
   color:var(--text);
-
   background:
     radial-gradient(1200px 600px at 20% 20%, rgba(255,79,163,.35), transparent 60%),
     radial-gradient(1000px 600px at 80% 30%, rgba(255,134,201,.25), transparent 60%),
@@ -37,6 +36,36 @@ body{
   padding:40px 0 60px;
 }
 
+/* ===== Back Button ===== */
+
+.top-nav{
+  display:flex;
+  justify-content:flex-start;
+  margin-bottom:20px;
+}
+
+.back-btn{
+  padding:10px 18px;
+  border-radius:14px;
+  border:1px solid var(--stroke);
+  background:var(--glass);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  color:#fff;
+  text-decoration:none;
+  font-weight:700;
+  transition: all .2s ease;
+  display:inline-flex;
+  align-items:center;
+  gap:8px;
+}
+
+.back-btn:hover{
+  background:rgba(255,79,163,.35);
+  border-color:rgba(255,79,163,.6);
+  transform: translateY(-2px);
+}
+
 h1{
   text-align:center;
   margin-bottom:10px;
@@ -48,7 +77,7 @@ h1{
   margin-bottom:30px;
 }
 
-/* ===== Glass Company Box ===== */
+/* ===== Company Box ===== */
 
 .company-box{
   background:var(--glass);
@@ -77,7 +106,7 @@ h1{
   .members{ grid-template-columns:1fr; }
 }
 
-/* ===== Glass Card ===== */
+/* ===== Member Card ===== */
 
 .member{
   background:var(--glass);
@@ -99,8 +128,6 @@ h1{
   box-shadow: 0 30px 70px rgba(0,0,0,.45);
 }
 
-/* Avatar */
-
 .avatar{
   width:140px;
   height:140px;
@@ -109,8 +136,6 @@ h1{
   margin:0 auto 15px;
   border:3px solid rgba(255,255,255,.3);
 }
-
-/* Text */
 
 .name{
   font-size:18px;
@@ -135,8 +160,6 @@ h1{
   color:#fff;
 }
 
-/* Buttons */
-
 .actions{
   margin-top:auto;
   display:flex;
@@ -160,79 +183,66 @@ h1{
   background:rgba(255,79,163,.35);
   border-color:rgba(255,79,163,.6);
 }
-    /* ช่วยให้กดโทร/เมลบนมือถือได้ */
-    a.link{ color: inherit; text-decoration: none; border-bottom: 1px dashed rgba(0,0,0,0.25); }
-    a.link:hover{ border-bottom-style: solid; }
+
+a.link{
+  color: inherit;
+  text-decoration: none;
+  border-bottom: 1px dashed rgba(255,255,255,.4);
+}
+a.link:hover{
+  border-bottom-style: solid;
+}
   </style>
 </head>
 
 <body>
   <main class="page">
+
+    <!-- ปุ่มกลับหน้าหลัก -->
+    <div class="top-nav">
+      <a href="app.html" class="back-btn">← กลับหน้าหลัก</a>
+    </div>
+
     <h1>ทีมงานประมูล TJC Group</h1>
     <p class="subtitle">ข้อมูลทีมงานสำหรับการประสานงานและติดต่ออย่างรวดเร็ว</p>
 
-    <!-- ✅ กล่องข้อมูลบริษัท (แยก 1 กล่อง ไม่ต้องซ้ำทุกคน) -->
     <section class="company-box">
       <h3>ข้อมูลบริษัท</h3>
-      <div class="company-grid">
-        <div><b>บริษัท:</b> บริษัท ทีเจซี คอร์ปอเรชั่น จำกัด</div>
-        <div><b>ที่อยู่:</b> 311/1 หมู่ 4 ต.คำน้ำแซบ อ.วารินชำราบ จ.อุบลราชธานี 34190</div>
-        <div><b>เลขผู้เสียภาษี:</b> 0325563000203</div>
-         <div><b>โทร:</b> 099-420-0837</div>
-      </div>
+      <div><b>บริษัท:</b> บริษัท ทีเจซี คอร์ปอเรชั่น จำกัด</div>
+      <div><b>ที่อยู่:</b> 311/1 หมู่ 4 ต.คำน้ำแซบ อ.วารินชำราบ จ.อุบลราชธานี 34190</div>
+      <div><b>เลขผู้เสียภาษี:</b> 0325563000203</div>
+      <div><b>โทร:</b> 099-420-0837</div>
     </section>
 
-    <!-- ✅ รายชื่อสมาชิก (เพิ่มได้เรื่อยๆ โดย copy <article class="member">) -->
     <section class="members">
 
-      <!-- Member 1 -->
       <article class="member">
-        <img class="avatar" src="พี่โอ_399x416.png" alt="นายเศรษฐมงคล พวงทอง (โอ)">
+        <img class="avatar" src="พี่โอ_399x416.png">
         <div class="name">นายเศรษฐมงคล พวงทอง (โอ)</div>
         <div class="role">รองประธานกรรมการ</div>
-
         <div class="info">
-          <div><b>โทร:</b> <a class="link" href="tel:0611835533">061-183-5533</a>, <a class="link" href="tel:0805030409">080-503-0409</a></div>
+          <div><b>โทร:</b> <a class="link" href="tel:0611835533">061-183-5533</a></div>
           <div><b>Email:</b> <a class="link" href="mailto:theart.office001@gmail.com">theart.office001@gmail.com</a></div>
-        </div>
-
-        <div class="actions">
-          <a class="btn" href="tel:0611835533">โทร</a>
-          <a class="btn" href="mailto:theart.office001@gmail.com">อีเมล</a>
         </div>
       </article>
 
-      <!-- Member 2 -->
       <article class="member">
-        <img class="avatar" src="YUY_196x196.png" alt="ศิริลักษณ์ ทุมมากรณ์ (ยุ้ย)">
+        <img class="avatar" src="YUY_196x196.png">
         <div class="name">ศิริลักษณ์ ทุมมากรณ์ (ยุ้ย)</div>
         <div class="role">หัวหน้าทีมประมูล</div>
-
         <div class="info">
           <div><b>โทร:</b> <a class="link" href="tel:0638832464">063-883-2464</a></div>
           <div><b>Email:</b> <a class="link" href="mailto:thegood.office21@gmail.com">thegood.office21@gmail.com</a></div>
         </div>
-
-        <div class="actions">
-          <a class="btn" href="tel:0638832464">โทร</a>
-          <a class="btn" href="mailto:thegood.office21@gmail.com">อีเมล</a>
-        </div>
       </article>
 
-      <!-- Member 3 -->
       <article class="member">
-        <img class="avatar" src="James_237x237.png" alt="อำพล แสงจันทร์เทศ (เจมส์)">
+        <img class="avatar" src="James_237x237.png">
         <div class="name">อำพล แสงจันทร์เทศ (เจมส์)</div>
         <div class="role">รองหัวหน้าทีมประมูล</div>
-
         <div class="info">
           <div><b>โทร:</b> <a class="link" href="tel:0993642422">099-364-2422</a></div>
           <div><b>Email:</b> <a class="link" href="mailto:theart.office005@gmail.com">theart.office005@gmail.com</a></div>
-        </div>
-
-        <div class="actions">
-          <a class="btn" href="tel:0993642422">โทร</a>
-          <a class="btn" href="mailto:theart.office005@gmail.com">อีเมล</a>
         </div>
       </article>
 
