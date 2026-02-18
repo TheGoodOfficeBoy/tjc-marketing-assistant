@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ใบเสนอราคา</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+        }
+        .container {
+            width: 80%;
+            margin: auto;
+            padding: 20px;
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        .header {
+            text-align: center;
+        }
+        .header h1 {
+            margin: 0;
+            font-size: 24px;
+        }
+        .form-group {
+            margin-bottom: 20px;
+        }
+        .form-group label {
+            display: block;
+            font-weight: bold;
+        }
+        .form-group input, .form-group textarea {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            margin-top: 5px;
+        }
+        .form-group input[type="number"] {
+            width: 30%;
+        }
+        .table {
+            width: 100%;
+            margin-top: 20px;
+            border-collapse: collapse;
+        }
+        .table th, .table td {
+            padding: 8px;
+            text-align: left;
+            border: 1px solid #ddd;
+        }
+        .table th {
+            background-color: #f2f2f2;
+        }
+        .footer {
+            text-align: center;
+            margin-top: 30px;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div class="header">
+        <h1>ใบเสนอราคา</h1>
+        <p>บริษัท เอกการ คอมพิวเตอร์ จำกัด</p>
+        <p>วันที่: <input type="date"></p>
+    </div>
+
+    <div class="form-group">
+        <label for="company-name">ชื่อบริษัท</label>
+        <input type="text" id="company-name" placeholder="ระบุชื่อบริษัท">
+    </div>
+
+    <div class="form-group">
+        <label for="contact-person">ผู้ติดต่อ</label>
+        <input type="text" id="contact-person" placeholder="ระบุชื่อผู้ติดต่อ">
+    </div>
+
+    <div class="form-group">
+        <label for="email">อีเมล</label>
+        <input type="email" id="email" placeholder="ระบุอีเมล">
+    </div>
+
+    <div class="form-group">
+        <label for="phone">หมายเลขโทรศัพท์</label>
+        <input type="tel" id="phone" placeholder="ระบุหมายเลขโทรศัพท์">
+    </div>
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th>ลำดับ</th>
+                <th>รายการสินค้า</th>
+                <th>จำนวน</th>
+                <th>ราคา/หน่วย</th>
+                <th>ราคารวม</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>1</td>
+                <td><input type="text" name="item1" placeholder="ระบุรายการสินค้า"></td>
+                <td><input type="number" name="quantity1" placeholder="จำนวน"></td>
+                <td><input type="number" name="price1" placeholder="ราคา/หน่วย"></td>
+                <td><input type="number" name="total1" placeholder="ราคารวม"></td>
+            </tr>
+            <tr>
+                <td>2</td>
+                <td><input type="text" name="item2" placeholder="ระบุรายการสินค้า"></td>
+                <td><input type="number" name="quantity2" placeholder="จำนวน"></td>
+                <td><input type="number" name="price2" placeholder="ราคา/หน่วย"></td>
+                <td><input type="number" name="total2" placeholder="ราคารวม"></td>
+            </tr>
+            <tr>
+                <td>3</td>
+                <td><input type="text" name="item3" placeholder="ระบุรายการสินค้า"></td>
+                <td><input type="number" name="quantity3" placeholder="จำนวน"></td>
+                <td><input type="number" name="price3" placeholder="ราคา/หน่วย"></td>
+                <td><input type="number" name="total3" placeholder="ราคารวม"></td>
+            </tr>
+        </tbody>
+    </table>
+
+    <div class="form-group">
+        <label for="total-price">ราคารวมทั้งหมด</label>
+        <input type="number" id="total-price" placeholder="ราคารวมทั้งหมด">
+    </div>
+
+    <div class="footer">
+        <p>ลงชื่อ: ___________________________</p>
+        <p>ตำแหน่ง: ________________________</p>
+    </div>
+</div>
+
+</body>
+</html>
