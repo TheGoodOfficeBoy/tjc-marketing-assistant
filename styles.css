@@ -1,12 +1,12 @@
 :root{
-  --bg1:#0d2f5f;          /* ฟ้าเข้มด้านบน */
-  --bg2:#1e73d8;          /* ฟ้าสว่างด้านล่าง */
-  --blue:#0096ff;         /* Primary blue */
-  --blue2:#5cc8ff;        /* ฟ้าไฮไลต์ */
-  --text:#f4f9ff;
+  --bg1:#7FA3C6;          /* เข้มด้านบน */
+  --bg2:#A1B9D4;          /* Blue Bell */
+  --blue:#A1B9D4;
+  --blue2:#C4D6E8;
+  --text:#ffffff;
   --muted:rgba(255,255,255,.75);
-  --card: rgba(255,255,255,.10);
-  --stroke: rgba(255,255,255,.18);
+  --card: rgba(255,255,255,.18);
+  --stroke: rgba(255,255,255,.28);
 }
 
 *{box-sizing:border-box}
@@ -17,8 +17,8 @@ body{
   font-family: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Arial, "Noto Sans Thai", sans-serif;
   color:var(--text);
   background:
-    radial-gradient(1200px 700px at 25% 20%, rgba(0,150,255,.35), transparent 60%),
-    radial-gradient(900px 600px at 75% 35%, rgba(92,200,255,.25), transparent 55%),
+    radial-gradient(1200px 700px at 25% 20%, rgba(161,185,212,.45), transparent 60%),
+    radial-gradient(900px 600px at 75% 35%, rgba(196,214,232,.35), transparent 55%),
     linear-gradient(180deg, var(--bg1), var(--bg2));
   overflow-x:hidden;
 }
@@ -122,8 +122,8 @@ body{
 .btn:disabled{opacity:.5; cursor:not-allowed; transform:none}
 
 .btn.primary{
-  background: linear-gradient(135deg, var(--blue), #0077ff);
-  border-color: rgba(255,255,255,.22);
+  background: linear-gradient(135deg, #A1B9D4, #7FA3C6);
+  border-color: rgba(255,255,255,.35);
 }
 .btn.primary:hover{opacity:.98}
 
@@ -170,8 +170,8 @@ body{
   cursor: pointer;
   font-size: 32px;
   color: #fff;
-  background: linear-gradient(135deg, var(--blue), #0077ff);
-  box-shadow: 0 14px 30px rgba(0,150,255,.45);
+  background: linear-gradient(135deg, #A1B9D4, #7FA3C6);
+  box-shadow: 0 14px 30px rgba(127,163,198,.55);
   z-index: 9999;
   transition: transform .15s ease, box-shadow .15s ease;
 }
@@ -216,8 +216,8 @@ body{
   max-width: 85%;
   padding: 10px 12px;
   border-radius: 14px;
-  background: rgba(0,150,255,.18);
-  border-color: rgba(0,150,255,.35);
+  background: rgba(127,163,198,.55);
+  border-color: rgba(127,163,198,.88);
   line-height: 1.35;
   white-space: pre-wrap;
 }
@@ -240,4 +240,5 @@ body{
   outline: none;
 }
 .chat-input::placeholder{ color: rgba(255,255,255,.55); }
+
 
