@@ -169,9 +169,52 @@
     sendBtn?.addEventListener("click", send);
     input?.addEventListener("keydown", (e) => { if (e.key === "Enter") send(); });
   </script>
+  <script>
+  (function(){
+    const root = document.documentElement;
+    const btn = document.getElementById('themeToggle');
+    const label = document.getElementById('themeLabel');
 
+    // Get initial theme: localStorage > system preference
+    const saved = localStorage.getItem('theme');
+    const systemDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+    const initial = saved || (systemDark ? 'dark' : 'light');
+
+    function apply(theme){
+      root.setAttribute('data-theme', theme);
+      localStorage.setItem('theme', theme);
+      if (label) label.textContent = theme === 'dark' ? 'Light' : 'Dark';
+
+      // swap icon (moon/sun) quickly
+      if (btn){
+        btn.querySelector('svg')?.replaceWith((theme === 'dark') ? sunSvg() : moonSvg());
+      }
+    }
+
+    function moonSvg(){
+      const svg = document.createElementNS('http://www.w3.org/2000/svg','svg');
+      svg.setAttribute('viewBox','0 0 24 24');
+      svg.innerHTML = '<path d="M21 12.6A8.5 8.5 0 0 1 11.4 3a7 7 0 1 0 9.6 9.6Z"/>';
+      return svg;
+    }
+    function sunSvg(){
+      const svg = document.createElementNS('http://www.w3.org/2000/svg','svg');
+      svg.setAttribute('viewBox','0 0 24 24');
+      svg.innerHTML = '<path d="M12 18a6 6 0 1 0 0-12 6 6 0 0 0 0 12Zm0-16h0.01M12 22h0.01M4.22 4.22h0.01M19.78 19.78h0.01M2 12h0.01M22 12h0.01M4.22 19.78h0.01M19.78 4.22h0.01"/>';
+      return svg;
+    }
+
+    apply(initial);
+
+    btn?.addEventListener('click', () => {
+      const current = root.getAttribute('data-theme') || 'light';
+      apply(current === 'dark' ? 'light' : 'dark');
+    });
+  })();
+</script>
 </body>
 </html>
+
 
 
 
