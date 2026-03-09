@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ระบบ OT</title>
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+    }
+
+    body {
+      min-height: 100vh;
+      background:
+        radial-gradient(circle at top left, rgba(255,255,255,0.95), transparent 34%),
+        radial-gradient(circle at bottom right, rgba(220,240,255,0.75), transparent 30%),
+        linear-gradient(135deg, #f8fcff 0%, #eef8ff 38%, #e3f3ff 72%, #d9efff 100%);
+      color: #1f4f78;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+    }
+
+    .container {
+      width: 100%;
+      max-width: 980px;
+    }
+
+    .card {
+      background: rgba(255, 255, 255, 0.68);
+      border: 1px solid rgba(180, 220, 245, 0.7);
+      backdrop-filter: blur(18px);
+      -webkit-backdrop-filter: blur(18px);
+      border-radius: 28px;
+      box-shadow: 0 18px 45px rgba(110, 170, 210, 0.18);
+      overflow: hidden;
+    }
+
+    .hero {
+      padding: 56px 32px 40px;
+      text-align: center;
+      position: relative;
+    }
+
+    .badge {
+      display: inline-block;
+      padding: 10px 18px;
+      border-radius: 999px;
+      background: rgba(255,255,255,0.72);
+      border: 1px solid rgba(190,220,240,0.9);
+      color: #3e7aa5;
+      font-size: 14px;
+      margin-bottom: 20px;
+      letter-spacing: 0.3px;
+    }
+
+    h1 {
+      font-size: clamp(2rem, 4vw, 3.4rem);
+      font-weight: 800;
+      line-height: 1.15;
+      margin-bottom: 16px;
+      color: #2e6f9e;
+      text-shadow: 0 6px 14px rgba(180, 215, 235, 0.45);
+    }
+
+    .subtitle {
+      max-width: 700px;
+      margin: 0 auto 30px;
+      font-size: 1.05rem;
+      line-height: 1.75;
+      color: #557e9d;
+    }
+
+    .actions {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 18px;
+      margin-top: 28px;
+    }
+
+    .glass-button {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      width: 100%;
+      min-height: 64px;
+      padding: 18px 22px;
+      border-radius: 18px;
+      text-decoration: none;
+      color: #2f6f9e;
+      font-size: 1rem;
+      font-weight: 700;
+      background: rgba(255, 255, 255, 0.62);
+      border: 1px solid rgba(180, 220, 245, 0.9);
+      box-shadow:
+        inset 0 1px 0 rgba(255,255,255,0.8),
+        0 10px 22px rgba(140, 190, 220, 0.18);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      transition: all 0.25s ease;
+    }
+
+    .glass-button:hover {
+      transform: translateY(-3px) scale(1.01);
+      background: rgba(255, 255, 255, 0.82);
+      box-shadow:
+        inset 0 1px 0 rgba(255,255,255,0.95),
+        0 14px 28px rgba(130, 185, 220, 0.24);
+    }
+
+    .glass-button:active {
+      transform: translateY(0);
+    }
+
+    .info-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 18px;
+      padding: 0 32px 32px;
+    }
+
+    .info-box {
+      background: rgba(255,255,255,0.5);
+      border: 1px solid rgba(190,220,240,0.75);
+      border-radius: 22px;
+      padding: 22px;
+    }
+
+    .info-box h3 {
+      font-size: 1rem;
+      margin-bottom: 10px;
+      color: #3a739c;
+    }
+
+    .info-box p {
+      font-size: 0.96rem;
+      line-height: 1.7;
+      color: #5f86a3;
+    }
+
+    .footer-note {
+      border-top: 1px solid rgba(190,220,240,0.7);
+      padding: 24px 32px 30px;
+      text-align: center;
+      font-size: 0.98rem;
+      color: #4d7898;
+      background: rgba(255,255,255,0.4);
+    }
+
+    .footer-note a {
+      color: #2f6f9e;
+      font-weight: 700;
+      text-decoration: none;
+      border-bottom: 1px solid rgba(47,111,158,0.28);
+    }
+
+    .footer-note a:hover {
+      opacity: 0.9;
+    }
+
+    @media (max-width: 640px) {
+      .hero {
+        padding: 42px 20px 28px;
+      }
+
+      .info-grid,
+      .footer-note {
+        padding-left: 20px;
+        padding-right: 20px;
+      }
+
+      .info-grid {
+        padding-bottom: 22px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="card">
+      <section class="hero">
+        <div class="badge">OT Management Portal</div>
+        <h1>ระบบกรอกข้อมูลและตรวจสอบ OT</h1>
+        <p class="subtitle">
+          เข้าถึงลิงก์สำหรับกรอก OT และตารางคำนวณ OT ได้อย่างรวดเร็วในหน้าเดียว
+          ออกแบบให้ทันสมัย ใช้งานง่าย และเหมาะสำหรับนำขึ้น GitHub Pages
+        </p>
+
+        <div class="actions">
+          <a
+            class="glass-button"
+            href="https://docs.google.com/forms/d/e/1FAIpQLScHjzHiY5Zlu1D4yMBMAtDt1mghrybN2tdMceyAlKli5I1otg/viewform"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            📋 ลิงก์กรอก OT
+          </a>
+
+          <a
+            class="glass-button"
+            href="https://docs.google.com/spreadsheets/d/1B8AwBKHjAMbtoQFYqY2RaRVGw72laLoFL8pZAZugxtI/edit?resourcekey=&gid=1631774950#gid=1631774950"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            📊 ตารางคำนวณ OT
+          </a>
+        </div>
+      </section>
+
+      <section class="info-grid">
+        <div class="info-box">
+          <h3>กรอกข้อมูลสะดวก</h3>
+          <p>คลิกเพื่อเข้าสู่แบบฟอร์มกรอก OT ได้ทันที รองรับการใช้งานทั้งบนคอมพิวเตอร์และมือถือ</p>
+        </div>
+
+        <div class="info-box">
+          <h3>ตรวจสอบการคำนวณ</h3>
+          <p>เปิดดูตารางคำนวณ OT เพื่อเช็กข้อมูล ชั่วโมงทำงาน และรายละเอียดการคำนวณได้อย่างรวดเร็ว</p>
+        </div>
+
+        </section>
+
+      <div class="footer-note">
+        หากเกิดปัญหาขัดข้อง ติดต่อแอดมิน
+        <a href="tel:0634580434">063-458-0434</a>
+      </div>
+    </div>
+  </div>
+</body>
+</html>
