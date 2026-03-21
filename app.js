@@ -1,75 +1,111 @@
 import { auth, db } from "./firebase.js";
-import { onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-auth.js";
-import { doc, getDoc } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-firestore.js";
+import {
+  onAuthStateChanged,
+  signOut,
+  sendPasswordResetEmail
+} from "https://www.gstatic.com/firebasejs/10.12.5/firebase-auth.js";
+import {
+  doc,
+  getDoc
+} from "https://www.gstatic.com/firebasejs/10.12.5/firebase-firestore.js";
 
 const $ = (id) => document.getElementById(id);
 
-async function doLogout(){
-  await signOut(auth);
-  window.location.href = "index.html";
+function fmtDate(ms) {
+  if (!ms) return "-";
+  try {
+    return new Date(ms).toLocaleString("th-TH");
+  } catch {
+    return String(ms);
+  }
 }
 
-$("btnLogout")?.addEventListener("click", doLogout);
+function isAdmin(role) {
+  return role === "admin" || role === "super_admin";
+}
 
-onAuthStateChanged(auth, async (user) => {
-  if(!user){
+async function logoutAll() {
+  try {
+    await signOut(auth);
     window.location.href = "index.html";
-    return;
+  } catch (e) {
+    console.error("Logout failed:", e);
+    alert("Logout ไม่สำเร็จ: " + (e?.message || e));
   }
+}
 
-  const snap = await getDoc(doc(db, "users", user.uid));
-  const profile = snap.exists() ? snap.data() : {};
+function showModal(show) {
+  const modal = $("profileModal");
+  if (!modal) return;
 
-  const who = $("whoami");
-  if (who) who.textContent = `${profile.username || user.email} • role: ${profile.role || "user"}`;
+  modal.style.display = show ? "flex" : "none";
+  modal.setAttribute("aria-hidden", show ? "false" : "true");
+}
 
-  const adminLink = $("adminLink");
-  if (adminLink && profile.role === "admin") adminLink.style.display = "inline-flex";
+$("btnLogout")?.addEventListener("click", logoutAll);
+$("btnLogout2")?.addEventListener("click", logoutAll);
+
+// modal open / close
+$("btnProfile")?.addEventListener("click", () => showModal(true));
+$("profileClose")?.addEventListener("click", () => showModal(false));
+$("profileX")?.addEventListener("click", () => showModal(false));
+
+// ปิด modal เมื่อคลิกพื้นหลัง
+$("profileModal")?.addEventListener("click", (e) => {
+  if (e.target?.id === "profileModal") {
+    showModal(false);
+  }
 });
 
-
-  $("btnLogout").addEventListener("click", logoutAll);
-  $("btnLogout2")?.addEventListener("click", logoutAll);
-
-  // modal close
-  $("btnProfile")?.addEventListener("click", () => showModal(true));
-  $("profileClose")?.addEventListener("click", () => showModal(false));
-  $("profileX")?.addEventListener("click", () => showModal(false));
-
-  onAuthStateChanged(auth, async (user) => {
-    if(!user){
+onAuthStateChanged(auth, async (user) => {
+  try {
+    if (!user) {
       window.location.href = "index.html";
       return;
     }
 
-    // โหลดโปรไฟล์จาก Firestore
     const snap = await getDoc(doc(db, "users", user.uid));
     const profile = snap.exists() ? snap.data() : {};
 
+    const role = profile.role || "user";
+    const username = profile.username || user.email || "-";
+
     // subtitle บน header
     const who = $("whoami");
-    if (who) who.textContent = `${profile.username || user.email} • role: ${profile.role || "user"}`;
+    if (who) who.textContent = `${username} • role: ${role}`;
 
-    // admin link เฉพาะ admin
+    // admin link สำหรับ admin + super_admin
     const adminLink = $("adminLink");
-    if (adminLink && profile.role === "admin") adminLink.style.display = "inline-flex";
+    if (adminLink) {
+      adminLink.style.display = isAdmin(role) ? "inline-flex" : "none";
+    }
 
     // เติมข้อมูลใน Profile Modal
     $("pfUsername") && ($("pfUsername").textContent = profile.username || "-");
-    $("pfRole") && ($("pfRole").textContent = profile.role || "user");
+    $("pfRole") && ($("pfRole").textContent = role);
     $("pfEmail") && ($("pfEmail").textContent = user.email || "-");
     $("pfCreated") && ($("pfCreated").textContent = fmtDate(profile.createdAt));
 
-    // Reset password (จะส่งไป email จำลอง)
-    $("btnResetPassword")?.addEventListener("click", async () => {
-      try{
-        $("pfMsg").textContent = "กำลังส่งลิงก์รีเซ็ตรหัสผ่าน...";
-        await sendPasswordResetEmail(auth, user.email);
-        $("pfMsg").textContent = "ส่งลิงก์ Reset Password แล้ว (ตรวจกล่องจดหมายของ email ภายในระบบ)";
-      }catch(e){
-        $("pfMsg").textContent = `ส่งไม่สำเร็จ: ${e?.message || e}`;
-      }
-    });
-  });
-}
+    // reset password
+    const btnReset = $("btnResetPassword");
+    if (btnReset && !btnReset.dataset.bound) {
+      btnReset.dataset.bound = "true";
 
+      btnReset.addEventListener("click", async () => {
+        try {
+          if (!$("pfMsg")) return;
+
+          $("pfMsg").textContent = "กำลังส่งลิงก์รีเซ็ตรหัสผ่าน...";
+          await sendPasswordResetEmail(auth, user.email);
+          $("pfMsg").textContent =
+            "ส่งลิงก์ Reset Password แล้ว กรุณาตรวจสอบอีเมลของคุณ";
+        } catch (e) {
+          $("pfMsg").textContent = `ส่งไม่สำเร็จ: ${e?.message || e}`;
+        }
+      });
+    }
+  } catch (e) {
+    console.error("โหลด app ไม่สำเร็จ:", e);
+    alert("โหลดข้อมูลผู้ใช้ไม่สำเร็จ: " + (e?.message || e));
+  }
+});
