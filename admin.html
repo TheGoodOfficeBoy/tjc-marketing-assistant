@@ -28,12 +28,15 @@
   <main class="container">
     <section class="card">
       <h1 class="h1">จัดการสิทธิ์</h1>
-      <p class="muted">ใส่ Username แล้วตั้ง role เป็น user หรือ admin</p>
+      <p class="muted">
+        Admin สามารถดูรายชื่อผู้ใช้ได้ ส่วน Super Admin สามารถเปลี่ยนสิทธิ์เป็น
+        user, admin หรือ super_admin ได้
+      </p>
 
       <div class="grid">
         <div class="field">
           <label for="targetUsername">Username ผู้ใช้</label>
-          <input id="targetUsername" type="text" placeholder="เช่น tjc01" />
+          <input id="targetUsername" type="text" placeholder="เช่น tjc01" autocomplete="off" />
         </div>
 
         <div class="field">
@@ -41,6 +44,7 @@
           <select id="targetRole">
             <option value="user">user</option>
             <option value="admin">admin</option>
+            <option value="super_admin">super_admin</option>
           </select>
         </div>
       </div>
@@ -59,7 +63,7 @@
     </section>
   </main>
 
-  <script type="module" src="./firebase.js?v=11"></script>
-  <script type="module" src="./admin.js?v=11"></script>
+  <script type="module" src="./firebase.js?v=12"></script>
+  <script type="module" src="./admin.js?v=12"></script>
 </body>
 </html>
