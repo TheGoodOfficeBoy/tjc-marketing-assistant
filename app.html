@@ -4,48 +4,45 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>TJC ทีมประมูล | Menu</title>
-  <link rel="stylesheet" href="./styles.css?v=40" />
+  <link rel="stylesheet" href="./styles.css?v=41" />
 </head>
-
 <body>
   <div class="bg"></div>
 
- <header class="topbar">
-  <div class="brand">
-    <!-- โลโก้ + ชื่อเดิมของคุณ -->
-    <a href="team-members.html" class="brand-logo" rel="noopener">
-      <img src="TJC_320x320.png" alt="TJC Group" />
-    </a>
+  <header class="topbar">
+    <div class="brand">
+      <a href="team-members.html" class="brand-logo" rel="noopener">
+        <img src="TJC_320x320.png" alt="TJC Group Logo" />
+      </a>
 
-    <div>
-      <div class="title">TJC ทีมประมูล</div>
-      <div class="subtitle" id="whoami">กำลังโหลด...</div>
+      <div class="brand-text">
+        <div class="title">TJC ทีมประมูล</div>
+        <div class="subtitle" id="whoami">กำลังโหลด...</div>
+      </div>
     </div>
-  </div>
 
-  <!-- ✅ กล่องข้อมูลบริษัท (ตรงกรอบแดง) -->
-  <div class="company-mini">
-    <div class="company-name">บริษัท ทีเจซี คอร์ปอเรชั่น จำกัด</div>
-    <div class="company-sub">
-      311/1 หมู่ 4 ต.คำน้ำแซบ อ.วารินชำราบ จ.อุบลราชธานี 34190
+    <div class="company-mini">
+      <div class="company-name">บริษัท ทีเจซี คอร์ปอเรชั่น จำกัด</div>
+      <div class="company-sub">
+        311/1 หมู่ 4 ต.คำน้ำแซบ อ.วารินชำราบ จ.อุบลราชธานี 34190
+      </div>
+      <div class="company-sub">เลขผู้เสียภาษี: 0325563000203</div>
     </div>
-    <div class="company-sub">เลขผู้เสียภาษี: 0325563000203</div>
-  </div>
 
-  <div class="actions">
-    <button class="btn ghost" id="themeToggle" type="button" aria-label="สลับโหมดสี">
-      <span class="icon" aria-hidden="true">
-        <svg viewBox="0 0 24 24">
-          <path d="M21 12.6A8.5 8.5 0 0 1 11.4 3a7 7 0 1 0 9.6 9.6Z"/>
-        </svg>
-      </span>
-      <span id="themeLabel">Dark</span>
-    </button>
+    <div class="actions">
+      <button class="btn ghost" id="themeToggle" type="button" aria-label="สลับโหมดสี">
+        <span class="icon" id="themeIcon" aria-hidden="true">
+          <svg viewBox="0 0 24 24">
+            <path d="M21 12.6A8.5 8.5 0 0 1 11.4 3a7 7 0 1 0 9.6 9.6Z"/>
+          </svg>
+        </span>
+        <span id="themeLabel">Dark</span>
+      </button>
 
-    <a class="btn ghost" href="profile.html">Profile</a>
-    <button class="btn danger" id="btnLogout" type="button">Logout</button>
-  </div>
-</header>
+      <a class="btn ghost" href="profile.html">Profile</a>
+      <button class="btn danger" id="btnLogout" type="button">Logout</button>
+    </div>
+  </header>
 
   <main class="container">
     <section class="card">
@@ -72,28 +69,27 @@
         <a class="btn wide" href="https://docs.google.com/forms/d/e/1FAIpQLSdrUtYurzsDa6wYFRStj9ms_zwqpQTFg1juDKotIbFCTGU2Ig/viewform" target="_blank" rel="noopener">
           ลิ้งค์ เบิกสต๊อก PD
         </a>
-        
+
         <a class="btn wide" href="https://drive.google.com/drive/folders/1epvdX538AReQgI7m6Kn9xgMKRRtPs1TT?usp=sharing" target="_blank" rel="noopener">
           Brands Pricelist
-        </a>        
-       
+        </a>
+
         <a class="btn wide" href="https://drive.google.com/drive/folders/1eyvXrI_grxBX6UoC8zWSOezskrHs_zF8?usp=drive_link" target="_blank" rel="noopener">
           TOR Stock
-        </a> 
-        
+        </a>
+
         <a class="btn wide" href="https://thegood-918.sg4.quickconnect.to/oo/r/vTlrAOTkV1df10VG7vCfcvRWEfGb89iK" target="_blank" rel="noopener">
           ข้อมูลรวมตารางราคา
-        </a> 
-        
+        </a>
+
         <a class="btn wide" href="https://calendar.google.com/calendar/u/4?cid=Y19lODY2ZmI5ODA3ZDlkOTdkYWI0NzU3ZGU5NDk4OWQ0Y2ZlZWE5ZTNjMzU4ZThjY2E0NThhY2JjYzRiYTRkMDgzQGdyb3VwLmNhbGVuZGFyLmdvb2dsZS5jb20" target="_blank" rel="noopener">
           ปฏิทินงานทีมประมูล TJC
-        </a> 
-        
+        </a>
+
         <a class="btn wide" href="Ot-portal-page.html" target="_blank" rel="noopener">
           OT Management Portal
-        </a> 
-        
-      
+        </a>
+
         <a class="btn wide" href="https://chatgpt.com/" target="_blank" rel="noopener">
           <span class="icon" aria-hidden="true">
             <svg viewBox="0 0 24 24">
@@ -111,13 +107,30 @@
           </span>
           Gemini
         </a>
+
+        <!-- เพิ่ม Canva พร้อมโลโก้ -->
+        <a class="btn wide canva-btn" href="https://www.canva.com/" target="_blank" rel="noopener">
+          <span class="icon" aria-hidden="true">
+            <svg viewBox="0 0 64 64" fill="none">
+              <defs>
+                <linearGradient id="canvaGradient" x1="0" y1="0" x2="64" y2="64">
+                  <stop offset="0%" stop-color="#00C4CC"/>
+                  <stop offset="100%" stop-color="#7D2AE8"/>
+                </linearGradient>
+              </defs>
+              <circle cx="32" cy="32" r="28" fill="url(#canvaGradient)"/>
+              <path d="M39.8 40.6c-1.8 1.5-4.2 2.3-6.8 2.3-6 0-10.5-4.1-10.5-10.5s4.5-10.5 10.5-10.5c2.5 0 4.8.7 6.5 2.1l-2.2 2.7c-1.1-.9-2.5-1.4-4.1-1.4-3.9 0-6.6 2.8-6.6 7.1s2.7 7.1 6.6 7.1c1.8 0 3.3-.6 4.4-1.6l2.2 2.7Z" fill="white"/>
+            </svg>
+          </span>
+          Canva
+        </a>
       </div>
     </section>
   </main>
 
-  <script type="module" src="./firebase.js?v=40"></script>
-  <script type="module" src="./app-page.js?v=40"></script>
-  
+  <script type="module" src="./firebase.js?v=41"></script>
+  <script type="module" src="./app-page.js?v=41"></script>
+
   <!-- Floating AI Chat Button -->
   <button id="btnAIChat" class="chat-fab" type="button" title="AI Chat">💬</button>
 
@@ -140,97 +153,101 @@
   </div>
 
   <script>
-    const btn = document.getElementById("btnAIChat");
-    const pop = document.getElementById("chatPopup");
-    const closeBtn = document.getElementById("chatClose");
-    const sendBtn = document.getElementById("chatSend");
-    const input = document.getElementById("chatInput");
-    const body = document.getElementById("chatBody");
+    const btnAIChat = document.getElementById("btnAIChat");
+    const chatPopup = document.getElementById("chatPopup");
+    const chatClose = document.getElementById("chatClose");
+    const chatSend = document.getElementById("chatSend");
+    const chatInput = document.getElementById("chatInput");
+    const chatBody = document.getElementById("chatBody");
 
-    function openChat() { pop.classList.add("show"); pop.setAttribute("aria-hidden","false"); input.focus(); }
-    function closeChat() { pop.classList.remove("show"); pop.setAttribute("aria-hidden","true"); }
+    function openChat() {
+      chatPopup.classList.add("show");
+      chatPopup.setAttribute("aria-hidden", "false");
+      chatInput.focus();
+    }
 
-    btn?.addEventListener("click", openChat);
-    closeBtn?.addEventListener("click", closeChat);
+    function closeChatBox() {
+      chatPopup.classList.remove("show");
+      chatPopup.setAttribute("aria-hidden", "true");
+    }
+
+    btnAIChat?.addEventListener("click", openChat);
+    chatClose?.addEventListener("click", closeChatBox);
 
     function addMsg(role, text) {
       const div = document.createElement("div");
-      div.className = "chat-msg " + role;
+      div.className = `chat-msg ${role}`;
       div.textContent = text;
-      body.appendChild(div);
-      body.scrollTop = body.scrollHeight;
+      chatBody.appendChild(div);
+      chatBody.scrollTop = chatBody.scrollHeight;
     }
 
-    async function send() {
-      const text = (input.value || "").trim();
+    async function sendMessage() {
+      const text = (chatInput.value || "").trim();
       if (!text) return;
-      input.value = "";
+
+      chatInput.value = "";
       addMsg("me", text);
 
-      // TODO: ตรงนี้ค่อยเชื่อม AI (ผ่าน Firebase Function)
-      addMsg("ai", "ตอนนี้เป็น UI ทดลอง — ขี้เกียจทำต่อ ไม่พัฒนาแล้ว :) ");
+      // TODO: เชื่อมต่อระบบ AI จริงภายหลัง
+      addMsg("ai", "ตอนนี้เป็น UI ทดลองสำหรับ ChatTJC");
     }
 
-    sendBtn?.addEventListener("click", send);
-    input?.addEventListener("keydown", (e) => { if (e.key === "Enter") send(); });
-  </script>
-  <script>
-  (function(){
-    const root = document.documentElement;
-    const btn = document.getElementById('themeToggle');
-    const label = document.getElementById('themeLabel');
-
-    // Get initial theme: localStorage > system preference
-    const saved = localStorage.getItem('theme');
-    const systemDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
-    const initial = saved || (systemDark ? 'dark' : 'light');
-
-    function apply(theme){
-      root.setAttribute('data-theme', theme);
-      localStorage.setItem('theme', theme);
-      if (label) label.textContent = theme === 'dark' ? 'Light' : 'Dark';
-
-      // swap icon (moon/sun) quickly
-      if (btn){
-        btn.querySelector('svg')?.replaceWith((theme === 'dark') ? sunSvg() : moonSvg());
-      }
-    }
-
-    function moonSvg(){
-      const svg = document.createElementNS('http://www.w3.org/2000/svg','svg');
-      svg.setAttribute('viewBox','0 0 24 24');
-      svg.innerHTML = '<path d="M21 12.6A8.5 8.5 0 0 1 11.4 3a7 7 0 1 0 9.6 9.6Z"/>';
-      return svg;
-    }
-    function sunSvg(){
-      const svg = document.createElementNS('http://www.w3.org/2000/svg','svg');
-      svg.setAttribute('viewBox','0 0 24 24');
-      svg.innerHTML = '<path d="M12 18a6 6 0 1 0 0-12 6 6 0 0 0 0 12Zm0-16h0.01M12 22h0.01M4.22 4.22h0.01M19.78 19.78h0.01M2 12h0.01M22 12h0.01M4.22 19.78h0.01M19.78 4.22h0.01"/>';
-      return svg;
-    }
-
-    apply(initial);
-
-    btn?.addEventListener('click', () => {
-      const current = root.getAttribute('data-theme') || 'light';
-      apply(current === 'dark' ? 'light' : 'dark');
+    chatSend?.addEventListener("click", sendMessage);
+    chatInput?.addEventListener("keydown", (e) => {
+      if (e.key === "Enter") sendMessage();
     });
-  })();
-</script>
+  </script>
+
+  <script>
+    (function () {
+      const root = document.documentElement;
+      const themeToggle = document.getElementById("themeToggle");
+      const themeLabel = document.getElementById("themeLabel");
+      const themeIcon = document.getElementById("themeIcon");
+
+      const saved = localStorage.getItem("theme");
+      const systemDark = window.matchMedia &&
+        window.matchMedia("(prefers-color-scheme: dark)").matches;
+
+      const initialTheme = saved || (systemDark ? "dark" : "light");
+
+      function moonSvg() {
+        return `
+          <svg viewBox="0 0 24 24">
+            <path d="M21 12.6A8.5 8.5 0 0 1 11.4 3a7 7 0 1 0 9.6 9.6Z"/>
+          </svg>
+        `;
+      }
+
+      function sunSvg() {
+        return `
+          <svg viewBox="0 0 24 24">
+            <path d="M12 18a6 6 0 1 0 0-12 6 6 0 0 0 0 12Zm0-16h0.01M12 22h0.01M4.22 4.22h0.01M19.78 19.78h0.01M2 12h0.01M22 12h0.01M4.22 19.78h0.01M19.78 4.22h0.01"/>
+          </svg>
+        `;
+      }
+
+      function applyTheme(theme) {
+        root.setAttribute("data-theme", theme);
+        localStorage.setItem("theme", theme);
+
+        if (themeLabel) {
+          themeLabel.textContent = theme === "dark" ? "Light" : "Dark";
+        }
+
+        if (themeIcon) {
+          themeIcon.innerHTML = theme === "dark" ? sunSvg() : moonSvg();
+        }
+      }
+
+      applyTheme(initialTheme);
+
+      themeToggle?.addEventListener("click", () => {
+        const current = root.getAttribute("data-theme") || "light";
+        applyTheme(current === "dark" ? "light" : "dark");
+      });
+    })();
+  </script>
 </body>
 </html>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
