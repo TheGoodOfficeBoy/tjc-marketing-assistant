@@ -21,7 +21,7 @@
 
     <div class="actions">
       <a class="btn ghost" href="app.html">กลับหน้าเมนู</a>
-      <a class="btn ghost" id="adminLink" href="admin.html" style="display:none;">Admin</a>
+      <a class="btn ghost" id="adminLink" href="admin.html" style="display:none;">Admin Panel</a>
       <button class="btn danger" id="btnLogout" type="button">Logout</button>
     </div>
   </header>
@@ -29,7 +29,7 @@
   <main class="container">
     <section class="card">
       <h1 class="h1">ข้อมูลบัญชี</h1>
-      <p class="muted">แสดงข้อมูลผู้ใช้และสิทธิ์การใช้งาน</p>
+      <p class="muted">แสดงข้อมูลผู้ใช้และสิทธิ์การใช้งานในระบบ</p>
 
       <div class="table">
         <div class="row">
@@ -42,14 +42,14 @@
 
         <div class="row">
           <div>
-            <div style="font-weight:800">Email (ภายในระบบ)</div>
+            <div style="font-weight:800">Email</div>
             <div class="muted" id="pfEmail">-</div>
           </div>
         </div>
 
         <div class="row">
           <div>
-            <div style="font-weight:800">Created</div>
+            <div style="font-weight:800">วันที่สร้างบัญชี</div>
             <div class="muted" id="pfCreated">-</div>
           </div>
         </div>
@@ -59,7 +59,7 @@
     </section>
   </main>
 
-  <script type="module" src="./firebase.js?v=9"></script>
-  <script type="module" src="./profile.js?v=9"></script>
+  <script type="module" src="./firebase.js?v=10"></script>
+  <script type="module" src="./profile.js?v=10"></script>
 </body>
 </html>
