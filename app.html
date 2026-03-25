@@ -130,7 +130,7 @@
 
                       <!-- YouTube Music Player -->
   <div id="youtube-player-container">
-    <iframe id="youtube-player" width="560" height="315" src="https://www.youtube.com/embed/?enablejsapi=1" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+   <iframe id="youtube-player" width="560" height="315" src="https://www.youtube.com/embed/${videoId}?enablejsapi=1" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
     <input type="text" id="youtube-search" placeholder="ค้นหาเพลง..." />
     <button id="search-btn">ค้นหา</button>
 
@@ -181,20 +181,22 @@
       var apiKey = 'AIzaSyBvgxGcGZuHmzYkU5oDmKuQjgzG_K_VAko';  // ใส่ API Key ของคุณที่นี่
       var url = `https://www.googleapis.com/youtube/v3/search?part=snippet&q=${query}&key=${apiKey}`;
       fetch(url)
-        .then(response => response.json())
-        .then(data => {
-          if (data.items.length > 0) {
-            var videoId = data.items[0].id.videoId;
-            loadVideo(videoId);
-          }
-        })
-        .catch(error => console.log('เกิดข้อผิดพลาดในการดึงข้อมูล: ', error));
+  .then(response => response.json())
+  .then(data => {
+    if (data.items && data.items.length > 0) {
+      var videoId = data.items[0].id.videoId;
+      loadVideo(videoId);
+    } else {
+      console.log('ไม่พบวิดีโอที่ค้นหา');
+    }
+  })
+  .catch(error => console.log('เกิดข้อผิดพลาดในการดึงข้อมูล: ', error));
     }
 
     function loadVideo(videoId) {
-      var player = document.getElementById('youtube-player');
-      player.src = `https://www.youtube.com/embed/${videoId}?autoplay=1&enablejsapi=1`;
-    }
+  var player = document.getElementById('youtube-player');
+  player.src = `https://www.youtube.com/embed/${videoId}?autoplay=1&enablejsapi=1`;
+}
   </script>
                       <!-- END YouTube Music Player Process-->
   <script>
