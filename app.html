@@ -125,74 +125,78 @@
   <script type="module" src="./firebase.js?v=41"></script>
   <script type="module" src="./app-page.js?v=41"></script>
 
-  <!-- Floating AI Chat Button -->
-  <button id="btnAIChat" class="chat-fab" type="button" title="AI Chat">💬</button>
+  <!-- Floating Youtube Playrt Button -->
+  <button id="btnAIChat" class="chat-fab" type="button" title="YOUTUBE PLAYER">▶YouTube</button>
 
-  <!-- AI Chat Popup -->
-  <div id="chatPopup" class="chat-popup" aria-hidden="true">
-    <div class="chat-head">
-      <div>
-        <div class="chat-title">ChatTJC</div>
-        <div class="chat-subtitle" id="chatStatus">พร้อมใช้งาน</div>
-      </div>
-      <button id="chatClose" class="btn ghost" type="button">✕</button>
-    </div>
+                      <!-- YouTube Music Player -->
+  <div id="youtube-player-container">
+    <iframe id="youtube-player" width="560" height="315" src="https://www.youtube.com/embed/?enablejsapi=1" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+    <input type="text" id="youtube-search" placeholder="ค้นหาเพลง..." />
+    <button id="search-btn">ค้นหา</button>
 
-    <div id="chatBody" class="chat-body"></div>
-
-    <div class="chat-foot">
-      <input id="chatInput" class="chat-input" type="text" placeholder="พิมพ์คำถาม..." />
-      <button id="chatSend" class="btn primary" type="button">ส่ง</button>
-    </div>
+    <!-- ปุ่มควบคุมการเล่น -->
+    <button onclick="pauseVideo()">หยุดชั่วคราว</button>
+    <button onclick="playVideo()">เล่น</button>
   </div>
 
+  <script src="https://www.youtube.com/iframe_api"></script>
   <script>
-    const btnAIChat = document.getElementById("btnAIChat");
-    const chatPopup = document.getElementById("chatPopup");
-    const chatClose = document.getElementById("chatClose");
-    const chatSend = document.getElementById("chatSend");
-    const chatInput = document.getElementById("chatInput");
-    const chatBody = document.getElementById("chatBody");
+    var player;
 
-    function openChat() {
-      chatPopup.classList.add("show");
-      chatPopup.setAttribute("aria-hidden", "false");
-      chatInput.focus();
+    // ฟังก์ชันที่จะทำให้ YouTube Player ทำงาน
+    function onYouTubeIframeAPIReady() {
+      player = new YT.Player('youtube-player', {
+        events: {
+          'onReady': onPlayerReady,
+          'onStateChange': onPlayerStateChange
+        }
+      });
     }
 
-    function closeChatBox() {
-      chatPopup.classList.remove("show");
-      chatPopup.setAttribute("aria-hidden", "true");
+    // เริ่มการเล่นเมื่อ API พร้อม
+    function onPlayerReady(event) {
+      event.target.playVideo();
     }
 
-    btnAIChat?.addEventListener("click", openChat);
-    chatClose?.addEventListener("click", closeChatBox);
-
-    function addMsg(role, text) {
-      const div = document.createElement("div");
-      div.className = `chat-msg ${role}`;
-      div.textContent = text;
-      chatBody.appendChild(div);
-      chatBody.scrollTop = chatBody.scrollHeight;
+    // ฟังก์ชันการควบคุมการเล่น
+    function playVideo() {
+      player.playVideo();
     }
 
-    async function sendMessage() {
-      const text = (chatInput.value || "").trim();
-      if (!text) return;
-
-      chatInput.value = "";
-      addMsg("me", text);
-
-      // TODO: เชื่อมต่อระบบ AI จริงภายหลัง
-      addMsg("ai", "ตอนนี้เป็น UI ทดลองสำหรับ ChatTJC");
+    function pauseVideo() {
+      player.pauseVideo();
     }
 
-    chatSend?.addEventListener("click", sendMessage);
-    chatInput?.addEventListener("keydown", (e) => {
-      if (e.key === "Enter") sendMessage();
+    function stopVideo() {
+      player.stopVideo();
+    }
+
+    // ฟังก์ชันค้นหาเพลงจาก YouTube
+    document.getElementById('search-btn').addEventListener('click', function() {
+      var searchTerm = document.getElementById('youtube-search').value;
+      searchYouTube(searchTerm);
     });
-  </script>
 
+    function searchYouTube(query) {
+      var apiKey = AIzaSyBvgxGcGZuHmzYkU5oDmKuQjgzG_K_VAko;  // ใส่ API Key ของคุณที่นี่
+      var url = `https://www.googleapis.com/youtube/v3/search?part=snippet&q=${query}&key=${apiKey}`;
+      fetch(url)
+        .then(response => response.json())
+        .then(data => {
+          if (data.items.length > 0) {
+            var videoId = data.items[0].id.videoId;
+            loadVideo(videoId);
+          }
+        })
+        .catch(error => console.log('เกิดข้อผิดพลาดในการดึงข้อมูล: ', error));
+    }
+
+    function loadVideo(videoId) {
+      var player = document.getElementById('youtube-player');
+      player.src = `https://www.youtube.com/embed/${videoId}?autoplay=1&enablejsapi=1`;
+    }
+  </script>
+                      <!-- END YouTube Music Player Process-->
   <script>
     (function () {
       const root = document.documentElement;
