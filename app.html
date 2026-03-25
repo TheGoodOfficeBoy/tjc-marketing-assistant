@@ -178,7 +178,7 @@
     });
 
     function searchYouTube(query) {
-      var apiKey = AIzaSyBvgxGcGZuHmzYkU5oDmKuQjgzG_K_VAko;  // ใส่ API Key ของคุณที่นี่
+      var apiKey = 'AIzaSyBvgxGcGZuHmzYkU5oDmKuQjgzG_K_VAko';  // ใส่ API Key ของคุณที่นี่
       var url = `https://www.googleapis.com/youtube/v3/search?part=snippet&q=${query}&key=${apiKey}`;
       fetch(url)
         .then(response => response.json())
