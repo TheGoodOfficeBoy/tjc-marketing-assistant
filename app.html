@@ -354,6 +354,25 @@
   <!-- END TURTLE DASH -->
 
   <script>
+  
+    function tdStartGame() {
+    state = 'playing';
+    score = 0;
+    frame = 0;
+    speed = 4;
+    obstacles = [];
+    particles = [];
+    paletteIdx = 0;
+    nextObstacle = 90;
+    turtle.y = GROUND;
+    turtle.vy = 0;
+    turtle.onGround = true;
+    document.getElementById('tdScoreVal').textContent = '0';
+    initClouds();
+    hideOverlay();
+    if (rafId) cancelAnimationFrame(rafId);
+    loop();
+}
   (function () {
     'use strict';
 
