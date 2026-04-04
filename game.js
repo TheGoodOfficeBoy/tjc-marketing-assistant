@@ -1,4 +1,4 @@
-// Basic setup for the Tetris game logic
+// Game setup variables
 let score = 0;
 let gameInterval;
 let isPaused = false;
@@ -63,9 +63,9 @@ function startGame() {
     drawBoard();
     scoreDisplay.textContent = `Score: ${score}`;
     gameInterval = setInterval(gameLoop, 500);
-    startButton.style.display = 'none';
-    pauseButton.style.display = 'block';
-    resumeButton.style.display = 'none';
+    startButton.style.display = 'none'; // Hide start button
+    pauseButton.style.display = 'block'; // Show pause button
+    resumeButton.style.display = 'none'; // Hide resume button
 }
 
 // Game loop
@@ -73,8 +73,8 @@ function gameLoop() {
     if (gameOver) {
         clearInterval(gameInterval);
         alert('Game Over! Your score: ' + score);
-        startButton.style.display = 'block';
-        pauseButton.style.display = 'none';
+        startButton.style.display = 'block'; // Show start button again
+        pauseButton.style.display = 'none'; // Hide pause button
         return;
     }
 
@@ -91,16 +91,16 @@ function gameLoop() {
 function pauseGame() {
     clearInterval(gameInterval);
     isPaused = true;
-    pauseButton.style.display = 'none';
-    resumeButton.style.display = 'block';
+    pauseButton.style.display = 'none'; // Hide pause button
+    resumeButton.style.display = 'block'; // Show resume button
 }
 
 // Resume the game
 function resumeGame() {
     isPaused = false;
     gameInterval = setInterval(gameLoop, 500);
-    pauseButton.style.display = 'block';
-    resumeButton.style.display = 'none';
+    pauseButton.style.display = 'block'; // Show pause button
+    resumeButton.style.display = 'none'; // Hide resume button
 }
 
 // Event listeners for buttons
