@@ -39,15 +39,16 @@
     }
 
     #td-game-container {
-      width: 488px;
-      max-width: 100%;
-      background: rgba(15,52,96,0.85);
-      border-radius: 18px;
-      border: 2px solid rgba(57,255,20,0.25);
+      width: 488px !important;
+      max-width: 100% !important;
+      background: rgba(15,52,96,0.85) !important;
+      border-radius: 18px !important;
+      border: 2px solid rgba(57,255,20,0.25) !important;
       box-shadow: 0 0 40px rgba(57,255,20,0.1), 0 0 80px rgba(0,212,255,0.05),
-                  inset 0 1px 0 rgba(255,255,255,0.1);
-      overflow: hidden;
-      backdrop-filter: blur(20px);
+                  inset 0 1px 0 rgba(255,255,255,0.1) !important;
+      overflow: hidden !important;
+      backdrop-filter: blur(20px) !important;
+      box-sizing: border-box !important;
     }
 
     #td-top-bar {
@@ -94,15 +95,19 @@
     }
 
     #td-canvas-wrapper {
-      position: relative;
-      width: 100%;
-      height: 200px;
+      position: relative !important;
+      width: 488px !important;
+      max-width: 100% !important;
+      height: 200px !important;
+      overflow: hidden !important;
+      display: block !important;
     }
     #tdGameCanvas {
-      display: block;
-      width: 100%;
-      height: 200px;
-      background: transparent;
+      display: block !important;
+      width: 488px !important;
+      max-width: 100% !important;
+      height: 200px !important;
+      background: transparent !important;
     }
 
     #td-ground-strip {
@@ -129,18 +134,19 @@
     #td-instructions span { color: #00d4ff; }
 
     #td-overlay {
-      position: absolute;
-      inset: 0;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      background: rgba(10,10,20,0.88);
-      z-index: 10;
-      gap: 14px;
-      backdrop-filter: blur(6px);
+      position: absolute !important;
+      top: 0 !important; left: 0 !important;
+      right: 0 !important; bottom: 0 !important;
+      display: flex !important;
+      flex-direction: column !important;
+      align-items: center !important;
+      justify-content: center !important;
+      background: rgba(10,10,20,0.88) !important;
+      z-index: 10 !important;
+      gap: 14px !important;
+      backdrop-filter: blur(6px) !important;
     }
-    #td-overlay.hidden { display: none; }
+    #td-overlay.hidden { display: none !important; }
 
     #td-overlay-title {
       font-family: 'Fredoka One', cursive;
@@ -175,14 +181,15 @@
 
     /* Leaderboard */
     #td-leaderboard {
-      width: 488px;
-      max-width: 100%;
-      background: rgba(15,52,96,0.85);
-      border-radius: 18px;
-      border: 2px solid rgba(0,212,255,0.2);
-      box-shadow: 0 0 30px rgba(0,212,255,0.08);
-      overflow: hidden;
-      backdrop-filter: blur(20px);
+      width: 488px !important;
+      max-width: 100% !important;
+      background: rgba(15,52,96,0.85) !important;
+      border-radius: 18px !important;
+      border: 2px solid rgba(0,212,255,0.2) !important;
+      box-shadow: 0 0 30px rgba(0,212,255,0.08) !important;
+      overflow: hidden !important;
+      backdrop-filter: blur(20px) !important;
+      box-sizing: border-box !important;
     }
     #td-lb-header {
       padding: 10px 18px;
@@ -317,6 +324,7 @@
   <!-- ============================================================
        🐢 TURTLE DASH MINI GAME  (แทนที่ YouTube Music Player)
        ============================================================ -->
+  <div style="all:initial; display:block; font-family:sans-serif;">
   <div id="turtle-game-section">
     <div id="td-game-title">🐢 TURTLE DASH</div>
 
@@ -351,36 +359,54 @@
       <div id="td-lb-list"><div class="td-lb-empty">ยังไม่มีสถิติ เริ่มเกมเลย!</div></div>
     </div>
   </div>
+  </div><!-- end isolation wrapper -->
   <!-- END TURTLE DASH -->
 
   <script>
-  
-    function tdStartGame() {
-    state = 'playing';
-    score = 0;
-    frame = 0;
-    speed = 4;
-    obstacles = [];
-    particles = [];
-    paletteIdx = 0;
-    nextObstacle = 90;
-    turtle.y = GROUND;
-    turtle.vy = 0;
-    turtle.onGround = true;
-    document.getElementById('tdScoreVal').textContent = '0';
-    initClouds();
-    hideOverlay();
-    if (rafId) cancelAnimationFrame(rafId);
-    loop();
-}
   (function () {
     'use strict';
 
-    const PLAYERS = [
-      { name:'SupremeX', role:'super_admin' },
-      { name:'AdminMax',  role:'admin' },
-      { name:'Player1',   role:'user' },
-    ];
+    /* ---- ดึงข้อมูล User จริงจากระบบ TJC ---- */
+    function getCurrentUser() {
+      // 1) Firebase Auth object ที่ app-page.js อาจ expose ไว้บน window
+      if (window.currentUser) {
+        return {
+          name: window.currentUser.displayName || window.currentUser.email || 'Unknown',
+          role: window.currentUser.role || window.currentUser.userRole || 'user',
+        };
+      }
+      // 2) ดึงจาก #whoami element ที่ app-page.js เติมข้อความไว้
+      const whoamiEl = document.getElementById('whoami');
+      if (whoamiEl) {
+        const txt = whoamiEl.textContent.trim();
+        if (txt && txt !== 'กำลังโหลด...') {
+          let role = 'user';
+          if (/super[\s_-]?admin/i.test(txt)) role = 'super_admin';
+          else if (/admin/i.test(txt))          role = 'admin';
+          return { name: txt, role };
+        }
+      }
+      // 3) localStorage ที่ firebase.js อาจเก็บ user ไว้
+      try {
+        const keys = ['tjcUser','currentUser','firebaseUser','appUser'];
+        for (const k of keys) {
+          const s = JSON.parse(localStorage.getItem(k) || 'null');
+          if (s && (s.displayName || s.email)) {
+            return {
+              name: s.displayName || s.email,
+              role: s.role || s.userRole || 'user',
+            };
+          }
+        }
+      } catch(e) {}
+      // 4) Fallback — ให้ user กรอกชื่อเอง (จำไว้ใน localStorage)
+      let guestName = localStorage.getItem('tdGuestName');
+      if (!guestName) {
+        guestName = prompt('ใส่ชื่อสำหรับ Leaderboard:') || 'Guest';
+        localStorage.setItem('tdGuestName', guestName);
+      }
+      return { name: guestName, role: 'user' };
+    }
     const PALETTES = [
       ['#39ff14','#00d4ff','#ff6ec7','#fff700','#f5a623'],
       ['#e94560','#0f3460','#f5a623','#39ff14','#ff6ec7'],
@@ -403,82 +429,19 @@
     };
 
     /* ---- Leaderboard ---- */
-  const LB_KEY = 'tjcTurtleDash_lb_v1';
-  let leaderboard = [];
-  let currentPlayerName = localStorage.getItem('tjcCurrentPlayerName') || 'Anonymous';
+    const LB_KEY = 'tjcTurtleDash_lb_v1';
+    let leaderboard = [];
+    try { leaderboard = JSON.parse(localStorage.getItem(LB_KEY)||'[]'); } catch(e){}
 
-  // Load leaderboard from localStorage
-  try { leaderboard = JSON.parse(localStorage.getItem(LB_KEY) || '[]'); } catch (e) {}
+    function saveLB(){ try{localStorage.setItem(LB_KEY,JSON.stringify(leaderboard));}catch(e){} }
 
-  // Save leaderboard to localStorage
-  function saveLB() {
-    try {
-      localStorage.setItem(LB_KEY, JSON.stringify(leaderboard));
-    } catch (e) {}
-  }
-
-  // Add score to leaderboard
-  function addScore(name, score) {
-    const existingPlayer = leaderboard.find(player => player.name === name);
-    if (!existingPlayer) {
-      leaderboard.push({ name, score });
-    } else if (score > existingPlayer.score) {
-      existingPlayer.score = score;
+    function addScore(name,role,s){
+      const ex=leaderboard.find(e=>e.name===name&&e.role===role);
+      if(!ex) leaderboard.push({name,role,score:s});
+      else if(s>ex.score) ex.score=s;
+      leaderboard.sort((a,b)=>b.score-a.score);
+      saveLB(); renderLB();
     }
-    leaderboard.sort((a, b) => b.score - a.score);
-    saveLB();
-    renderLB();
-  }
-
-  // Render leaderboard
-  function renderLB() {
-    const lbList = document.getElementById('td-lb-list');
-    if (!leaderboard.length) {
-      lbList.innerHTML = '<div class="td-lb-empty">ยังไม่มีสถิติ เริ่มเกมเลย!</div>';
-      return;
-    }
-    lbList.innerHTML = leaderboard.slice(0, 8).map((entry, index) => {
-      const rankClass = index < 3 ? `td-rank-${index + 1}` : 'td-rank-other';
-      return `
-        <div class="td-lb-entry">
-          <div class="td-lb-rank ${rankClass}">${index < 3 ? ['🥇', '🥈', '🥉'][index] : '#' + (index + 1)}</div>
-          <div class="td-lb-name">${entry.name}</div>
-          <div class="td-lb-score">${entry.score}</div>
-        </div>`;
-    }).join('');
-  }
-
-  // Event listener for setting the username
-  document.getElementById('td-set-name-btn').addEventListener('click', () => {
-    const name = document.getElementById('usernameInput').value.trim();
-    if (name) {
-      currentPlayerName = name;
-      localStorage.setItem('tjcCurrentPlayerName', name);
-      document.getElementById('td-set-name').style.display = 'none'; // Hide name input after setting
-      document.getElementById('td-game-title').innerText = `🐢 TURTLE DASH - Welcome, ${name}!`;
-    } else {
-      alert('Please enter a valid name');
-    }
-  });
-
-  // Show leaderboard when needed (e.g., after game over)
-  function showLeaderboard() {
-    renderLB(); // Render leaderboard
-  }
-
-  // Starting game function
-  function startGame() {
-    // Reset score for new session
-    const score = 0;
-    addScore(currentPlayerName, score); // Add score under current player's name
-  }
-
-  window.addScore = addScore; // Allow adding score from other game logic
-  window.startGame = startGame; // Expose the start game function
-
-  // Initialize leaderboard rendering on page load
-  renderLB();
-})();
 
     function renderLB(){
       const el=document.getElementById('td-lb-list');
@@ -668,8 +631,8 @@
     function gameOver(){
       state='gameover';
       spawnParticles(turtle.x+turtle.w/2,turtle.y+turtle.h/2,20);
-      const p=PLAYERS[Math.floor(Math.random()*PLAYERS.length)];
-      addScore(p.name,p.role,score);
+      const p = getCurrentUser();
+      addScore(p.name, p.role, score);
       hiScore=Math.max(score,hiScore);
       showOverlay('gameover','💀 GAME OVER',`คะแนน: ${score}  |  สูงสุด: ${hiScore}`,'เล่นอีกครั้ง');
     }
