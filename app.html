@@ -8,219 +8,227 @@
 
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fredoka+One&family=Nunito:wght@400;700;900&display=swap" />
   <style>
-/* ===== TURTLE DASH GAME STYLES ===== */
+    /* ===== TURTLE DASH GAME STYLES ===== */
 
-/* ปรับขนาดของเกมให้เต็มหน้าจอ */
-#turtle-game-section {
-  display: flex !important;
-  flex-direction: column !important;
-  align-items: center !important;
-  gap: 14px !important;
-  margin: 28px auto 40px !important;
-  width: 100% !important;  /* ใช้เต็มความกว้าง */
-  max-width: 100% !important;
-  box-sizing: border-box !important;
-  height: calc(100vh - 100px);  /* ปรับความสูง */
-  overflow: hidden;  /* ป้องกันการล้น */
-}
+    #turtle-game-section {
+      display: flex !important;
+      flex-direction: column !important;
+      align-items: center !important;
+      gap: 14px !important;
+      margin: 28px auto 40px !important;
+      width: 488px !important;
+      max-width: 100% !important;
+      box-sizing: border-box !important;
+    }
 
-/* ปรับขนาดของ container ที่บรรจุเกม */
-#td-game-container {
-  width: 100%;  /* ใช้เต็มความกว้าง */
-  max-width: 100%;
-  background: rgba(15,52,96,0.85);
-  border-radius: 18px;
-  border: 2px solid rgba(57,255,20,0.25);
-  box-shadow: 0 0 40px rgba(57,255,20,0.1), 0 0 80px rgba(0,212,255,0.05),
-              inset 0 1px 0 rgba(255,255,255,0.1);
-  overflow: hidden;
-  backdrop-filter: blur(20px);
-  padding: 10px; /* เพิ่ม padding รอบๆ */
-}
+    #td-game-title {
+      font-family: 'Fredoka One', cursive;
+      font-size: 1.8rem;
+      letter-spacing: 3px;
+      text-align: center;
+      background: linear-gradient(90deg, #39ff14, #00d4ff, #ff6ec7, #fff700);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      filter: drop-shadow(0 0 10px rgba(57,255,20,0.4));
+      animation: tdTitlePulse 3s ease-in-out infinite;
+    }
+    @keyframes tdTitlePulse {
+      0%,100% { filter: drop-shadow(0 0 8px rgba(57,255,20,0.4)); }
+      50%      { filter: drop-shadow(0 0 20px rgba(0,212,255,0.7)); }
+    }
 
-/* ปรับขนาดของ leaderboard */
-#td-leaderboard {
-  width: 100%;  /* ใช้เต็มความกว้าง */
-  max-width: 100%;
-  background: rgba(15,52,96,0.85);
-  border-radius: 18px;
-  border: 2px solid rgba(0,212,255,0.2);
-  box-shadow: 0 0 30px rgba(0,212,255,0.08);
-  overflow: hidden;
-  backdrop-filter: blur(20px);
-  margin-top: 20px; /* เว้นระยะห่างจากเกม */
-}
+    #td-game-container {
+      width: 488px;
+      max-width: 100%;
+      background: rgba(15,52,96,0.85);
+      border-radius: 18px;
+      border: 2px solid rgba(57,255,20,0.25);
+      box-shadow: 0 0 40px rgba(57,255,20,0.1), 0 0 80px rgba(0,212,255,0.05),
+                  inset 0 1px 0 rgba(255,255,255,0.1);
+      overflow: hidden;
+      backdrop-filter: blur(20px);
+    }
 
-#td-lb-header {
-  padding: 10px 18px;
-  background: rgba(0,0,0,0.3);
-  border-bottom: 1px solid rgba(255,255,255,0.08);
-  font-family: 'Fredoka One', cursive;
-  font-size: 1rem;
-  color: #00d4ff;
-  letter-spacing: 2px;
-}
+    #td-top-bar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 10px 16px;
+      background: rgba(0,0,0,0.3);
+      border-bottom: 1px solid rgba(255,255,255,0.08);
+    }
+    #td-menu-btns { display: flex; gap: 8px; }
 
-#td-lb-list {
-  padding: 10px 14px;
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
-  min-height: 80px;
-}
+    .td-menu-btn {
+      background: rgba(255,255,255,0.07);
+      border: 1px solid rgba(255,255,255,0.15);
+      border-radius: 10px;
+      color: #fff;
+      font-family: 'Nunito', sans-serif;
+      font-weight: 700;
+      font-size: 0.78rem;
+      padding: 5px 12px;
+      cursor: pointer;
+      transition: all 0.18s;
+      letter-spacing: 0.5px;
+    }
+    .td-menu-btn:hover { background: rgba(255,255,255,0.15); transform: translateY(-1px); }
+    .td-menu-btn.td-pause   { border-color: #fff700; color: #fff700; }
+    .td-menu-btn.td-restart { border-color: #ff6ec7; color: #ff6ec7; }
 
-.td-lb-entry {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  padding: 7px 12px;
-  border-radius: 10px;
-  background: rgba(255,255,255,0.07);
-  border: 1px solid rgba(255,255,255,0.06);
-  font-family: 'Nunito', sans-serif;
-  font-weight: 700;
-  font-size: 0.88rem;
-  transition: all 0.2s;
-}
+    #td-score-display {
+      font-family: 'Fredoka One', cursive;
+      font-size: 1.3rem;
+      color: #fff700;
+      text-shadow: 0 0 10px rgba(255,247,0,0.6);
+      letter-spacing: 1px;
+    }
+    #td-score-display .td-score-label {
+      font-size: 0.75rem;
+      color: rgba(255,255,255,0.5);
+      font-family: 'Nunito', sans-serif;
+      font-weight: 700;
+      margin-right: 4px;
+      letter-spacing: 2px;
+    }
 
-.td-lb-entry:hover { 
-  background: rgba(255,255,255,0.1); 
-}
+    #td-canvas-wrapper {
+      position: relative;
+      width: 100%;
+      height: 200px;
+    }
+    #tdGameCanvas {
+      display: block;
+      width: 100%;
+      height: 200px;
+      background: transparent;
+    }
 
-.td-lb-rank { font-family:'Fredoka One',cursive; font-size:1.1rem; width:28px; text-align:center; }
+    #td-ground-strip {
+      width: 100%;
+      height: 4px;
+      background: linear-gradient(90deg,#39ff14,#00d4ff,#ff6ec7,#fff700,#39ff14);
+      background-size: 200% 100%;
+      animation: tdGroundShift 3s linear infinite;
+    }
+    @keyframes tdGroundShift {
+      0%   { background-position: 0% 0%; }
+      100% { background-position: 200% 0%; }
+    }
 
-.td-lb-name  { flex:1; color:#fff; }
+    #td-instructions {
+      text-align: center;
+      font-size: 0.75rem;
+      color: rgba(255,255,255,0.4);
+      font-family: 'Nunito', sans-serif;
+      font-weight: 700;
+      letter-spacing: 1px;
+      padding: 6px 0 8px;
+    }
+    #td-instructions span { color: #00d4ff; }
 
-.td-lb-score {
-  font-family:'Fredoka One',cursive;
-  font-size:1rem;
-  color:#39ff14;
-  text-shadow:0 0 8px rgba(57,255,20,0.4);
-}
+    #td-overlay {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      background: rgba(10,10,20,0.88);
+      z-index: 10;
+      gap: 14px;
+      backdrop-filter: blur(6px);
+    }
+    #td-overlay.hidden { display: none; }
 
-/* ปรับขนาดตัวอักษรของชื่อเกม */
-#td-game-title {
-  font-family: 'Fredoka One', cursive;
-  font-size: 3vw; /* ปรับขนาดให้เหมาะสมกับหน้าจอ */
-  letter-spacing: 3px;
-  text-align: center;
-  background: linear-gradient(90deg, #39ff14, #00d4ff, #ff6ec7, #fff700);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
-  filter: drop-shadow(0 0 10px rgba(57,255,20,0.4));
-  animation: tdTitlePulse 3s ease-in-out infinite;
-}
+    #td-overlay-title {
+      font-family: 'Fredoka One', cursive;
+      font-size: 1.8rem;
+      color: #fff;
+      text-align: center;
+      line-height: 1.2;
+    }
+    #td-overlay-title.gameover { color: #e94560; text-shadow: 0 0 20px rgba(233,69,96,0.6); }
+    #td-overlay-title.paused   { color: #fff700; text-shadow: 0 0 20px rgba(255,247,0,0.5); }
+    #td-overlay-title.start    { color: #39ff14; text-shadow: 0 0 20px rgba(57,255,20,0.5); }
 
-/* ปรับขนาดตัวอักษรของ overlay */
-#td-overlay-title {
-  font-family: 'Fredoka One', cursive;
-  font-size: 3vw; /* ขนาดตัวอักษร responsive */
-  color: #fff;
-  text-align: center;
-  line-height: 1.2;
-}
+    #td-overlay-score {
+      font-family: 'Fredoka One', cursive;
+      font-size: 1rem;
+      color: rgba(255,255,255,0.8);
+    }
+    #td-overlay-btn {
+      background: linear-gradient(135deg,#39ff14,#00d4ff);
+      border: none;
+      border-radius: 14px;
+      color: #0a0a14;
+      font-family: 'Fredoka One', cursive;
+      font-size: 1rem;
+      padding: 10px 32px;
+      cursor: pointer;
+      letter-spacing: 1px;
+      box-shadow: 0 0 20px rgba(57,255,20,0.3);
+      transition: all 0.2s;
+    }
+    #td-overlay-btn:hover { transform: scale(1.05); box-shadow: 0 0 30px rgba(57,255,20,0.5); }
 
-/* ปรับปุ่ม pause ให้แสดงที่ตำแหน่งคงที่ */
-.td-menu-btn {
-  background: rgba(255,255,255,0.07);
-  border: 1px solid rgba(255,255,255,0.15);
-  border-radius: 10px;
-  color: #fff;
-  font-family: 'Nunito', sans-serif;
-  font-weight: 700;
-  font-size: 0.78rem;
-  padding: 5px 12px;
-  cursor: pointer;
-  transition: all 0.18s;
-  letter-spacing: 0.5px;
-  position: absolute;
-  top: 10px;
-  left: 10px;
-}
-
-.td-menu-btn:hover { 
-  background: rgba(255,255,255,0.15); 
-  transform: translateY(-1px); 
-}
-.td-menu-btn.td-pause   { border-color: #fff700; color: #fff700; }
-.td-menu-btn.td-restart { border-color: #ff6ec7; color: #ff6ec7; }
-
-#td-score-display {
-  font-family: 'Fredoka One', cursive;
-  font-size: 1.3rem;
-  color: #fff700;
-  text-shadow: 0 0 10px rgba(255,247,0,0.6);
-  letter-spacing: 1px;
-}
-
-#td-score-display .td-score-label {
-  font-size: 0.75rem;
-  color: rgba(255,255,255,0.5);
-  font-family: 'Nunito', sans-serif;
-  font-weight: 700;
-  margin-right: 4px;
-  letter-spacing: 2px;
-}
-
-#td-canvas-wrapper {
-  position: relative;
-  width: 100%;
-  height: calc(50vh - 50px); /* Adjust canvas wrapper height based on viewport */
-}
-
-#tdGameCanvas {
-  display: block;
-  width: 100%;
-  height: 100%;
-  background: transparent;
-}
-
-#td-ground-strip {
-  width: 100%;
-  height: 4px;
-  background: linear-gradient(90deg,#39ff14,#00d4ff,#ff6ec7,#fff700,#39ff14);
-  background-size: 200% 100%;
-  animation: tdGroundShift 3s linear infinite;
-}
-
-@keyframes tdGroundShift {
-  0%   { background-position: 0% 0%; }
-  100% { background-position: 200% 0%; }
-}
-
-#td-instructions {
-  text-align: center;
-  font-size: 0.75rem;
-  color: rgba(255,255,255,0.4);
-  font-family: 'Nunito', sans-serif;
-  font-weight: 700;
-  letter-spacing: 1px;
-  padding: 6px 0 8px;
-}
-
-#td-instructions span { color: #00d4ff; }
-
-#td-overlay {
-  position: absolute;
-  inset: 0;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  background: rgba(10,10,20,0.88);
-  z-index: 10;
-  gap: 14px;
-  backdrop-filter: blur(6px);
-}
-
-#td-overlay.hidden { display: none; }
-    
-<!-- เพิ่มส่วนนี้สำหรับให้ผู้เล่นตั้งชื่อ -->
-<div id="td-set-name">
-  <input type="text" id="usernameInput" placeholder="Enter your name" />
-  <button id="td-set-name-btn">Set Name</button>
-</div>
+    /* Leaderboard */
+    #td-leaderboard {
+      width: 488px;
+      max-width: 100%;
+      background: rgba(15,52,96,0.85);
+      border-radius: 18px;
+      border: 2px solid rgba(0,212,255,0.2);
+      box-shadow: 0 0 30px rgba(0,212,255,0.08);
+      overflow: hidden;
+      backdrop-filter: blur(20px);
+    }
+    #td-lb-header {
+      padding: 10px 18px;
+      background: rgba(0,0,0,0.3);
+      border-bottom: 1px solid rgba(255,255,255,0.08);
+      font-family: 'Fredoka One', cursive;
+      font-size: 1rem;
+      color: #00d4ff;
+      letter-spacing: 2px;
+    }
+    #td-lb-list {
+      padding: 10px 14px;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      min-height: 80px;
+    }
+    .td-lb-entry {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 7px 12px;
+      border-radius: 10px;
+      background: rgba(255,255,255,0.07);
+      border: 1px solid rgba(255,255,255,0.06);
+      font-family: 'Nunito', sans-serif;
+      font-weight: 700;
+      font-size: 0.88rem;
+      transition: all 0.2s;
+    }
+    .td-lb-entry:hover { background: rgba(255,255,255,0.1); }
+    .td-lb-rank { font-family:'Fredoka One',cursive; font-size:1.1rem; width:28px; text-align:center; }
+    .td-rank-1    { color:#fff700; text-shadow:0 0 8px rgba(255,247,0,0.5); }
+    .td-rank-2    { color:#c0c0c0; }
+    .td-rank-3    { color:#cd7f32; }
+    .td-rank-other{ color:rgba(255,255,255,0.4); }
+    .td-lb-role {
+      font-size:0.62rem; padding:2px 7px; border-radius:6px;
+      font-weight:900; letter-spacing:0.5px; text-transform:uppercase;
+    }
+    .td-role-super_admin { background:linear-gradient(90deg,#ff6ec7,#e94560); color:#fff; }
+    .td-role-admin       { background:linear-gradient(90deg,#f5a623,#e94560); color:#fff; }
+    .td-role-user        { background:rgba(0,212,255,0.2); color:#00d4ff; border:1px solid rgba(0,212,255,0.3); }
+    .td-lb-name  { flex:1; color:#fff; }
+    .td-lb-score { font-family:'Fredoka One',cursive; font-size:1rem; color:#39ff14; text-shadow:0 0 8px rgba(57,255,20,0.4); }
+    .td-lb-empty { color:rgba(255,255,255,0.25); font-size:0.82rem; text-align:center; padding:20px 0; font-style:italic; font-family:'Nunito',sans-serif; }
   </style>
 </head>
 <body>
@@ -319,4 +327,420 @@
           <button class="td-menu-btn td-restart"  onclick="tdRestartGame()">🔄 RESTART</button>
         </div>
         <div id="td-score-display">
-          <span class="td-score-label">SCORE</span><span id="tdScoreVal">0
+          <span class="td-score-label">SCORE</span><span id="tdScoreVal">0</span>
+        </div>
+      </div>
+
+      <div id="td-canvas-wrapper">
+        <canvas id="tdGameCanvas" width="488" height="200"></canvas>
+        <div id="td-overlay">
+          <div id="td-overlay-title" class="start">🐢 TURTLE DASH</div>
+          <div id="td-overlay-score"></div>
+          <button id="td-overlay-btn" onclick="tdStartGame()">▶ เริ่มเกม</button>
+        </div>
+      </div>
+
+      <div id="td-ground-strip"></div>
+      <div id="td-instructions">
+        กด <span>SPACE</span> หรือ <span>↑</span> เพื่อกระโดด &nbsp;|&nbsp; มือถือ: <span>แตะ</span>
+      </div>
+    </div>
+
+    <div id="td-leaderboard">
+      <div id="td-lb-header">🏆 LEADERBOARD</div>
+      <div id="td-lb-list"><div class="td-lb-empty">ยังไม่มีสถิติ เริ่มเกมเลย!</div></div>
+    </div>
+  </div>
+  <!-- END TURTLE DASH -->
+
+  <script>
+  (function () {
+    'use strict';
+
+    const PLAYERS = [
+      { name:'SupremeX', role:'super_admin' },
+      { name:'AdminMax',  role:'admin' },
+      { name:'Player1',   role:'user' },
+    ];
+    const PALETTES = [
+      ['#39ff14','#00d4ff','#ff6ec7','#fff700','#f5a623'],
+      ['#e94560','#0f3460','#f5a623','#39ff14','#ff6ec7'],
+      ['#00d4ff','#fff700','#ff6ec7','#39ff14','#e94560'],
+    ];
+
+    const canvas = document.getElementById('tdGameCanvas');
+    const ctx    = canvas.getContext('2d');
+    const W=488, H=200, GROUND=155;
+
+    let state='idle', score=0, hiScore=0, frame=0, speed=4;
+    let rafId=null, paletteIdx=0, nextObstacle=90;
+    let obstacles=[], clouds=[], particles=[];
+
+    const turtle = {
+      x:70, y:GROUND, w:44, h:36,
+      vy:0, onGround:true,
+      jumpPower:-10.5, gravity:0.6,
+      color:'#39ff14', shellColor:'#00d4ff',
+    };
+
+    /* ---- Leaderboard ---- */
+  const LB_KEY = 'tjcTurtleDash_lb_v1';
+  let leaderboard = [];
+  let currentPlayerName = localStorage.getItem('tjcCurrentPlayerName') || 'Anonymous';
+
+  // Load leaderboard from localStorage
+  try { leaderboard = JSON.parse(localStorage.getItem(LB_KEY) || '[]'); } catch (e) {}
+
+  // Save leaderboard to localStorage
+  function saveLB() {
+    try {
+      localStorage.setItem(LB_KEY, JSON.stringify(leaderboard));
+    } catch (e) {}
+  }
+
+  // Add score to leaderboard
+  function addScore(name, score) {
+    const existingPlayer = leaderboard.find(player => player.name === name);
+    if (!existingPlayer) {
+      leaderboard.push({ name, score });
+    } else if (score > existingPlayer.score) {
+      existingPlayer.score = score;
+    }
+    leaderboard.sort((a, b) => b.score - a.score);
+    saveLB();
+    renderLB();
+  }
+
+  // Render leaderboard
+  function renderLB() {
+    const lbList = document.getElementById('td-lb-list');
+    if (!leaderboard.length) {
+      lbList.innerHTML = '<div class="td-lb-empty">ยังไม่มีสถิติ เริ่มเกมเลย!</div>';
+      return;
+    }
+    lbList.innerHTML = leaderboard.slice(0, 8).map((entry, index) => {
+      const rankClass = index < 3 ? `td-rank-${index + 1}` : 'td-rank-other';
+      return `
+        <div class="td-lb-entry">
+          <div class="td-lb-rank ${rankClass}">${index < 3 ? ['🥇', '🥈', '🥉'][index] : '#' + (index + 1)}</div>
+          <div class="td-lb-name">${entry.name}</div>
+          <div class="td-lb-score">${entry.score}</div>
+        </div>`;
+    }).join('');
+  }
+
+  // Event listener for setting the username
+  document.getElementById('td-set-name-btn').addEventListener('click', () => {
+    const name = document.getElementById('usernameInput').value.trim();
+    if (name) {
+      currentPlayerName = name;
+      localStorage.setItem('tjcCurrentPlayerName', name);
+      document.getElementById('td-set-name').style.display = 'none'; // Hide name input after setting
+      document.getElementById('td-game-title').innerText = `🐢 TURTLE DASH - Welcome, ${name}!`;
+    } else {
+      alert('Please enter a valid name');
+    }
+  });
+
+  // Show leaderboard when needed (e.g., after game over)
+  function showLeaderboard() {
+    renderLB(); // Render leaderboard
+  }
+
+  // Starting game function
+  function startGame() {
+    // Reset score for new session
+    const score = 0;
+    addScore(currentPlayerName, score); // Add score under current player's name
+  }
+
+  window.addScore = addScore; // Allow adding score from other game logic
+  window.startGame = startGame; // Expose the start game function
+
+  // Initialize leaderboard rendering on page load
+  renderLB();
+})();
+
+    function renderLB(){
+      const el=document.getElementById('td-lb-list');
+      if(!leaderboard.length){ el.innerHTML='<div class="td-lb-empty">ยังไม่มีสถิติ เริ่มเกมเลย!</div>'; return; }
+      const rl={super_admin:'SUPER ADMIN',admin:'ADMIN',user:'USER'};
+      const medals=['🥇','🥈','🥉'];
+      el.innerHTML=leaderboard.slice(0,8).map((e,i)=>{
+        const rc=i<3?`td-rank-${i+1}`:'td-rank-other';
+        return `<div class="td-lb-entry">
+          <div class="td-lb-rank ${rc}">${medals[i]||'#'+(i+1)}</div>
+          <div class="td-lb-role td-role-${e.role}">${rl[e.role]||e.role}</div>
+          <div class="td-lb-name">${e.name}</div>
+          <div class="td-lb-score">${e.score}</div>
+        </div>`;
+      }).join('');
+    }
+
+    /* ---- Overlay ---- */
+    function showOverlay(type,title,sub,btn){
+      const o=document.getElementById('td-overlay');
+      document.getElementById('td-overlay-title').textContent=title;
+      document.getElementById('td-overlay-title').className=type;
+      document.getElementById('td-overlay-score').textContent=sub||'';
+      document.getElementById('td-overlay-btn').textContent=btn||'▶ เริ่ม';
+      o.classList.remove('hidden');
+    }
+    function hideOverlay(){ document.getElementById('td-overlay').classList.add('hidden'); }
+
+    /* ---- Public API ---- */
+    window.tdStartGame=function(){
+      state='playing'; score=0; frame=0; speed=4;
+      obstacles=[]; particles=[]; paletteIdx=0; nextObstacle=90;
+      turtle.y=GROUND; turtle.vy=0; turtle.onGround=true;
+      document.getElementById('tdScoreVal').textContent='0';
+      initClouds(); hideOverlay();
+      if(rafId) cancelAnimationFrame(rafId);
+      loop();
+    };
+    window.tdRestartGame=function(){ tdStartGame(); };
+    window.tdTogglePause=function(){
+      if(state==='playing'){
+        state='paused';
+        showOverlay('paused','⏸ PAUSED','คะแนน: '+score,'ดำเนินต่อ');
+      } else if(state==='paused'){
+        state='playing'; hideOverlay(); loop();
+      }
+    };
+
+    /* ---- Init ---- */
+    function initClouds(){
+      clouds=[];
+      for(let i=0;i<4;i++) clouds.push({
+        x:Math.random()*W, y:20+Math.random()*60,
+        r:18+Math.random()*20, speed:0.3+Math.random()*0.5,
+        color:`hsla(${Math.random()*360},70%,80%,0.08)`,
+      });
+    }
+
+    /* ---- Input ---- */
+    function jump(){
+      if(state==='paused') return;
+      if(state!=='playing'){ tdStartGame(); return; }
+      if(turtle.onGround){
+        turtle.vy=turtle.jumpPower; turtle.onGround=false;
+        spawnParticles(turtle.x+turtle.w/2,turtle.y+turtle.h,5);
+      }
+    }
+    document.addEventListener('keydown',e=>{
+      if(e.code==='Space'||e.code==='ArrowUp'){ e.preventDefault(); jump(); }
+      if(e.code==='KeyP') tdTogglePause();
+      if(e.code==='KeyR') tdRestartGame();
+    });
+    canvas.addEventListener('click',jump);
+    canvas.addEventListener('touchstart',e=>{ e.preventDefault(); jump(); },{passive:false});
+
+    /* ---- Obstacles ---- */
+    function spawnObstacle(){
+      const pal=PALETTES[paletteIdx%PALETTES.length];
+      const types=[
+        {w:22,h:40+Math.random()*20},{w:16,h:55+Math.random()*15},{w:32,h:30+Math.random()*12},
+      ];
+      const t=types[Math.floor(Math.random()*types.length)];
+      const c=pal[Math.floor(Math.random()*pal.length)];
+      obstacles.push({x:W+10,y:GROUND+turtle.h-t.h,w:t.w,h:t.h,color:c,glowColor:c,
+        shape:Math.random()>0.5?'rect':'diamond'});
+    }
+
+    /* ---- Particles ---- */
+    function spawnParticles(x,y,count){
+      const pal=PALETTES[paletteIdx%PALETTES.length];
+      for(let i=0;i<count;i++){
+        const a=Math.random()*Math.PI*2, sp=1+Math.random()*4;
+        particles.push({x,y,vx:Math.cos(a)*sp,vy:Math.sin(a)*sp-2,
+          r:2+Math.random()*4,color:pal[Math.floor(Math.random()*pal.length)],
+          life:1,decay:0.03+Math.random()*0.04});
+      }
+    }
+
+    /* ---- Draw ---- */
+    function drawBg(){
+      const bg=ctx.createLinearGradient(0,0,0,H);
+      bg.addColorStop(0,'#0a0a18'); bg.addColorStop(1,'#121230');
+      ctx.fillStyle=bg; ctx.fillRect(0,0,W,H);
+      clouds.forEach(c=>{
+        ctx.save(); ctx.globalAlpha=0.6; ctx.fillStyle=c.color;
+        ctx.shadowBlur=20; ctx.shadowColor=c.color;
+        ctx.beginPath(); ctx.arc(c.x,c.y,c.r,0,Math.PI*2); ctx.fill();
+        ctx.beginPath(); ctx.arc(c.x+c.r*.7,c.y+4,c.r*.65,0,Math.PI*2); ctx.fill();
+        ctx.beginPath(); ctx.arc(c.x-c.r*.6,c.y+5,c.r*.55,0,Math.PI*2); ctx.fill();
+        ctx.restore();
+      });
+    }
+
+    function drawGround(){
+      const g=ctx.createLinearGradient(0,0,W,0);
+      g.addColorStop(0,'#39ff14'); g.addColorStop(.33,'#00d4ff');
+      g.addColorStop(.66,'#ff6ec7'); g.addColorStop(1,'#fff700');
+      ctx.save(); ctx.shadowBlur=10; ctx.shadowColor='#39ff14';
+      ctx.fillStyle=g; ctx.fillRect(0,GROUND+turtle.h,W,4);
+      ctx.restore();
+    }
+
+    function drawTurtle(){
+      const {x,y,w,h}=turtle;
+      const cx=x+w/2,cy=y+h/2;
+      const sq=turtle.onGround?1:(turtle.vy<0?1.12:.92);
+      const tw=w*(1/sq),th=h*sq;
+      ctx.save(); ctx.translate(cx,cy); ctx.scale(1,sq);
+      ctx.shadowBlur=18; ctx.shadowColor=turtle.color;
+      ctx.beginPath(); ctx.ellipse(0,0,tw/2,th/2,0,0,Math.PI*2);
+      ctx.fillStyle=turtle.color; ctx.fill();
+      ctx.beginPath(); ctx.ellipse(0,-2,tw*.36,th*.38,0,0,Math.PI*2);
+      ctx.fillStyle=turtle.shellColor; ctx.fill();
+      ctx.strokeStyle='rgba(0,0,0,.25)'; ctx.lineWidth=1.5;
+      ctx.beginPath(); ctx.moveTo(-8,-4); ctx.lineTo(0,-10); ctx.lineTo(8,-4); ctx.stroke();
+      ctx.beginPath(); ctx.moveTo(-8,-4); ctx.lineTo(-10,2); ctx.stroke();
+      ctx.beginPath(); ctx.moveTo(8,-4);  ctx.lineTo(10,2);  ctx.stroke();
+      ctx.fillStyle='#fff'; ctx.shadowBlur=0;
+      ctx.beginPath(); ctx.arc(tw*.28,-th*.08,4,0,Math.PI*2); ctx.fill();
+      ctx.fillStyle='#111';
+      ctx.beginPath(); ctx.arc(tw*.3,-th*.08,2,0,Math.PI*2); ctx.fill();
+      ctx.fillStyle=turtle.color; ctx.shadowBlur=8; ctx.shadowColor=turtle.color;
+      [[-tw*.4,th*.3],[tw*.45,th*.3],[-tw*.35,-th*.25],[tw*.38,-th*.25]].forEach(([lx,ly])=>{
+        ctx.beginPath(); ctx.ellipse(lx,ly,5,4,lx>0?.5:-.5,0,Math.PI*2); ctx.fill();
+      });
+      ctx.restore();
+    }
+
+    function drawObstacle(o){
+      ctx.save(); ctx.shadowBlur=16; ctx.shadowColor=o.glowColor;
+      if(o.shape==='diamond'){
+        const cx=o.x+o.w/2,cy=o.y+o.h/2;
+        ctx.beginPath(); ctx.moveTo(cx,o.y); ctx.lineTo(o.x+o.w,cy);
+        ctx.lineTo(cx,o.y+o.h); ctx.lineTo(o.x,cy); ctx.closePath();
+        ctx.fillStyle=o.color; ctx.fill();
+        ctx.globalAlpha=.4;
+        ctx.beginPath(); ctx.moveTo(cx,o.y+o.h*.2); ctx.lineTo(o.x+o.w*.8,cy);
+        ctx.lineTo(cx,o.y+o.h*.8); ctx.lineTo(o.x+o.w*.2,cy); ctx.closePath();
+        ctx.fillStyle='#fff'; ctx.fill();
+      } else {
+        const g=ctx.createLinearGradient(o.x,o.y,o.x+o.w,o.y+o.h);
+        g.addColorStop(0,o.color); g.addColorStop(1,'#fff');
+        ctx.fillStyle=g; ctx.fillRect(o.x,o.y,o.w,o.h);
+        ctx.globalAlpha=.15; ctx.fillStyle='#000';
+        for(let sy=o.y;sy<o.y+o.h;sy+=8) ctx.fillRect(o.x,sy,o.w,4);
+      }
+      ctx.restore();
+    }
+
+    function drawParticles(){
+      particles.forEach(p=>{
+        ctx.save(); ctx.globalAlpha=p.life; ctx.fillStyle=p.color;
+        ctx.shadowBlur=8; ctx.shadowColor=p.color;
+        ctx.beginPath(); ctx.arc(p.x,p.y,p.r*p.life,0,Math.PI*2); ctx.fill();
+        ctx.restore();
+      });
+    }
+
+    /* ---- Collision ---- */
+    function hit(o){
+      const m=6;
+      return turtle.x+m<o.x+o.w && turtle.x+turtle.w-m>o.x &&
+             turtle.y+m<o.y+o.h && turtle.y+turtle.h-m>o.y;
+    }
+
+    /* ---- Game Over ---- */
+    function gameOver(){
+      state='gameover';
+      spawnParticles(turtle.x+turtle.w/2,turtle.y+turtle.h/2,20);
+      const p=PLAYERS[Math.floor(Math.random()*PLAYERS.length)];
+      addScore(p.name,p.role,score);
+      hiScore=Math.max(score,hiScore);
+      showOverlay('gameover','💀 GAME OVER',`คะแนน: ${score}  |  สูงสุด: ${hiScore}`,'เล่นอีกครั้ง');
+    }
+
+    /* ---- Loop ---- */
+    function loop(){
+      if(state!=='playing') return;
+      ctx.clearRect(0,0,W,H);
+      frame++;
+
+      speed=4+Math.floor(score/200)*.5;
+      if(frame%600===0) paletteIdx++;
+
+      clouds.forEach(c=>{ c.x-=c.speed; if(c.x<-c.r*2){c.x=W+c.r;c.y=20+Math.random()*60;} });
+
+      turtle.vy+=turtle.gravity; turtle.y+=turtle.vy;
+      if(turtle.y>=GROUND){turtle.y=GROUND;turtle.vy=0;turtle.onGround=true;}
+
+      if(--nextObstacle<=0){
+        spawnObstacle();
+        nextObstacle=55+Math.floor(Math.random()*45)-Math.min(20,Math.floor(score/100));
+      }
+
+      obstacles.forEach(o=>{o.x-=speed;});
+      obstacles=obstacles.filter(o=>o.x+o.w>-10);
+      for(const o of obstacles){ if(hit(o)){gameOver();return;} }
+
+      score++;
+      document.getElementById('tdScoreVal').textContent=score;
+
+      particles.forEach(p=>{p.x+=p.vx;p.y+=p.vy;p.vy+=.15;p.life-=p.decay;});
+      particles=particles.filter(p=>p.life>0);
+
+      drawBg(); drawGround();
+      obstacles.forEach(drawObstacle);
+      drawTurtle(); drawParticles();
+
+      turtle.color     =`hsl(${(frame*2)%360},100%,60%)`;
+      turtle.shellColor=`hsl(${(frame*2+120)%360},100%,60%)`;
+
+      rafId=requestAnimationFrame(loop);
+    }
+
+    /* ---- Boot ---- */
+    renderLB();
+    initClouds();
+    (function staticFrame(){
+      const bg=ctx.createLinearGradient(0,0,0,H);
+      bg.addColorStop(0,'#0a0a18'); bg.addColorStop(1,'#121230');
+      ctx.fillStyle=bg; ctx.fillRect(0,0,W,H);
+      drawGround(); drawTurtle();
+    })();
+
+  })();
+  </script>
+  <!-- END TURTLE DASH SCRIPT -->
+
+  <!-- Theme Toggle -->
+  <script>
+    (function () {
+      const root = document.documentElement;
+      const themeToggle = document.getElementById("themeToggle");
+      const themeLabel  = document.getElementById("themeLabel");
+      const themeIcon   = document.getElementById("themeIcon");
+
+      const saved = localStorage.getItem("theme");
+      const systemDark = window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches;
+      const initialTheme = saved || (systemDark ? "dark" : "light");
+
+      function moonSvg() {
+        return `<svg viewBox="0 0 24 24"><path d="M21 12.6A8.5 8.5 0 0 1 11.4 3a7 7 0 1 0 9.6 9.6Z"/></svg>`;
+      }
+      function sunSvg() {
+        return `<svg viewBox="0 0 24 24"><path d="M12 18a6 6 0 1 0 0-12 6 6 0 0 0 0 12Zm0-16h0.01M12 22h0.01M4.22 4.22h0.01M19.78 19.78h0.01M2 12h0.01M22 12h0.01M4.22 19.78h0.01M19.78 4.22h0.01"/></svg>`;
+      }
+
+      function applyTheme(theme) {
+        root.setAttribute("data-theme", theme);
+        localStorage.setItem("theme", theme);
+        if (themeLabel) themeLabel.textContent = theme === "dark" ? "Light" : "Dark";
+        if (themeIcon)  themeIcon.innerHTML    = theme === "dark" ? sunSvg() : moonSvg();
+      }
+
+      applyTheme(initialTheme);
+      themeToggle?.addEventListener("click", () => {
+        const current = root.getAttribute("data-theme") || "light";
+        applyTheme(current === "dark" ? "light" : "dark");
+      });
+    })();
+  </script>
+
+</body>
+</html>
