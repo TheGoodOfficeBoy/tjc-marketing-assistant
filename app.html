@@ -10,22 +10,98 @@
   <style>
 /* ===== TURTLE DASH GAME STYLES ===== */
 
+/* ปรับขนาดของเกมให้เต็มหน้าจอ */
 #turtle-game-section {
   display: flex !important;
   flex-direction: column !important;
   align-items: center !important;
   gap: 14px !important;
   margin: 28px auto 40px !important;
-  width: 100% !important; /* Use 100% width to make it responsive */
+  width: 100% !important;  /* ใช้เต็มความกว้าง */
   max-width: 100% !important;
   box-sizing: border-box !important;
-  height: calc(100vh - 100px); /* Make height responsive to the viewport size */
-  overflow: hidden; /* Prevents content from overflowing */
+  height: calc(100vh - 100px);  /* ปรับความสูง */
+  overflow: hidden;  /* ป้องกันการล้น */
 }
 
+/* ปรับขนาดของ container ที่บรรจุเกม */
+#td-game-container {
+  width: 100%;  /* ใช้เต็มความกว้าง */
+  max-width: 100%;
+  background: rgba(15,52,96,0.85);
+  border-radius: 18px;
+  border: 2px solid rgba(57,255,20,0.25);
+  box-shadow: 0 0 40px rgba(57,255,20,0.1), 0 0 80px rgba(0,212,255,0.05),
+              inset 0 1px 0 rgba(255,255,255,0.1);
+  overflow: hidden;
+  backdrop-filter: blur(20px);
+  padding: 10px; /* เพิ่ม padding รอบๆ */
+}
+
+/* ปรับขนาดของ leaderboard */
+#td-leaderboard {
+  width: 100%;  /* ใช้เต็มความกว้าง */
+  max-width: 100%;
+  background: rgba(15,52,96,0.85);
+  border-radius: 18px;
+  border: 2px solid rgba(0,212,255,0.2);
+  box-shadow: 0 0 30px rgba(0,212,255,0.08);
+  overflow: hidden;
+  backdrop-filter: blur(20px);
+  margin-top: 20px; /* เว้นระยะห่างจากเกม */
+}
+
+#td-lb-header {
+  padding: 10px 18px;
+  background: rgba(0,0,0,0.3);
+  border-bottom: 1px solid rgba(255,255,255,0.08);
+  font-family: 'Fredoka One', cursive;
+  font-size: 1rem;
+  color: #00d4ff;
+  letter-spacing: 2px;
+}
+
+#td-lb-list {
+  padding: 10px 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  min-height: 80px;
+}
+
+.td-lb-entry {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 7px 12px;
+  border-radius: 10px;
+  background: rgba(255,255,255,0.07);
+  border: 1px solid rgba(255,255,255,0.06);
+  font-family: 'Nunito', sans-serif;
+  font-weight: 700;
+  font-size: 0.88rem;
+  transition: all 0.2s;
+}
+
+.td-lb-entry:hover { 
+  background: rgba(255,255,255,0.1); 
+}
+
+.td-lb-rank { font-family:'Fredoka One',cursive; font-size:1.1rem; width:28px; text-align:center; }
+
+.td-lb-name  { flex:1; color:#fff; }
+
+.td-lb-score {
+  font-family:'Fredoka One',cursive;
+  font-size:1rem;
+  color:#39ff14;
+  text-shadow:0 0 8px rgba(57,255,20,0.4);
+}
+
+/* ปรับขนาดตัวอักษรของชื่อเกม */
 #td-game-title {
   font-family: 'Fredoka One', cursive;
-  font-size: 2vw; /* Responsive font size based on viewport width */
+  font-size: 3vw; /* ปรับขนาดให้เหมาะสมกับหน้าจอ */
   letter-spacing: 3px;
   text-align: center;
   background: linear-gradient(90deg, #39ff14, #00d4ff, #ff6ec7, #fff700);
@@ -36,37 +112,16 @@
   animation: tdTitlePulse 3s ease-in-out infinite;
 }
 
-@keyframes tdTitlePulse {
-  0%, 100% { filter: drop-shadow(0 0 8px rgba(57,255,20,0.4)); }
-  50%      { filter: drop-shadow(0 0 20px rgba(0,212,255,0.7)); }
+/* ปรับขนาดตัวอักษรของ overlay */
+#td-overlay-title {
+  font-family: 'Fredoka One', cursive;
+  font-size: 3vw; /* ขนาดตัวอักษร responsive */
+  color: #fff;
+  text-align: center;
+  line-height: 1.2;
 }
 
-#td-game-container {
-  width: 100%; /* Make container full width */
-  max-width: 100%;
-  background: rgba(15,52,96,0.85);
-  border-radius: 18px;
-  border: 2px solid rgba(57,255,20,0.25);
-  box-shadow: 0 0 40px rgba(57,255,20,0.1), 0 0 80px rgba(0,212,255,0.05),
-              inset 0 1px 0 rgba(255,255,255,0.1);
-  overflow: hidden;
-  backdrop-filter: blur(20px);
-}
-
-#td-top-bar {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 10px 16px;
-  background: rgba(0,0,0,0.3);
-  border-bottom: 1px solid rgba(255,255,255,0.08);
-}
-
-#td-menu-btns { 
-  display: flex; 
-  gap: 8px; 
-}
-
+/* ปรับปุ่ม pause ให้แสดงที่ตำแหน่งคงที่ */
 .td-menu-btn {
   background: rgba(255,255,255,0.07);
   border: 1px solid rgba(255,255,255,0.15);
@@ -79,13 +134,15 @@
   cursor: pointer;
   transition: all 0.18s;
   letter-spacing: 0.5px;
+  position: absolute;
+  top: 10px;
+  left: 10px;
 }
 
 .td-menu-btn:hover { 
   background: rgba(255,255,255,0.15); 
   transform: translateY(-1px); 
 }
-
 .td-menu-btn.td-pause   { border-color: #fff700; color: #fff700; }
 .td-menu-btn.td-restart { border-color: #ff6ec7; color: #ff6ec7; }
 
