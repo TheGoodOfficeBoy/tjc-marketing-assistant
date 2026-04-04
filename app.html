@@ -125,90 +125,22 @@
   <script type="module" src="./firebase.js?v=41"></script>
   <script type="module" src="./app-page.js?v=41"></script>
 
-<!-- YouTube Music Player -->
-<div id="youtube-player-container" style="text-align: center; margin-top: 20px;">
-  <!-- ปรับขนาดให้รองรับทุกอุปกรณ์ (responsive) -->
-  <div style="position: relative; padding-bottom: 56.25%; height: 0; overflow: hidden; max-width: 100%; width: 100%; background: #000;">
-    <iframe id="youtube-player" 
-            width="100%" 
-            height="100%" 
-            src="https://www.youtube.com/embed/?enablejsapi=1" 
-            frameborder="0" 
-            allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" 
-            allowfullscreen 
-            style="position: absolute; top: 0; left: 0;">
-    </iframe>
-  </div>
+                        <!-- เกม Tetris -->
+<div id="game-container" style="text-align: center; margin-top: 20px;">
+    <!-- แสดงคะแนน -->
+    <div id="score" class="score">Score: 0</div>
 
-  <!-- กล่องค้นหาพร้อมปุ่ม -->
-  <input type="text" id="youtube-search" placeholder="ค้นหาเพลง..." style="margin-top: 10px; padding: 10px; width: 100%; max-width: 500px;" />
-  <button id="search-btn" style="padding: 10px 20px; background-color: #4CAF50; color: white; border: none; cursor: pointer; margin-top: 10px;">ค้นหา</button>
+    <!-- พื้นที่เกม Tetris -->
+    <div id="gameArea" class="game-area"></div>
 
-  <!-- ปุ่มควบคุมการเล่น -->
-  <div style="margin-top: 20px;">
-    <button onclick="pauseVideo()" style="padding: 10px 20px; background-color: #FF9800; color: white; border: none; cursor: pointer;">หยุดชั่วคราว</button>
-    <button onclick="playVideo()" style="padding: 10px 20px; background-color: #2196F3; color: white; border: none; cursor: pointer;">เล่น</button>
-  </div>
+    <!-- ปุ่มสำหรับควบคุมเกม -->
+    <div class="controls">
+        <button id="startButton">Start New Game</button>
+        <button id="pauseButton">Pause</button>
+        <button id="resumeButton" style="display: none;">Resume</button>
+    </div>
 </div>
-
-<script src="https://www.youtube.com/iframe_api"></script>
-<script>
-  var player;
-
-  // ฟังก์ชันที่จะทำให้ YouTube Player ทำงาน
-  function onYouTubeIframeAPIReady() {
-    player = new YT.Player('youtube-player', {
-      events: {
-        'onReady': onPlayerReady,
-        'onStateChange': onPlayerStateChange
-      }
-    });
-  }
-
-  // เริ่มการเล่นเมื่อ API พร้อม
-  function onPlayerReady(event) {
-    event.target.playVideo();
-  }
-
-  // ฟังก์ชันการควบคุมการเล่น
-  function playVideo() {
-    player.playVideo();
-  }
-
-  function pauseVideo() {
-    player.pauseVideo();
-  }
-
-  function stopVideo() {
-    player.stopVideo();
-  }
-
-  // ฟังก์ชันค้นหาเพลงจาก YouTube
-  document.getElementById('search-btn').addEventListener('click', function() {
-    var searchTerm = document.getElementById('youtube-search').value;
-    searchYouTube(searchTerm);
-  });
-
-  function searchYouTube(query) {
-    var apiKey = 'AIzaSyBvgxGcGZuHmzYkU5oDmKuQjgzG_K_VAk' ;  // ใส่ API Key ของคุณที่นี่
-    var url = `https://www.googleapis.com/youtube/v3/search?part=snippet&q=${query}&key=${apiKey}`;
-    fetch(url)
-      .then(response => response.json())
-      .then(data => {
-        if (data.items.length > 0) {
-          var videoId = data.items[0].id.videoId;
-          loadVideo(videoId);
-        }
-      })
-      .catch(error => console.log('เกิดข้อผิดพลาดในการดึงข้อมูล: ', error));
-  }
-
-  function loadVideo(videoId) {
-    var player = document.getElementById('youtube-player');
-    player.src = `https://www.youtube.com/embed/${videoId}?autoplay=1&enablejsapi=1`;
-  }
-</script>
-                      <!-- END YouTube Music Player Process-->
+                      <!-- END Tertis Process-->
   <script>
     (function () {
       const root = document.documentElement;
