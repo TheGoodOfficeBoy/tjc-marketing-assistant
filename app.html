@@ -158,7 +158,12 @@
 }
 
 #td-overlay.hidden { display: none; }
-
+    
+/*<!-- Add this inside the overlay or anywhere visible on the page -->*/
+<div id="td-set-name">
+  <input type="text" id="usernameInput" placeholder="Enter your name" />
+  <button id="td-set-name-btn">Set Name</button>
+</div>
 #td-overlay-title {
   font-family: 'Fredoka One', cursive;
   font-size: 1.8rem;
@@ -412,34 +417,85 @@
   <!-- END TURTLE DASH -->
 
   <script>
-  (function () {
-    'use strict';
+(function () {
+  'use strict';
 
-    const PLAYERS = [
-      { name:'SupremeX', role:'super_admin' },
-      { name:'AdminMax',  role:'admin' },
-      { name:'Player1',   role:'user' },
-    ];
-    const PALETTES = [
-      ['#39ff14','#00d4ff','#ff6ec7','#fff700','#f5a623'],
-      ['#e94560','#0f3460','#f5a623','#39ff14','#ff6ec7'],
-      ['#00d4ff','#fff700','#ff6ec7','#39ff14','#e94560'],
-    ];
+  const LB_KEY = 'tjcTurtleDash_lb_v1';
+  let leaderboard = [];
+  let currentPlayerName = localStorage.getItem('tjcCurrentPlayerName') || 'Anonymous';
 
-    const canvas = document.getElementById('tdGameCanvas');
-    const ctx    = canvas.getContext('2d');
-    const W=488, H=200, GROUND=155;
+  // Load leaderboard from localStorage
+  try { leaderboard = JSON.parse(localStorage.getItem(LB_KEY) || '[]'); } catch (e) {}
 
-    let state='idle', score=0, hiScore=0, frame=0, speed=4;
-    let rafId=null, paletteIdx=0, nextObstacle=90;
-    let obstacles=[], clouds=[], particles=[];
+  // Save leaderboard to localStorage
+  function saveLB() {
+    try {
+      localStorage.setItem(LB_KEY, JSON.stringify(leaderboard));
+    } catch (e) {}
+  }
 
-    const turtle = {
-      x:70, y:GROUND, w:44, h:36,
-      vy:0, onGround:true,
-      jumpPower:-10.5, gravity:0.6,
-      color:'#39ff14', shellColor:'#00d4ff',
-    };
+  // Add score to leaderboard
+  function addScore(name, score) {
+    const existingPlayer = leaderboard.find(player => player.name === name);
+    if (!existingPlayer) {
+      leaderboard.push({ name, score });
+    } else if (score > existingPlayer.score) {
+      existingPlayer.score = score;
+    }
+    leaderboard.sort((a, b) => b.score - a.score);
+    saveLB();
+    renderLB();
+  }
+
+  // Render leaderboard
+  function renderLB() {
+    const lbList = document.getElementById('td-lb-list');
+    if (!leaderboard.length) {
+      lbList.innerHTML = '<div class="td-lb-empty">ยังไม่มีสถิติ เริ่มเกมเลย!</div>';
+      return;
+    }
+    lbList.innerHTML = leaderboard.slice(0, 8).map((entry, index) => {
+      const rankClass = index < 3 ? `td-rank-${index + 1}` : 'td-rank-other';
+      return `
+        <div class="td-lb-entry">
+          <div class="td-lb-rank ${rankClass}">${index < 3 ? ['🥇', '🥈', '🥉'][index] : '#' + (index + 1)}</div>
+          <div class="td-lb-name">${entry.name}</div>
+          <div class="td-lb-score">${entry.score}</div>
+        </div>`;
+    }).join('');
+  }
+
+  // Event listener for setting the username
+  document.getElementById('td-set-name-btn').addEventListener('click', () => {
+    const name = document.getElementById('usernameInput').value.trim();
+    if (name) {
+      currentPlayerName = name;
+      localStorage.setItem('tjcCurrentPlayerName', name);
+      document.getElementById('td-set-name').style.display = 'none'; // Hide name input after setting
+      document.getElementById('td-game-title').innerText = `🐢 TURTLE DASH - Welcome, ${name}!`;
+    } else {
+      alert('Please enter a valid name');
+    }
+  });
+
+  // Show leaderboard when needed (e.g., after game over)
+  function showLeaderboard() {
+    renderLB(); // Render leaderboard
+  }
+
+  // Starting game function
+  function startGame() {
+    // Reset score for new session
+    const score = 0;
+    addScore(currentPlayerName, score); // Add score under current player's name
+  }
+
+  window.addScore = addScore; // Allow adding score from other game logic
+  window.startGame = startGame; // Expose the start game function
+
+  // Initialize leaderboard rendering on page load
+  renderLB();
+})();
 
     /* ---- Leaderboard ---- */
     const LB_KEY = 'tjcTurtleDash_lb_v1';
