@@ -4,12 +4,11 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>TJC ทีมประมูล | Menu</title>
-  <link rel="stylesheet" href="./styles.css?v=41" />
-
+  <link rel="stylesheet" href="./styles.css?v=42" />
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fredoka+One&family=Nunito:wght@400;700;900&display=swap" />
+
   <style>
     /* ===== TURTLE DASH GAME STYLES ===== */
-
     #turtle-game-section {
       display: flex !important;
       flex-direction: column !important;
@@ -199,6 +198,32 @@
       font-size: 1rem;
       color: #00d4ff;
       letter-spacing: 2px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    #td-lb-live-dot {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      font-size: 0.68rem;
+      color: #39ff14;
+      font-family: 'Nunito', sans-serif;
+      font-weight: 900;
+      letter-spacing: 1px;
+    }
+    #td-lb-live-dot::before {
+      content: '';
+      display: inline-block;
+      width: 7px; height: 7px;
+      border-radius: 50%;
+      background: #39ff14;
+      box-shadow: 0 0 6px #39ff14;
+      animation: tdLivePulse 1.2s ease-in-out infinite;
+    }
+    @keyframes tdLivePulse {
+      0%,100% { opacity: 1; }
+      50%      { opacity: 0.3; }
     }
     #td-lb-list {
       padding: 10px 14px;
@@ -218,7 +243,11 @@
       font-family: 'Nunito', sans-serif;
       font-weight: 700;
       font-size: 0.88rem;
-      transition: all 0.2s;
+      transition: all 0.3s;
+    }
+    .td-lb-entry.td-lb-highlight {
+      background: rgba(57,255,20,0.08);
+      border-color: rgba(57,255,20,0.25);
     }
     .td-lb-entry:hover { background: rgba(255,255,255,0.1); }
     .td-lb-rank { font-family:'Fredoka One',cursive; font-size:1.1rem; width:28px; text-align:center; }
@@ -229,13 +258,16 @@
     .td-lb-role {
       font-size:0.62rem; padding:2px 7px; border-radius:6px;
       font-weight:900; letter-spacing:0.5px; text-transform:uppercase;
+      white-space: nowrap;
     }
     .td-role-super_admin { background:linear-gradient(90deg,#ff6ec7,#e94560); color:#fff; }
     .td-role-admin       { background:linear-gradient(90deg,#f5a623,#e94560); color:#fff; }
     .td-role-user        { background:rgba(0,212,255,0.2); color:#00d4ff; border:1px solid rgba(0,212,255,0.3); }
-    .td-lb-name  { flex:1; color:#fff; }
+    .td-lb-name  { flex:1; color:#fff; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
     .td-lb-score { font-family:'Fredoka One',cursive; font-size:1rem; color:#39ff14; text-shadow:0 0 8px rgba(57,255,20,0.4); }
     .td-lb-empty { color:rgba(255,255,255,0.25); font-size:0.82rem; text-align:center; padding:20px 0; font-style:italic; font-family:'Nunito',sans-serif; }
+    .td-lb-loading { color:rgba(0,212,255,0.5); font-size:0.82rem; text-align:center; padding:20px 0; font-family:'Nunito',sans-serif; animation: tdFade 1s ease-in-out infinite alternate; }
+    @keyframes tdFade { from{opacity:0.3} to{opacity:1} }
   </style>
 </head>
 <body>
@@ -318,21 +350,22 @@
     </section>
   </main>
 
-  <script type="module" src="./firebase.js?v=41"></script>
-  <script type="module" src="./app-page.js?v=41"></script>
+  <!-- Firebase SDK (compat สำหรับ app-page.js ถ้าใช้ compat API) -->
+  <script type="module" src="./firebase.js?v=42"></script>
+  <script type="module" src="./app-page.js?v=42"></script>
 
   <!-- ============================================================
-       🐢 TURTLE DASH MINI GAME  (แทนที่ YouTube Music Player)
+       🐢 TURTLE DASH MINI GAME
+       ทุกอย่างอยู่ใน type="module" เพื่อให้ import Firebase ได้
        ============================================================ -->
-  <div style="all:initial; display:block; font-family:sans-serif;">
   <div id="turtle-game-section">
     <div id="td-game-title">🐢 TURTLE DASH</div>
 
     <div id="td-game-container">
       <div id="td-top-bar">
         <div id="td-menu-btns">
-          <button class="td-menu-btn td-pause"   onclick="tdTogglePause()">⏸ PAUSE</button>
-          <button class="td-menu-btn td-restart"  onclick="tdRestartGame()">🔄 RESTART</button>
+          <button class="td-menu-btn td-pause"   id="td-btn-pause">⏸ PAUSE</button>
+          <button class="td-menu-btn td-restart"  id="td-btn-restart">🔄 RESTART</button>
         </div>
         <div id="td-score-display">
           <span class="td-score-label">SCORE</span><span id="tdScoreVal">0</span>
@@ -344,7 +377,7 @@
         <div id="td-overlay">
           <div id="td-overlay-title" class="start">🐢 TURTLE DASH</div>
           <div id="td-overlay-score"></div>
-          <button id="td-overlay-btn" onclick="tdStartGame()">▶ เริ่มเกม</button>
+          <button id="td-overlay-btn">▶ เริ่มเกม</button>
         </div>
       </div>
 
@@ -355,30 +388,27 @@
     </div>
 
     <div id="td-leaderboard">
-      <div id="td-lb-header">🏆 LEADERBOARD</div>
-      <div id="td-lb-list"><div class="td-lb-empty">ยังไม่มีสถิติ เริ่มเกมเลย!</div></div>
+      <div id="td-lb-header">
+        🏆 LEADERBOARD
+        <span id="td-lb-live-dot">LIVE</span>
+      </div>
+      <div id="td-lb-list">
+        <div class="td-lb-loading">⏳ กำลังโหลด...</div>
+      </div>
     </div>
   </div>
-  </div><!-- end isolation wrapper -->
-  <!-- END TURTLE DASH -->
 
-  <script>
-  (function () {
+  <!-- 🐢 TURTLE DASH SCRIPT — type="module" เพื่อ import Firebase ได้ -->
+  <script type="module">
+    import { saveScore, subscribeLeaderboard } from './firebase.js?v=42';
+
     'use strict';
-import { saveScore } from './firebase.js';  // นำเข้าฟังก์ชันจาก firebase.js
 
-// ฟังก์ชันที่ใช้บันทึกคะแนนของผู้เล่น 12/4/2569 14:34 น.
-function savePlayerScore(score) {
-  const user = getCurrentUser();  // ใช้ฟังก์ชัน getCurrentUser() เพื่อดึงชื่อและข้อมูลผู้เล่น
-  if (user) {
-    saveScore(user.name, score);  // บันทึกคะแนนของผู้เล่นลงใน Firebase
-  }
-}
-  // ฟังก์ชันที่ใช้บันทึกคะแนนของผู้เล่น 12/4/2569 14:34 น.
-    
-    /* ---- ดึงข้อมูล User จริงจากระบบ TJC ---- */
+    /* ════════════════════════════════════════
+       ดึงข้อมูล User จากระบบ TJC
+    ════════════════════════════════════════ */
     function getCurrentUser() {
-      // 1) Firebase Auth object ที่ app-page.js อาจ expose ไว้บน window
+      // 1) Firebase Auth object ที่ app-page.js expose ไว้บน window
       if (window.currentUser) {
         return {
           name: window.currentUser.displayName || window.currentUser.email || 'Unknown',
@@ -392,24 +422,21 @@ function savePlayerScore(score) {
         if (txt && txt !== 'กำลังโหลด...') {
           let role = 'user';
           if (/super[\s_-]?admin/i.test(txt)) role = 'super_admin';
-          else if (/admin/i.test(txt))          role = 'admin';
+          else if (/admin/i.test(txt))         role = 'admin';
           return { name: txt, role };
         }
       }
-      // 3) localStorage ที่ firebase.js อาจเก็บ user ไว้
+      // 3) localStorage fallback
       try {
         const keys = ['tjcUser','currentUser','firebaseUser','appUser'];
         for (const k of keys) {
           const s = JSON.parse(localStorage.getItem(k) || 'null');
           if (s && (s.displayName || s.email)) {
-            return {
-              name: s.displayName || s.email,
-              role: s.role || s.userRole || 'user',
-            };
+            return { name: s.displayName || s.email, role: s.role || s.userRole || 'user' };
           }
         }
       } catch(e) {}
-      // 4) Fallback — ให้ user กรอกชื่อเอง (จำไว้ใน localStorage)
+      // 4) Guest fallback — ถามชื่อครั้งเดียวแล้วจำ
       let guestName = localStorage.getItem('tdGuestName');
       if (!guestName) {
         guestName = prompt('ใส่ชื่อสำหรับ Leaderboard:') || 'Guest';
@@ -417,6 +444,39 @@ function savePlayerScore(score) {
       }
       return { name: guestName, role: 'user' };
     }
+
+    /* ════════════════════════════════════════
+       Leaderboard — Real-time Firebase
+    ════════════════════════════════════════ */
+    let currentUserName = '';
+
+    function renderLB(entries) {
+      const list = document.getElementById('td-lb-list');
+      if (!entries || entries.length === 0) {
+        list.innerHTML = '<div class="td-lb-empty">ยังไม่มีสถิติ เริ่มเกมเลย!</div>';
+        return;
+      }
+      list.innerHTML = entries.map((e, i) => {
+        const rankClass = i === 0 ? 'td-rank-1' : i === 1 ? 'td-rank-2' : i === 2 ? 'td-rank-3' : 'td-rank-other';
+        const rankIcon  = i === 0 ? '🥇' : i === 1 ? '🥈' : i === 2 ? '🥉' : `#${i+1}`;
+        const roleClass = `td-role-${(e.role||'user').replace(/[^a-z_]/gi,'')}`;
+        const isMe = e.name === currentUserName;
+        return `
+          <div class="td-lb-entry${isMe ? ' td-lb-highlight' : ''}">
+            <div class="td-lb-rank ${rankClass}">${rankIcon}</div>
+            <span class="td-lb-role ${roleClass}">${(e.role||'user').replace('_',' ')}</span>
+            <div class="td-lb-name">${e.name}${isMe ? ' ⭐' : ''}</div>
+            <div class="td-lb-score">${e.score.toLocaleString()}</div>
+          </div>`;
+      }).join('');
+    }
+
+    // Subscribe real-time ทันทีที่หน้าโหลด
+    subscribeLeaderboard(renderLB);
+
+    /* ════════════════════════════════════════
+       Canvas & Game Constants
+    ════════════════════════════════════════ */
     const PALETTES = [
       ['#39ff14','#00d4ff','#ff6ec7','#fff700','#f5a623'],
       ['#e94560','#0f3460','#f5a623','#39ff14','#ff6ec7'],
@@ -425,287 +485,305 @@ function savePlayerScore(score) {
 
     const canvas = document.getElementById('tdGameCanvas');
     const ctx    = canvas.getContext('2d');
-    const W=488, H=200, GROUND=155;
+    const W = 488, H = 200, GROUND = 155;
 
-    let state='idle', score=0, hiScore=0, frame=0, speed=4;
-    let rafId=null, paletteIdx=0, nextObstacle=90;
-    let obstacles=[], clouds=[], particles=[];
+    let state = 'idle', score = 0, hiScore = 0, frame = 0, speed = 4;
+    let rafId = null, paletteIdx = 0, nextObstacle = 90;
+    let obstacles = [], clouds = [], particles = [];
 
     const turtle = {
-      x:70, y:GROUND, w:44, h:36,
-      vy:0, onGround:true,
-      jumpPower:-10.5, gravity:0.6,
-      color:'#39ff14', shellColor:'#00d4ff',
+      x: 70, y: GROUND, w: 44, h: 36,
+      vy: 0, onGround: true,
+      jumpPower: -10.5, gravity: 0.6,
+      color: '#39ff14', shellColor: '#00d4ff',
     };
 
-    /* ---- Leaderboard ---- */
-    const LB_KEY = 'tjcTurtleDash_lb_v1';
-    let leaderboard = [];
-    try { leaderboard = JSON.parse(localStorage.getItem(LB_KEY)||'[]'); } catch(e){}
-
-    function saveLB(){ try{localStorage.setItem(LB_KEY,JSON.stringify(leaderboard));}catch(e){} }
-
-    function addScore(name,role,s){
-      const ex=leaderboard.find(e=>e.name===name&&e.role===role);
-      if(!ex) leaderboard.push({name,role,score:s});
-      else if(s>ex.score) ex.score=s;
-      leaderboard.sort((a,b)=>b.score-a.score);
-      saveLB(); renderLB();
+    /* ════════════════════════════════════════
+       Overlay helpers
+    ════════════════════════════════════════ */
+    function showOverlay(type, title, sub, btn) {
+      document.getElementById('td-overlay-title').textContent = title;
+      document.getElementById('td-overlay-title').className   = type;
+      document.getElementById('td-overlay-score').textContent = sub || '';
+      document.getElementById('td-overlay-btn').textContent   = btn || '▶ เริ่ม';
+      document.getElementById('td-overlay').classList.remove('hidden');
+    }
+    function hideOverlay() {
+      document.getElementById('td-overlay').classList.add('hidden');
     }
 
-import { getLeaderboard } from './firebase.js';  // นำเข้าฟังก์ชันจาก firebase.js
-
-// ฟังก์ชันดึงข้อมูล leaderboard จาก Firebase
-async function loadLeaderboard() {
-  const leaderboard = await getLeaderboard();  // ดึงข้อมูล leaderboard จาก Firebase
-
-  // แสดง leaderboard บนหน้าเว็บ
-  const lbList = document.getElementById('td-lb-list');
-  lbList.innerHTML = leaderboard.map((entry, index) => {
-    return `
-      <div class="td-lb-entry">
-        <div class="td-lb-rank">${index + 1}</div>
-        <div class="td-lb-name">${entry.name}</div>
-        <div class="td-lb-score">${entry.score}</div>
-      </div>`;
-  }).join('');
-}
-
-// เรียกฟังก์ชันเมื่อโหลดหน้า
-document.addEventListener("DOMContentLoaded", function() {
-  loadLeaderboard(); // โหลด leaderboard จาก Firebase
-});
-
-    /* ---- Overlay ---- */
-    function showOverlay(type,title,sub,btn){
-      const o=document.getElementById('td-overlay');
-      document.getElementById('td-overlay-title').textContent=title;
-      document.getElementById('td-overlay-title').className=type;
-      document.getElementById('td-overlay-score').textContent=sub||'';
-      document.getElementById('td-overlay-btn').textContent=btn||'▶ เริ่ม';
-      o.classList.remove('hidden');
-    }
-    function hideOverlay(){ document.getElementById('td-overlay').classList.add('hidden'); }
-
-    /* ---- Public API ---- */
-    window.tdStartGame=function(){
-      state='playing'; score=0; frame=0; speed=4;
-      obstacles=[]; particles=[]; paletteIdx=0; nextObstacle=90;
-      turtle.y=GROUND; turtle.vy=0; turtle.onGround=true;
-      document.getElementById('tdScoreVal').textContent='0';
-      initClouds(); hideOverlay();
-      if(rafId) cancelAnimationFrame(rafId);
+    /* ════════════════════════════════════════
+       Public API (ผูกกับปุ่ม HTML)
+    ════════════════════════════════════════ */
+    function tdStartGame() {
+      state = 'playing'; score = 0; frame = 0; speed = 4;
+      obstacles = []; particles = []; paletteIdx = 0; nextObstacle = 90;
+      turtle.y = GROUND; turtle.vy = 0; turtle.onGround = true;
+      document.getElementById('tdScoreVal').textContent = '0';
+      initClouds();
+      hideOverlay();
+      if (rafId) cancelAnimationFrame(rafId);
       loop();
-    };
-    window.tdRestartGame=function(){ tdStartGame(); };
-    window.tdTogglePause=function(){
-      if(state==='playing'){
-        state='paused';
-        showOverlay('paused','⏸ PAUSED','คะแนน: '+score,'ดำเนินต่อ');
-      } else if(state==='paused'){
-        state='playing'; hideOverlay(); loop();
-      }
-    };
+    }
 
-    /* ---- Init ---- */
-    function initClouds(){
-      clouds=[];
-      for(let i=0;i<4;i++) clouds.push({
-        x:Math.random()*W, y:20+Math.random()*60,
-        r:18+Math.random()*20, speed:0.3+Math.random()*0.5,
-        color:`hsla(${Math.random()*360},70%,80%,0.08)`,
+    function tdTogglePause() {
+      if (state === 'playing') {
+        state = 'paused';
+        showOverlay('paused', '⏸ PAUSED', 'คะแนน: ' + score, 'ดำเนินต่อ');
+      } else if (state === 'paused') {
+        state = 'playing';
+        hideOverlay();
+        loop();
+      }
+    }
+
+    // ผูกกับปุ่ม HTML (ไม่ใช้ onclick attribute แล้ว)
+    document.getElementById('td-btn-pause').addEventListener('click', tdTogglePause);
+    document.getElementById('td-btn-restart').addEventListener('click', tdStartGame);
+    document.getElementById('td-overlay-btn').addEventListener('click', () => {
+      if (state === 'paused') tdTogglePause();
+      else tdStartGame();
+    });
+
+    /* ════════════════════════════════════════
+       Clouds
+    ════════════════════════════════════════ */
+    function initClouds() {
+      clouds = [];
+      for (let i = 0; i < 4; i++) clouds.push({
+        x: Math.random() * W,
+        y: 20 + Math.random() * 60,
+        r: 18 + Math.random() * 20,
+        speed: 0.3 + Math.random() * 0.5,
+        color: `hsla(${Math.random()*360},70%,80%,0.08)`,
       });
     }
 
-    /* ---- Input ---- */
-    function jump(){
-      if(state==='paused') return;
-      if(state!=='playing'){ tdStartGame(); return; }
-      if(turtle.onGround){
-        turtle.vy=turtle.jumpPower; turtle.onGround=false;
-        spawnParticles(turtle.x+turtle.w/2,turtle.y+turtle.h,5);
+    /* ════════════════════════════════════════
+       Input
+    ════════════════════════════════════════ */
+    function jump() {
+      if (state === 'paused') return;
+      if (state !== 'playing') { tdStartGame(); return; }
+      if (turtle.onGround) {
+        turtle.vy = turtle.jumpPower;
+        turtle.onGround = false;
+        spawnParticles(turtle.x + turtle.w/2, turtle.y + turtle.h, 5);
       }
     }
-    document.addEventListener('keydown',e=>{
-      if(e.code==='Space'||e.code==='ArrowUp'){ e.preventDefault(); jump(); }
-      if(e.code==='KeyP') tdTogglePause();
-      if(e.code==='KeyR') tdRestartGame();
+    document.addEventListener('keydown', e => {
+      if (e.code === 'Space' || e.code === 'ArrowUp') { e.preventDefault(); jump(); }
+      if (e.code === 'KeyP') tdTogglePause();
+      if (e.code === 'KeyR') tdStartGame();
     });
-    canvas.addEventListener('click',jump);
-    canvas.addEventListener('touchstart',e=>{ e.preventDefault(); jump(); },{passive:false});
+    canvas.addEventListener('click', jump);
+    canvas.addEventListener('touchstart', e => { e.preventDefault(); jump(); }, { passive: false });
 
-    /* ---- Obstacles ---- */
-    function spawnObstacle(){
-      const pal=PALETTES[paletteIdx%PALETTES.length];
-      const types=[
-        {w:22,h:40+Math.random()*20},{w:16,h:55+Math.random()*15},{w:32,h:30+Math.random()*12},
+    /* ════════════════════════════════════════
+       Obstacles & Particles
+    ════════════════════════════════════════ */
+    function spawnObstacle() {
+      const pal = PALETTES[paletteIdx % PALETTES.length];
+      const types = [
+        { w: 22, h: 40 + Math.random()*20 },
+        { w: 16, h: 55 + Math.random()*15 },
+        { w: 32, h: 30 + Math.random()*12 },
       ];
-      const t=types[Math.floor(Math.random()*types.length)];
-      const c=pal[Math.floor(Math.random()*pal.length)];
-      obstacles.push({x:W+10,y:GROUND+turtle.h-t.h,w:t.w,h:t.h,color:c,glowColor:c,
-        shape:Math.random()>0.5?'rect':'diamond'});
+      const t = types[Math.floor(Math.random() * types.length)];
+      const c = pal[Math.floor(Math.random() * pal.length)];
+      obstacles.push({
+        x: W+10, y: GROUND + turtle.h - t.h,
+        w: t.w, h: t.h,
+        color: c, glowColor: c,
+        shape: Math.random() > 0.5 ? 'rect' : 'diamond',
+      });
     }
 
-    /* ---- Particles ---- */
-    function spawnParticles(x,y,count){
-      const pal=PALETTES[paletteIdx%PALETTES.length];
-      for(let i=0;i<count;i++){
-        const a=Math.random()*Math.PI*2, sp=1+Math.random()*4;
-        particles.push({x,y,vx:Math.cos(a)*sp,vy:Math.sin(a)*sp-2,
-          r:2+Math.random()*4,color:pal[Math.floor(Math.random()*pal.length)],
-          life:1,decay:0.03+Math.random()*0.04});
+    function spawnParticles(x, y, count) {
+      const pal = PALETTES[paletteIdx % PALETTES.length];
+      for (let i = 0; i < count; i++) {
+        const a = Math.random() * Math.PI * 2;
+        const sp = 1 + Math.random() * 4;
+        particles.push({
+          x, y,
+          vx: Math.cos(a)*sp, vy: Math.sin(a)*sp - 2,
+          r: 2 + Math.random()*4,
+          color: pal[Math.floor(Math.random() * pal.length)],
+          life: 1, decay: 0.03 + Math.random()*0.04,
+        });
       }
     }
 
-    /* ---- Draw ---- */
-    function drawBg(){
-      const bg=ctx.createLinearGradient(0,0,0,H);
+    /* ════════════════════════════════════════
+       Draw
+    ════════════════════════════════════════ */
+    function drawBg() {
+      const bg = ctx.createLinearGradient(0,0,0,H);
       bg.addColorStop(0,'#0a0a18'); bg.addColorStop(1,'#121230');
-      ctx.fillStyle=bg; ctx.fillRect(0,0,W,H);
-      clouds.forEach(c=>{
-        ctx.save(); ctx.globalAlpha=0.6; ctx.fillStyle=c.color;
-        ctx.shadowBlur=20; ctx.shadowColor=c.color;
-        ctx.beginPath(); ctx.arc(c.x,c.y,c.r,0,Math.PI*2); ctx.fill();
-        ctx.beginPath(); ctx.arc(c.x+c.r*.7,c.y+4,c.r*.65,0,Math.PI*2); ctx.fill();
-        ctx.beginPath(); ctx.arc(c.x-c.r*.6,c.y+5,c.r*.55,0,Math.PI*2); ctx.fill();
+      ctx.fillStyle = bg; ctx.fillRect(0,0,W,H);
+      clouds.forEach(c => {
+        ctx.save(); ctx.globalAlpha = 0.6; ctx.fillStyle = c.color;
+        ctx.shadowBlur = 20; ctx.shadowColor = c.color;
+        ctx.beginPath(); ctx.arc(c.x, c.y, c.r, 0, Math.PI*2); ctx.fill();
+        ctx.beginPath(); ctx.arc(c.x+c.r*.7, c.y+4, c.r*.65, 0, Math.PI*2); ctx.fill();
+        ctx.beginPath(); ctx.arc(c.x-c.r*.6, c.y+5, c.r*.55, 0, Math.PI*2); ctx.fill();
         ctx.restore();
       });
     }
 
-    function drawGround(){
-      const g=ctx.createLinearGradient(0,0,W,0);
+    function drawGround() {
+      const g = ctx.createLinearGradient(0,0,W,0);
       g.addColorStop(0,'#39ff14'); g.addColorStop(.33,'#00d4ff');
       g.addColorStop(.66,'#ff6ec7'); g.addColorStop(1,'#fff700');
-      ctx.save(); ctx.shadowBlur=10; ctx.shadowColor='#39ff14';
-      ctx.fillStyle=g; ctx.fillRect(0,GROUND+turtle.h,W,4);
+      ctx.save();
+      ctx.shadowBlur = 10; ctx.shadowColor = '#39ff14';
+      ctx.fillStyle = g;
+      ctx.fillRect(0, GROUND + turtle.h, W, 4);
       ctx.restore();
     }
 
-    function drawTurtle(){
-      const {x,y,w,h}=turtle;
-      const cx=x+w/2,cy=y+h/2;
-      const sq=turtle.onGround?1:(turtle.vy<0?1.12:.92);
-      const tw=w*(1/sq),th=h*sq;
+    function drawTurtle() {
+      const { x, y, w, h } = turtle;
+      const cx = x + w/2, cy = y + h/2;
+      const sq = turtle.onGround ? 1 : (turtle.vy < 0 ? 1.12 : .92);
+      const tw = w*(1/sq), th = h*sq;
       ctx.save(); ctx.translate(cx,cy); ctx.scale(1,sq);
-      ctx.shadowBlur=18; ctx.shadowColor=turtle.color;
+      ctx.shadowBlur = 18; ctx.shadowColor = turtle.color;
       ctx.beginPath(); ctx.ellipse(0,0,tw/2,th/2,0,0,Math.PI*2);
-      ctx.fillStyle=turtle.color; ctx.fill();
+      ctx.fillStyle = turtle.color; ctx.fill();
       ctx.beginPath(); ctx.ellipse(0,-2,tw*.36,th*.38,0,0,Math.PI*2);
-      ctx.fillStyle=turtle.shellColor; ctx.fill();
-      ctx.strokeStyle='rgba(0,0,0,.25)'; ctx.lineWidth=1.5;
+      ctx.fillStyle = turtle.shellColor; ctx.fill();
+      ctx.strokeStyle = 'rgba(0,0,0,.25)'; ctx.lineWidth = 1.5;
       ctx.beginPath(); ctx.moveTo(-8,-4); ctx.lineTo(0,-10); ctx.lineTo(8,-4); ctx.stroke();
       ctx.beginPath(); ctx.moveTo(-8,-4); ctx.lineTo(-10,2); ctx.stroke();
       ctx.beginPath(); ctx.moveTo(8,-4);  ctx.lineTo(10,2);  ctx.stroke();
-      ctx.fillStyle='#fff'; ctx.shadowBlur=0;
-      ctx.beginPath(); ctx.arc(tw*.28,-th*.08,4,0,Math.PI*2); ctx.fill();
-      ctx.fillStyle='#111';
-      ctx.beginPath(); ctx.arc(tw*.3,-th*.08,2,0,Math.PI*2); ctx.fill();
-      ctx.fillStyle=turtle.color; ctx.shadowBlur=8; ctx.shadowColor=turtle.color;
-      [[-tw*.4,th*.3],[tw*.45,th*.3],[-tw*.35,-th*.25],[tw*.38,-th*.25]].forEach(([lx,ly])=>{
+      ctx.fillStyle = '#fff'; ctx.shadowBlur = 0;
+      ctx.beginPath(); ctx.arc(tw*.28, -th*.08, 4, 0, Math.PI*2); ctx.fill();
+      ctx.fillStyle = '#111';
+      ctx.beginPath(); ctx.arc(tw*.3, -th*.08, 2, 0, Math.PI*2); ctx.fill();
+      ctx.fillStyle = turtle.color; ctx.shadowBlur = 8; ctx.shadowColor = turtle.color;
+      [[-tw*.4,th*.3],[tw*.45,th*.3],[-tw*.35,-th*.25],[tw*.38,-th*.25]].forEach(([lx,ly]) => {
         ctx.beginPath(); ctx.ellipse(lx,ly,5,4,lx>0?.5:-.5,0,Math.PI*2); ctx.fill();
       });
       ctx.restore();
     }
 
-    function drawObstacle(o){
-      ctx.save(); ctx.shadowBlur=16; ctx.shadowColor=o.glowColor;
-      if(o.shape==='diamond'){
-        const cx=o.x+o.w/2,cy=o.y+o.h/2;
+    function drawObstacle(o) {
+      ctx.save(); ctx.shadowBlur = 16; ctx.shadowColor = o.glowColor;
+      if (o.shape === 'diamond') {
+        const cx = o.x+o.w/2, cy = o.y+o.h/2;
         ctx.beginPath(); ctx.moveTo(cx,o.y); ctx.lineTo(o.x+o.w,cy);
         ctx.lineTo(cx,o.y+o.h); ctx.lineTo(o.x,cy); ctx.closePath();
-        ctx.fillStyle=o.color; ctx.fill();
-        ctx.globalAlpha=.4;
+        ctx.fillStyle = o.color; ctx.fill();
+        ctx.globalAlpha = .4;
         ctx.beginPath(); ctx.moveTo(cx,o.y+o.h*.2); ctx.lineTo(o.x+o.w*.8,cy);
         ctx.lineTo(cx,o.y+o.h*.8); ctx.lineTo(o.x+o.w*.2,cy); ctx.closePath();
-        ctx.fillStyle='#fff'; ctx.fill();
+        ctx.fillStyle = '#fff'; ctx.fill();
       } else {
-        const g=ctx.createLinearGradient(o.x,o.y,o.x+o.w,o.y+o.h);
+        const g = ctx.createLinearGradient(o.x,o.y,o.x+o.w,o.y+o.h);
         g.addColorStop(0,o.color); g.addColorStop(1,'#fff');
-        ctx.fillStyle=g; ctx.fillRect(o.x,o.y,o.w,o.h);
-        ctx.globalAlpha=.15; ctx.fillStyle='#000';
-        for(let sy=o.y;sy<o.y+o.h;sy+=8) ctx.fillRect(o.x,sy,o.w,4);
+        ctx.fillStyle = g; ctx.fillRect(o.x,o.y,o.w,o.h);
+        ctx.globalAlpha = .15; ctx.fillStyle = '#000';
+        for (let sy = o.y; sy < o.y+o.h; sy += 8) ctx.fillRect(o.x,sy,o.w,4);
       }
       ctx.restore();
     }
 
-    function drawParticles(){
-      particles.forEach(p=>{
-        ctx.save(); ctx.globalAlpha=p.life; ctx.fillStyle=p.color;
-        ctx.shadowBlur=8; ctx.shadowColor=p.color;
+    function drawParticles() {
+      particles.forEach(p => {
+        ctx.save(); ctx.globalAlpha = p.life; ctx.fillStyle = p.color;
+        ctx.shadowBlur = 8; ctx.shadowColor = p.color;
         ctx.beginPath(); ctx.arc(p.x,p.y,p.r*p.life,0,Math.PI*2); ctx.fill();
         ctx.restore();
       });
     }
 
-    /* ---- Collision ---- */
-    function hit(o){
-      const m=6;
-      return turtle.x+m<o.x+o.w && turtle.x+turtle.w-m>o.x &&
-             turtle.y+m<o.y+o.h && turtle.y+turtle.h-m>o.y;
+    /* ════════════════════════════════════════
+       Collision
+    ════════════════════════════════════════ */
+    function hit(o) {
+      const m = 6;
+      return turtle.x+m < o.x+o.w && turtle.x+turtle.w-m > o.x &&
+             turtle.y+m < o.y+o.h && turtle.y+turtle.h-m > o.y;
     }
 
-    /* ---- Game Over ---- */
-    function gameOver(){
-      state='gameover';
-      spawnParticles(turtle.x+turtle.w/2,turtle.y+turtle.h/2,20);
-      const p = getCurrentUser();
-      addScore(p.name, p.role, score);
-      hiScore=Math.max(score,hiScore);
-      showOverlay('gameover','💀 GAME OVER',`คะแนน: ${score}  |  สูงสุด: ${hiScore}`,'เล่นอีกครั้ง');
+    /* ════════════════════════════════════════
+       Game Over — บันทึก Firebase
+    ════════════════════════════════════════ */
+    async function gameOver() {
+      state = 'gameover';
+      spawnParticles(turtle.x+turtle.w/2, turtle.y+turtle.h/2, 20);
+      hiScore = Math.max(score, hiScore);
+      showOverlay('gameover', '💀 GAME OVER', `คะแนน: ${score}  |  สูงสุด: ${hiScore}`, 'เล่นอีกครั้ง');
+
+      // ดึง user แล้วบันทึกคะแนนลง Firebase (upsert high score)
+      const user = getCurrentUser();
+      currentUserName = user.name;
+      await saveScore(user.name, user.role, score);
     }
 
-    /* ---- Loop ---- */
-    function loop(){
-      if(state!=='playing') return;
+    /* ════════════════════════════════════════
+       Main Loop
+    ════════════════════════════════════════ */
+    function loop() {
+      if (state !== 'playing') return;
       ctx.clearRect(0,0,W,H);
       frame++;
 
-      speed=4+Math.floor(score/200)*.5;
-      if(frame%600===0) paletteIdx++;
+      speed = 4 + Math.floor(score/200) * .5;
+      if (frame % 600 === 0) paletteIdx++;
 
-      clouds.forEach(c=>{ c.x-=c.speed; if(c.x<-c.r*2){c.x=W+c.r;c.y=20+Math.random()*60;} });
+      clouds.forEach(c => {
+        c.x -= c.speed;
+        if (c.x < -c.r*2) { c.x = W+c.r; c.y = 20+Math.random()*60; }
+      });
 
-      turtle.vy+=turtle.gravity; turtle.y+=turtle.vy;
-      if(turtle.y>=GROUND){turtle.y=GROUND;turtle.vy=0;turtle.onGround=true;}
+      turtle.vy += turtle.gravity;
+      turtle.y  += turtle.vy;
+      if (turtle.y >= GROUND) { turtle.y = GROUND; turtle.vy = 0; turtle.onGround = true; }
 
-      if(--nextObstacle<=0){
+      if (--nextObstacle <= 0) {
         spawnObstacle();
-        nextObstacle=55+Math.floor(Math.random()*45)-Math.min(20,Math.floor(score/100));
+        nextObstacle = 55 + Math.floor(Math.random()*45) - Math.min(20, Math.floor(score/100));
       }
 
-      obstacles.forEach(o=>{o.x-=speed;});
-      obstacles=obstacles.filter(o=>o.x+o.w>-10);
-      for(const o of obstacles){ if(hit(o)){gameOver();return;} }
+      obstacles.forEach(o => { o.x -= speed; });
+      obstacles = obstacles.filter(o => o.x+o.w > -10);
+      for (const o of obstacles) { if (hit(o)) { gameOver(); return; } }
 
       score++;
-      document.getElementById('tdScoreVal').textContent=score;
+      document.getElementById('tdScoreVal').textContent = score;
 
-      particles.forEach(p=>{p.x+=p.vx;p.y+=p.vy;p.vy+=.15;p.life-=p.decay;});
-      particles=particles.filter(p=>p.life>0);
+      particles.forEach(p => { p.x += p.vx; p.y += p.vy; p.vy += .15; p.life -= p.decay; });
+      particles = particles.filter(p => p.life > 0);
 
       drawBg(); drawGround();
       obstacles.forEach(drawObstacle);
       drawTurtle(); drawParticles();
 
-      turtle.color     =`hsl(${(frame*2)%360},100%,60%)`;
-      turtle.shellColor=`hsl(${(frame*2+120)%360},100%,60%)`;
+      turtle.color      = `hsl(${(frame*2)%360},100%,60%)`;
+      turtle.shellColor = `hsl(${(frame*2+120)%360},100%,60%)`;
 
-      rafId=requestAnimationFrame(loop);
+      rafId = requestAnimationFrame(loop);
     }
 
-    /* ---- Boot ---- */
-    renderLB();
+    /* ════════════════════════════════════════
+       Boot — วาด static frame แรก
+    ════════════════════════════════════════ */
     initClouds();
-    (function staticFrame(){
-      const bg=ctx.createLinearGradient(0,0,0,H);
+    (function staticFrame() {
+      const bg = ctx.createLinearGradient(0,0,0,H);
       bg.addColorStop(0,'#0a0a18'); bg.addColorStop(1,'#121230');
-      ctx.fillStyle=bg; ctx.fillRect(0,0,W,H);
+      ctx.fillStyle = bg; ctx.fillRect(0,0,W,H);
       drawGround(); drawTurtle();
     })();
 
-  })();
+    // ตั้งชื่อผู้เล่นตั้งแต่โหลดหน้า เพื่อ highlight ใน leaderboard
+    const _u = getCurrentUser();
+    currentUserName = _u.name;
+
   </script>
-  <!-- END TURTLE DASH SCRIPT -->
+  <!-- END TURTLE DASH -->
 
   <!-- Theme Toggle -->
   <script>
@@ -719,12 +797,8 @@ document.addEventListener("DOMContentLoaded", function() {
       const systemDark = window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches;
       const initialTheme = saved || (systemDark ? "dark" : "light");
 
-      function moonSvg() {
-        return `<svg viewBox="0 0 24 24"><path d="M21 12.6A8.5 8.5 0 0 1 11.4 3a7 7 0 1 0 9.6 9.6Z"/></svg>`;
-      }
-      function sunSvg() {
-        return `<svg viewBox="0 0 24 24"><path d="M12 18a6 6 0 1 0 0-12 6 6 0 0 0 0 12Zm0-16h0.01M12 22h0.01M4.22 4.22h0.01M19.78 19.78h0.01M2 12h0.01M22 12h0.01M4.22 19.78h0.01M19.78 4.22h0.01"/></svg>`;
-      }
+      function moonSvg() { return `<svg viewBox="0 0 24 24"><path d="M21 12.6A8.5 8.5 0 0 1 11.4 3a7 7 0 1 0 9.6 9.6Z"/></svg>`; }
+      function sunSvg()  { return `<svg viewBox="0 0 24 24"><path d="M12 18a6 6 0 1 0 0-12 6 6 0 0 0 0 12Zm0-16h0.01M12 22h0.01M4.22 4.22h0.01M19.78 19.78h0.01M2 12h0.01M22 12h0.01M4.22 19.78h0.01M19.78 4.22h0.01"/></svg>`; }
 
       function applyTheme(theme) {
         root.setAttribute("data-theme", theme);
@@ -740,9 +814,5 @@ document.addEventListener("DOMContentLoaded", function() {
       });
     })();
   </script>
-<!-- เพิ่ม Firebase SDK ในหน้าเว็บของคุณ -->
-<script src="https://www.gstatic.com/firebasejs/10.12.5/firebase-app.js"></script>
-<script src="https://www.gstatic.com/firebasejs/10.12.5/firebase-database.js"></script>
-<!-- เพิ่ม Firebase SDK ในหน้าเว็บของคุณ -->
 </body>
 </html>
