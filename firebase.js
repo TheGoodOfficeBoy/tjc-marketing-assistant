@@ -50,7 +50,7 @@ export const subscribeLeaderboard = (callback) => {
   const lbQuery = query(
     ref(rtdb, 'Leaderboard/leaderboard'),
     orderByChild('score'),
-    limitToLast(10)
+    limitToLast(5)
   );
 
   console.log('[TD] subscribeLeaderboard start');
