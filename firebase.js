@@ -1,9 +1,8 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-app.js";
 import { getAuth, setPersistence, browserLocalPersistence } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-auth.js";
-import { getFirestore } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-firestore.js";
 import { getDatabase, ref, set, push, get } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-database.js";
 
-// Firebase configuration
+// Firebase config
 const firebaseConfig = {
   apiKey: "AIzaSyAuYStMuXj-S9kItbQASZUKJ5NvhokpeVc",
   authDomain: "tjc-marketing-console.firebaseapp.com",
@@ -18,62 +17,45 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const db = getDatabase(app);  // For Realtime Database
-const firestore = getFirestore(app);  // For Firestore (if you need it later)
 
-// Set login session to persist in local storage
+// ให้ login ค้าง session
 setPersistence(auth, browserLocalPersistence).catch(console.error);
 
-// Function to save score to Firebase Realtime Database
+// ฟังก์ชันเพิ่มข้อมูลลงใน Firebase Realtime Database (push)
 export const saveScore = (name, score) => {
-  const leaderboardRef = ref(db, 'leaderboard/');  // Reference to 'leaderboard' node
-  const newScoreRef = push(leaderboardRef);  // Using push to add new data
+  const leaderboardRef = ref(db, 'leaderboard/');  // สร้าง reference ไปที่ leaderboard
+  const newScoreRef = push(leaderboardRef);  // ใช้ push() เพื่อเพิ่มข้อมูลใหม่
   set(newScoreRef, {
-    name: name,  // Player's name
-    score: score,  // Player's score
+    name: name,  // ชื่อของผู้เล่น
+    score: score,  // คะแนนของผู้เล่น
   }).then(() => {
-    console.log('Score saved successfully!');
+    console.log('New score added successfully!');
   }).catch((error) => {
-    console.error("Error saving score: ", error);
+    console.error("Error adding new score: ", error);
   });
 };
 
-// Function to get leaderboard data from Firebase Realtime Database
+// ฟังก์ชันอัปเดตข้อมูลคะแนนผู้เล่น
+export const updateScore = (playerId, name, score) => {
+  const playerRef = ref(db, 'leaderboard/' + playerId);  // ใช้ ID ของผู้เล่นในการอัปเดตข้อมูล
+  set(playerRef, {
+    name: name,  // ชื่อของผู้เล่น
+    score: score,  // คะแนนใหม่
+  }).then(() => {
+    console.log('Score updated successfully!');
+  }).catch((error) => {
+    console.error("Error updating score: ", error);
+  });
+};
+
+// ฟังก์ชันดึงข้อมูล leaderboard จาก Firebase Realtime Database
 export const getLeaderboard = async () => {
-  const leaderboardRef = ref(db, 'leaderboard/');  // Reference to 'leaderboard' node
-  const snapshot = await get(leaderboardRef);  // Fetch data from the database
+  const leaderboardRef = ref(db, 'leaderboard/');  // สร้าง reference ไปยัง leaderboard
+  const snapshot = await get(leaderboardRef);  // ดึงข้อมูลจาก Firebase
   if (snapshot.exists()) {
-    return snapshot.val();  // Return the data
+    return snapshot.val();  // คืนค่าข้อมูล
   } else {
     console.log("No data available");
-    return {};  // Return empty object if no data
-  }
-};
-
-// Function to get user details from Firebase Authentication
-export const getUserDetails = () => {
-  const user = auth.currentUser;  // Get the current user
-  if (user) {
-    return { uid: user.uid, name: user.displayName || "Anonymous" };  // Return user details
-  }
-  return null;  // Return null if no user is logged in
-};
-
-// Function to log in a user anonymously (if not using authentication system)
-export const loginAnonymously = async () => {
-  try {
-    await auth.signInAnonymously();  // Sign in as anonymous user
-    console.log("Logged in anonymously");
-  } catch (error) {
-    console.error("Error logging in anonymously: ", error);
-  }
-};
-
-// Function to logout user
-export const logout = async () => {
-  try {
-    await auth.signOut();  // Sign out user
-    console.log("User signed out");
-  } catch (error) {
-    console.error("Error signing out: ", error);
+    return {};  // คืนค่าผลลัพธ์เป็น object ว่าง
   }
 };
