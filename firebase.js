@@ -1,6 +1,30 @@
-/* ─── saveScore: save every score, keep highest ─────────────── */
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-app.js";
+import { getAuth, setPersistence, browserLocalPersistence } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-auth.js";
+import { getFirestore } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-firestore.js";
+import {
+  getDatabase, ref, set, get, onValue, orderByChild, query, limitToLast
+} from "https://www.gstatic.com/firebasejs/10.12.5/firebase-database.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyAuYStMuXj-S9kItbQASZUKJ5NvhokpeVc",
+  authDomain: "tjc-marketing-console.firebaseapp.com",
+  projectId: "tjc-marketing-console",
+  storageBucket: "tjc-marketing-console.firebasestorage.app",
+  messagingSenderId: "896679016286",
+  appId: "1:896679016286:web:599a88c1ad32943f1cc1cf",
+  measurementId: "G-LK4CG6NJD0",
+  databaseURL: "https://tjc-marketing-console-default-rtdb.firebaseio.com"
+};
+
+const app  = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+const db   = getFirestore(app);
+const rtdb = getDatabase(app);
+
+setPersistence(auth, browserLocalPersistence).catch(console.error);
+
+/* ─── saveScore ─────────────────────────────────────────────── */
 export const saveScore = async (name, role, score) => {
-  // ใช้ encodeURIComponent แบบ simple ให้ key stable
   const safeKey = encodeURIComponent(name)
     .replace(/[.#$\/\[\]%]/g, '_')
     .substring(0, 60);
@@ -10,14 +34,10 @@ export const saveScore = async (name, role, score) => {
 
   try {
     const snapshot = await get(playerRef);
-
-    // ถ้ามี record เดิมและคะแนนเดิมสูงกว่า → ไม่ update
     if (snapshot.exists() && snapshot.val().score >= score) {
       console.log('[TD] Not a new high score, skip. existing:', snapshot.val().score, 'new:', score);
       return;
     }
-
-    // Save (ทั้ง record ใหม่ และ high score ใหม่)
     await set(playerRef, {
       name,
       role: role || 'user',
@@ -25,13 +45,12 @@ export const saveScore = async (name, role, score) => {
       updatedAt: Date.now()
     });
     console.log('[TD] Score saved ✅', name, score);
-
   } catch (err) {
     console.error('[TD] saveScore error:', err.code, err.message);
   }
 };
 
-/* ─── subscribeLeaderboard: real-time top 5 ─────────────────── */
+/* ─── subscribeLeaderboard ───────────────────────────────────── */
 export const subscribeLeaderboard = (callback) => {
   const lbQuery = query(
     ref(rtdb, 'Leaderboard/leaderboard'),
@@ -43,18 +62,13 @@ export const subscribeLeaderboard = (callback) => {
 
   return onValue(lbQuery, (snapshot) => {
     console.log('[TD] onValue fired, exists:', snapshot.exists());
-
     const entries = [];
     snapshot.forEach((child) => {
       entries.push({ id: child.key, ...child.val() });
     });
-
-    // reverse เพราะ orderByChild เรียง ascending → ต้องกลับเป็น descending
     entries.reverse();
-
     console.log('[TD] Leaderboard entries:', entries.length, entries);
     callback(entries);
-
   }, (err) => {
     console.error('[TD] subscribeLeaderboard error:', err.code, err.message);
     callback([]);
