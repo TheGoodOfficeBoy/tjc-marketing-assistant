@@ -695,7 +695,7 @@
       ctx.clearRect(0,0,W,H);
       frame++;
 
-      speed = 4 + Math.floor(score/200) * .5;
+      speed = 3 + Math.floor(score/200) * .5;
       if (frame % 600 === 0) paletteIdx++;
 
       clouds.forEach(c => {
