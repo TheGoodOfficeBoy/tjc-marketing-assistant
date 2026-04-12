@@ -461,7 +461,7 @@
     const ctx    = canvas.getContext('2d');
     const W = 488, H = 200, GROUND = 155;
 
-    let state = 'idle', score = 0, hiScore = 0, frame = 0, speed = 3;
+    let state = 'idle', score = 0, hiScore = 0, frame = 0, speed = 4;
     let rafId = null, paletteIdx = 0, nextObstacle = 90;
     let obstacles = [], clouds = [], particles = [];
 
@@ -490,7 +490,7 @@
        GAME CONTROLS
     ════════════════════════════════════ */
     function tdStartGame() {
-      state = 'playing'; score = 0; frame = 0; speed = 3;
+      state = 'playing'; score = 0; frame = 0; speed = 4;
       obstacles = []; particles = []; paletteIdx = 0; nextObstacle = 90;
       turtle.y = GROUND; turtle.vy = 0; turtle.onGround = true;
       document.getElementById('tdScoreVal').textContent = '0';
@@ -695,7 +695,7 @@
       ctx.clearRect(0,0,W,H);
       frame++;
 
-      speed = 3 + Math.floor(score/200) * .5;
+      speed = 4 + Math.floor(score/200) * .5;
       if (frame % 600 === 0) paletteIdx++;
 
       clouds.forEach(c => {
