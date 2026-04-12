@@ -724,10 +724,15 @@
       hiScore = Math.max(score, hiScore);
       showOverlay('gameover', '💀 GAME OVER', `คะแนน: ${score}  |  สูงสุด: ${hiScore}`, 'เล่นอีกครั้ง');
 
-      // ดึง user แล้วบันทึกคะแนนลง Firebase (upsert high score)
-      const user = getCurrentUser();
+      const finalScore = score; // capture ก่อน reset
+      // รอ user พร้อม (Promise จาก onAuthStateChanged) timeout 5 วิ
+      const user = await Promise.race([
+        _userReady,
+        new Promise(r => setTimeout(() => r(getCurrentUser()), 5000)),
+      ]);
       currentUserName = user.name;
-      await saveScore(user.name, user.role, score);
+      console.log('[TD] gameOver → saving:', user.name, user.role, finalScore);
+      await saveScore(user.name, user.role, finalScore);
     }
 
     /* ════════════════════════════════════════
@@ -786,9 +791,12 @@
       drawGround(); drawTurtle();
     })();
 
-    // ตั้งชื่อผู้เล่นตั้งแต่โหลดหน้า เพื่อ highlight ใน leaderboard
-    const _u = getCurrentUser();
-    currentUserName = _u.name;
+    // ตั้งชื่อผู้เล่นเบื้องต้น (อัปเดตอีกครั้งเมื่อ auth พร้อม)
+    currentUserName = getCurrentUser().name;
+    _userReady.then(u => {
+      currentUserName = u.name;
+      console.log('[TD] currentUserName updated to:', u.name);
+    });
 
   </script>
   <!-- END TURTLE DASH -->
