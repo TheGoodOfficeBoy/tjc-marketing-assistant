@@ -400,22 +400,45 @@
 
   <!-- 🐢 TURTLE DASH SCRIPT — type="module" เพื่อ import Firebase ได้ -->
   <script type="module">
-    import { saveScore, subscribeLeaderboard } from './firebase.js?v=42';
+    import { saveScore, subscribeLeaderboard, auth } from './firebase.js?v=42';
+    import { onAuthStateChanged } from 'https://www.gstatic.com/firebasejs/10.12.5/firebase-auth.js';
 
     'use strict';
 
     /* ════════════════════════════════════════
-       ดึงข้อมูล User จากระบบ TJC
+       ข้อมูล User — ดึงจาก Firebase Auth โดยตรง
+       พร้อม fallback จาก #whoami / localStorage
     ════════════════════════════════════════ */
-    function getCurrentUser() {
-      // 1) Firebase Auth object ที่ app-page.js expose ไว้บน window
-      if (window.currentUser) {
-        return {
-          name: window.currentUser.displayName || window.currentUser.email || 'Unknown',
-          role: window.currentUser.role || window.currentUser.userRole || 'user',
-        };
+
+    // Promise ที่ resolve เมื่อ Firebase Auth พร้อม
+    // ใช้ await ใน gameOver() เพื่อมั่นใจว่าได้ user จริงก่อน save
+    let _resolveUser;
+    const _userReady = new Promise(r => { _resolveUser = r; });
+
+    onAuthStateChanged(auth, async (firebaseUser) => {
+      if (!firebaseUser) return;
+
+      // รอ app-page.js เซ็ต window.tdCurrentUser (มี role จาก Firestore)
+      // poll สั้นๆ ไม่เกิน 3 วิ
+      let waited = 0;
+      while (!window.tdCurrentUser && waited < 3000) {
+        await new Promise(r => setTimeout(r, 100));
+        waited += 100;
       }
-      // 2) ดึงจาก #whoami element ที่ app-page.js เติมข้อความไว้
+
+      const user = window.tdCurrentUser || {
+        name: firebaseUser.displayName || firebaseUser.email || 'Unknown',
+        role: 'user',
+      };
+
+      currentUserName = user.name;
+      console.log('[TD] user ready ✅', user.name, user.role);
+      _resolveUser(user); // ปลดล็อก gameOver()
+    });
+
+    // getCurrentUser() ยังคงไว้เป็น sync fallback (ใช้ตอน boot/highlight LB)
+    function getCurrentUser() {
+      if (window.tdCurrentUser) return window.tdCurrentUser;
       const whoamiEl = document.getElementById('whoami');
       if (whoamiEl) {
         const txt = whoamiEl.textContent.trim();
@@ -423,26 +446,11 @@
           let role = 'user';
           if (/super[\s_-]?admin/i.test(txt)) role = 'super_admin';
           else if (/admin/i.test(txt))         role = 'admin';
-          return { name: txt, role };
+          const name = txt.split('•')[0].trim() || txt;
+          return { name, role };
         }
       }
-      // 3) localStorage fallback
-      try {
-        const keys = ['tjcUser','currentUser','firebaseUser','appUser'];
-        for (const k of keys) {
-          const s = JSON.parse(localStorage.getItem(k) || 'null');
-          if (s && (s.displayName || s.email)) {
-            return { name: s.displayName || s.email, role: s.role || s.userRole || 'user' };
-          }
-        }
-      } catch(e) {}
-      // 4) Guest fallback — ถามชื่อครั้งเดียวแล้วจำ
-      let guestName = localStorage.getItem('tdGuestName');
-      if (!guestName) {
-        guestName = prompt('ใส่ชื่อสำหรับ Leaderboard:') || 'Guest';
-        localStorage.setItem('tdGuestName', guestName);
-      }
-      return { name: guestName, role: 'user' };
+      return { name: 'Guest', role: 'user' };
     }
 
     /* ════════════════════════════════════════
