@@ -365,7 +365,17 @@
   <script>
   (function () {
     'use strict';
+import { saveScore } from './firebase.js';  // นำเข้าฟังก์ชันจาก firebase.js
 
+// ฟังก์ชันที่ใช้บันทึกคะแนนของผู้เล่น 12/4/2569 14:34 น.
+function savePlayerScore(score) {
+  const user = getCurrentUser();  // ใช้ฟังก์ชัน getCurrentUser() เพื่อดึงชื่อและข้อมูลผู้เล่น
+  if (user) {
+    saveScore(user.name, score);  // บันทึกคะแนนของผู้เล่นลงใน Firebase
+  }
+}
+  // ฟังก์ชันที่ใช้บันทึกคะแนนของผู้เล่น 12/4/2569 14:34 น.
+    
     /* ---- ดึงข้อมูล User จริงจากระบบ TJC ---- */
     function getCurrentUser() {
       // 1) Firebase Auth object ที่ app-page.js อาจ expose ไว้บน window
@@ -443,21 +453,28 @@
       saveLB(); renderLB();
     }
 
-    function renderLB(){
-      const el=document.getElementById('td-lb-list');
-      if(!leaderboard.length){ el.innerHTML='<div class="td-lb-empty">ยังไม่มีสถิติ เริ่มเกมเลย!</div>'; return; }
-      const rl={super_admin:'SUPER ADMIN',admin:'ADMIN',user:'USER'};
-      const medals=['🥇','🥈','🥉'];
-      el.innerHTML=leaderboard.slice(0,8).map((e,i)=>{
-        const rc=i<3?`td-rank-${i+1}`:'td-rank-other';
-        return `<div class="td-lb-entry">
-          <div class="td-lb-rank ${rc}">${medals[i]||'#'+(i+1)}</div>
-          <div class="td-lb-role td-role-${e.role}">${rl[e.role]||e.role}</div>
-          <div class="td-lb-name">${e.name}</div>
-          <div class="td-lb-score">${e.score}</div>
-        </div>`;
-      }).join('');
-    }
+import { getLeaderboard } from './firebase.js';  // นำเข้าฟังก์ชันจาก firebase.js
+
+// ฟังก์ชันดึงข้อมูล leaderboard จาก Firebase
+async function loadLeaderboard() {
+  const leaderboard = await getLeaderboard();  // ดึงข้อมูล leaderboard จาก Firebase
+
+  // แสดง leaderboard บนหน้าเว็บ
+  const lbList = document.getElementById('td-lb-list');
+  lbList.innerHTML = leaderboard.map((entry, index) => {
+    return `
+      <div class="td-lb-entry">
+        <div class="td-lb-rank">${index + 1}</div>
+        <div class="td-lb-name">${entry.name}</div>
+        <div class="td-lb-score">${entry.score}</div>
+      </div>`;
+  }).join('');
+}
+
+// เรียกฟังก์ชันเมื่อโหลดหน้า
+document.addEventListener("DOMContentLoaded", function() {
+  loadLeaderboard(); // โหลด leaderboard จาก Firebase
+});
 
     /* ---- Overlay ---- */
     function showOverlay(type,title,sub,btn){
