@@ -1,5 +1,6 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-app.js";
 import { getAuth, setPersistence, browserLocalPersistence } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-auth.js";
+import { getFirestore } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-firestore.js";
 import { getDatabase, ref, set, get, onValue, orderByChild, query, limitToLast } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-database.js";
 
 // Firebase config
@@ -17,7 +18,11 @@ const firebaseConfig = {
 // Initialize Firebase
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
-const db = getDatabase(app);
+
+// db   = Cloud Firestore   → ใช้ใน app-page.js (doc, getDoc, setDoc, collection)
+// rtdb = Realtime Database → ใช้ใน leaderboard เกม (ref, onValue)
+const db   = getFirestore(app);
+const rtdb = getDatabase(app);
 
 // ให้ login ค้าง session
 setPersistence(auth, browserLocalPersistence).catch(console.error);
@@ -27,19 +32,17 @@ setPersistence(auth, browserLocalPersistence).catch(console.error);
  * key = base64(name) เพื่อหลีกเลี่ยง forbidden chars ใน Realtime DB path
  */
 export const saveScore = async (name, role, score) => {
-  // สร้าง safe key จากชื่อ
   const safeKey = btoa(unescape(encodeURIComponent(name)))
-    .replace(/[.#$/[\]]/g, '_')
+    .replace(/[.#$\/\[\]]/g, '_')
     .substring(0, 60);
 
-  const playerRef = ref(db, 'Leaderboard/leaderboard/' + safeKey);
+  const playerRef = ref(rtdb, 'Leaderboard/leaderboard/' + safeKey);
 
   try {
-    // ดึงคะแนนเก่ามาเปรียบเทียบก่อน
     const snapshot = await get(playerRef);
     if (snapshot.exists()) {
       const existing = snapshot.val();
-      if (score <= existing.score) return; // ไม่ได้ high score ใหม่ ไม่ต้อง update
+      if (score <= existing.score) return;
     }
 
     await set(playerRef, {
@@ -57,11 +60,10 @@ export const saveScore = async (name, role, score) => {
 /**
  * Subscribe real-time leaderboard (top 10 by score)
  * callback จะถูกเรียกทุกครั้งที่ข้อมูลเปลี่ยน
- * คืน unsubscribe function
  */
 export const subscribeLeaderboard = (callback) => {
   const lbQuery = query(
-    ref(db, 'Leaderboard/leaderboard'),
+    ref(rtdb, 'Leaderboard/leaderboard'),
     orderByChild('score'),
     limitToLast(10)
   );
@@ -71,15 +73,16 @@ export const subscribeLeaderboard = (callback) => {
     snapshot.forEach((child) => {
       entries.push({ id: child.key, ...child.val() });
     });
-    // Firebase orderByChild เรียงจากน้อยไปมาก → reverse
-    entries.reverse();
+    entries.reverse(); // Firebase เรียงน้อย→มาก ต้อง reverse
     callback(entries);
   }, (error) => {
     console.error('Leaderboard subscription error:', error);
     callback([]);
   });
 
-  return unsubscribe; // เรียกเพื่อ unsubscribe
+  return unsubscribe;
 };
 
-export { auth, db };
+// app-page.js import: { auth, db }         → Firestore ✅
+// game script import: { saveScore, subscribeLeaderboard } → Realtime DB ✅
+export { auth, db, rtdb };
