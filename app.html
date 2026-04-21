@@ -799,7 +799,7 @@ function loop() {
 
   if (--nextObstacle <= 0) {
     spawnObstacle();
-    nextObstacle = 55 + Math.floor(Math.random()*45) - Math.min(20, Math.floor(score/100));
+    nextObstacle = 55 + Math.floor(Math.random()*45) - Math.min(20, Math.floor(score/400));
   }
 
   obstacles.forEach(o => { o.x -= speed; });
