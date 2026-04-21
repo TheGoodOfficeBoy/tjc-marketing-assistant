@@ -778,7 +778,7 @@ function loop() {
   ctx.clearRect(0,0,W,H);
   frame++;
 
-  speed = 8 + Math.floor(score/800) * .5;
+  speed = 8 + Math.floor(score / (200 / 3)) * 0.5;
   if (frame % 600 === 0) paletteIdx++;
 
   clouds.forEach(c => {
@@ -799,14 +799,14 @@ function loop() {
 
   if (--nextObstacle <= 0) {
     spawnObstacle();
-    nextObstacle = 55 + Math.floor(Math.random()*45) - Math.min(20, Math.floor(score/400));
+    nextObstacle = 55 + Math.floor(Math.random()*45) - Math.min(20, Math.floor(score/100));
   }
 
   obstacles.forEach(o => { o.x -= speed; });
   obstacles = obstacles.filter(o => o.x+o.w > -10);
   for (const o of obstacles) { if (hit(o)) { gameOver(); return; } }
 
-  score++;
+  score += 3 ;
   document.getElementById('tdScoreVal').textContent = score;
 
   particles.forEach(p => { p.x += p.vx; p.y += p.vy; p.vy += .15; p.life -= p.decay; });
