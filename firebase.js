@@ -24,51 +24,54 @@ const rtdb = getDatabase(app);
 setPersistence(auth, browserLocalPersistence).catch(console.error);
 
 /* ─── saveScore ─────────────────────────────────────────────── */
-export const saveScore = async (name, role, score) => {
+export const saveScore = async (name, role, score, stage = "1-1") => {
+  // สร้าง Key ที่ปลอดภัยสำหรับ Realtime Database
   const safeKey = encodeURIComponent(name)
     .replace(/[.#$\/\[\]%]/g, '_')
     .substring(0, 60);
 
   const playerRef = ref(rtdb, 'Leaderboard/leaderboard/' + safeKey);
-  console.log('[TD] saveScore →', name, role, score, '| key:', safeKey);
+  console.log('[TD] saveScore →', name, role, score, stage, '| key:', safeKey);
 
   try {
     const snapshot = await get(playerRef);
+    // ตรวจสอบว่าถ้าเคยมีคะแนนอยู่แล้ว และคะแนนใหม่ไม่เยอะกว่าเดิม ให้ข้ามไปไม่ต้องเซฟทับ
     if (snapshot.exists() && snapshot.val().score >= score) {
       console.log('[TD] Not a new high score, skip. existing:', snapshot.val().score, 'new:', score);
       return;
     }
+    
+    // บันทึกคะแนนใหม่ + ด่านที่ผ่าน
     await set(playerRef, {
-      name,
+      name: name,
       role: role || 'user',
-      score,
+      score: score,
+      stage: stage, 
       updatedAt: Date.now()
     });
-    console.log('[TD] Score saved ✅', name, score);
+    console.log('[TD] Score saved ✅', name, score, stage);
   } catch (err) {
     console.error('[TD] saveScore error:', err.code, err.message);
   }
 };
 
 /* ─── subscribeLeaderboard ───────────────────────────────────── */
-// ในไฟล์ firebase.js
-export async function saveScore(name, role, score, stage) { // <--- เพิ่มตัวแปร stage
-  try {
-    // โค้ดเดิมของคุณ (อาจจะเป็นการอ้างอิง User ID)
-    const userId = name; // หรือ UID ของระบบคุณ
-    
-    // อัปเดตการบันทึกลง Realtime Database
-    // ค้นหาคำสั่ง set() หรือ update() แล้วเติม stage: stage เข้าไป
-    await set(ref(db, 'leaderboard/' + userId), {
-      name: name,
-      role: role,
-      score: score,
-      stage: stage, // <--- บรรทัดที่ต้องเพิ่มเข้าไปใน Database
-      timestamp: serverTimestamp()
+export const subscribeLeaderboard = (callback) => {
+  // ดึงข้อมูล 50 อันดับแรก เรียงตามคะแนน
+  const lbRef = query(ref(rtdb, 'Leaderboard/leaderboard'), orderByChild('score'), limitToLast(50));
+  
+  onValue(lbRef, (snapshot) => {
+    const entries = [];
+    snapshot.forEach((childSnapshot) => {
+      entries.push(childSnapshot.val());
     });
-  } catch (error) {
-    console.error("Error saving score: ", error);
-  }
-}
+    
+    // เรียงคะแนนจากมากไปน้อย (Firebase ส่งมาเป็นน้อยไปมาก)
+    entries.reverse(); 
+    callback(entries);
+  }, (error) => {
+    console.error("[TD] Leaderboard sync error:", error);
+  });
+};
 
 export { auth, db, rtdb };
