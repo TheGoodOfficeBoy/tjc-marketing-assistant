@@ -1,1177 +1,1556 @@
 <!doctype html>
 <html lang="th">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>TJC ทีมประมูล | Menu</title>
-  <link rel="stylesheet" href="./styles.css?v=42" />
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Nunito:wght@400;700;900&display=swap" />
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>TJC ทีมประมูล | Menu</title>
+<link rel="stylesheet" href="./styles.css?v=42"/>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Nunito:wght@400;700;900&display=swap"/>
+<style>
+/* ===== TJC FIGHTER GAME ===== */
+#tjcf-section{
+  display:flex;flex-direction:column;align-items:center;
+  gap:14px;margin:28px auto 40px;width:620px;max-width:100%;box-sizing:border-box;
+}
+#tjcf-title{
+  font-family:'Press Start 2P',monospace;font-size:1.5rem;letter-spacing:4px;text-align:center;
+  background:linear-gradient(90deg,#ff3c3c,#ff9900,#ffe600,#39ff14,#00d4ff,#ff6ec7,#ff3c3c);
+  background-size:300% 100%;-webkit-background-clip:text;-webkit-text-fill-color:transparent;
+  background-clip:text;animation:titleScroll 3s linear infinite;
+  filter:drop-shadow(0 0 14px rgba(255,153,0,0.5));
+}
+@keyframes titleScroll{0%{background-position:0%}100%{background-position:300%}}
 
-  <style>
-    /* ===== CONEXTRA GAME STYLES ===== */
-    #conextra-section {
-      display: flex !important;
-      flex-direction: column !important;
-      align-items: center !important;
-      gap: 14px !important;
-      margin: 28px auto 40px !important;
-      width: 560px !important;
-      max-width: 100% !important;
-      box-sizing: border-box !important;
-    }
+#tjcf-wrap{
+  width:620px;max-width:100%;background:#080810;
+  border:3px solid #ff9900;border-radius:6px;
+  box-shadow:0 0 0 1px #000,0 0 50px rgba(255,153,0,0.25),inset 0 0 40px rgba(0,0,0,0.6);
+  overflow:hidden;box-sizing:border-box;position:relative;
+}
+#tjcf-hud{
+  display:flex;align-items:center;justify-content:space-between;
+  padding:8px 14px;background:#0d0d1a;border-bottom:2px solid #ff9900;gap:8px;flex-wrap:wrap;
+}
+.tjcf-hud-stat{
+  font-family:'Press Start 2P',monospace;font-size:0.5rem;
+  color:#ff9900;display:flex;flex-direction:column;gap:2px;
+}
+.tjcf-hud-label{color:rgba(255,255,255,0.3);font-size:0.42rem;}
+.tjcf-hud-val{color:#ffe600;}
+#tjcf-hp-wrap,#tjcf-mp-wrap{display:flex;align-items:center;gap:6px;}
+#tjcf-hp-wrap .tjcf-hud-label,#tjcf-mp-wrap .tjcf-hud-label{font-family:'Press Start 2P',monospace;font-size:0.42rem;color:rgba(255,255,255,0.3);}
+.tjcf-bar-bg{width:90px;height:8px;background:#1a0a0a;border:1px solid #333;border-radius:2px;overflow:hidden;}
+.tjcf-bar-fill{height:100%;border-radius:2px;transition:width 0.15s;}
+#tjcf-hp-fill{background:linear-gradient(90deg,#ff3c3c,#ff6b35);}
+#tjcf-mp-fill{background:linear-gradient(90deg,#00d4ff,#7a2be2);}
+#tjcf-hud-btns{display:flex;gap:6px;}
+.tjcf-hud-btn{
+  background:#1a1a2a;border:1px solid #444;border-radius:3px;
+  color:#aaa;font-family:'Press Start 2P',monospace;font-size:0.45rem;
+  padding:5px 8px;cursor:pointer;transition:all 0.15s;
+}
+.tjcf-hud-btn:hover{border-color:#ff9900;color:#ff9900;}
 
-    #cx-game-title {
-      font-family: 'Press Start 2P', monospace;
-      font-size: 1.4rem;
-      letter-spacing: 4px;
-      text-align: center;
-      background: linear-gradient(90deg, #ff3c3c, #ff9900, #ffe600, #ff3c3c);
-      background-size: 200% 100%;
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      background-clip: text;
-      animation: cxTitleScroll 2s linear infinite;
-      filter: drop-shadow(0 0 12px rgba(255,60,60,0.5));
-    }
-    @keyframes cxTitleScroll {
-      0%   { background-position: 0% 0%; }
-      100% { background-position: 200% 0%; }
-    }
+#tjcf-canvas-wrap{position:relative;width:100%;height:280px;overflow:hidden;background:#05050f;}
+#tjcfCanvas{display:block;width:100%;height:280px;}
+#tjcf-scanlines{
+  position:absolute;top:0;left:0;right:0;bottom:0;pointer-events:none;z-index:5;
+  background:repeating-linear-gradient(0deg,transparent,transparent 2px,rgba(0,0,0,0.06) 2px,rgba(0,0,0,0.06) 4px);
+}
 
-    #cx-game-container {
-      width: 560px !important;
-      max-width: 100% !important;
-      background: #0a0a0a !important;
-      border-radius: 4px !important;
-      border: 3px solid #ff3c3c !important;
-      box-shadow: 0 0 0 1px #000, 0 0 40px rgba(255,60,60,0.3), 0 0 80px rgba(255,60,60,0.1),
-                  inset 0 0 30px rgba(0,0,0,0.5) !important;
-      overflow: hidden !important;
-      box-sizing: border-box !important;
-    }
+/* SKILL BAR */
+#tjcf-skillbar{
+  display:flex;align-items:center;gap:8px;padding:6px 14px;
+  background:#0d0d1a;border-top:1px solid rgba(255,153,0,0.2);
+}
+.tjcf-skill-slot{
+  display:flex;flex-direction:column;align-items:center;gap:2px;
+  font-family:'Press Start 2P',monospace;font-size:0.4rem;
+}
+.tjcf-skill-icon{
+  width:36px;height:36px;border-radius:4px;border:2px solid #333;
+  display:flex;align-items:center;justify-content:center;font-size:1.1rem;
+  background:#0a0a1a;cursor:pointer;transition:all 0.15s;position:relative;
+  overflow:hidden;
+}
+.tjcf-skill-icon.ready{border-color:#ffe600;box-shadow:0 0 8px rgba(255,230,0,0.4);}
+.tjcf-skill-icon.active{border-color:#fff;background:rgba(255,255,255,0.15);}
+.tjcf-skill-cd{
+  position:absolute;bottom:0;left:0;right:0;height:3px;background:#ff9900;
+  transition:width 0.1s;
+}
+.tjcf-skill-key{color:rgba(255,255,255,0.35);}
 
-    #cx-top-bar {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      padding: 8px 14px;
-      background: #111;
-      border-bottom: 2px solid #ff3c3c;
-      gap: 8px;
-    }
+#tjcf-bottom-strip{
+  width:100%;height:3px;
+  background:repeating-linear-gradient(90deg,#ff3c3c 0,#ff3c3c 6px,#ff9900 6px,#ff9900 12px,#ffe600 12px,#ffe600 18px,#39ff14 18px,#39ff14 24px,#00d4ff 24px,#00d4ff 30px);
+  background-size:30px 100%;animation:stripScroll 0.5s linear infinite;
+}
+@keyframes stripScroll{0%{background-position:0}100%{background-position:30px}}
 
-    #cx-status-left {
-      display: flex;
-      align-items: center;
-      gap: 14px;
-    }
+#tjcf-keys-hint{
+  text-align:center;font-size:0.45rem;color:rgba(255,255,255,0.25);
+  font-family:'Press Start 2P',monospace;padding:6px 0 8px;line-height:2;
+}
+#tjcf-keys-hint span{color:#ff9900;}
 
-    .cx-stat {
-      font-family: 'Press Start 2P', monospace;
-      font-size: 0.6rem;
-      color: #ff9900;
-      letter-spacing: 1px;
-      display: flex;
-      flex-direction: column;
-      align-items: flex-start;
-      gap: 2px;
-    }
-    .cx-stat-label { color: rgba(255,255,255,0.35); font-size: 0.48rem; }
-    .cx-stat-val   { color: #ffe600; }
+/* OVERLAYS */
+#tjcf-overlay{
+  position:absolute;top:0;left:0;right:0;bottom:0;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  background:rgba(5,5,15,0.93);z-index:20;gap:12px;backdrop-filter:blur(4px);
+}
+#tjcf-overlay.hidden{display:none;}
+#tjcf-ov-title{font-family:'Press Start 2P',monospace;font-size:1.1rem;color:#ff9900;text-align:center;line-height:1.5;}
+#tjcf-ov-title.gameover{color:#ff3c3c;text-shadow:0 0 20px rgba(255,60,60,0.8);}
+#tjcf-ov-title.win{color:#ffe600;text-shadow:0 0 20px rgba(255,230,0,0.8);}
+#tjcf-ov-sub{font-family:'Press Start 2P',monospace;font-size:0.5rem;color:rgba(255,255,255,0.45);text-align:center;line-height:2.2;}
+#tjcf-ov-btn{
+  background:#ff3c3c;border:none;border-radius:3px;color:#fff;
+  font-family:'Press Start 2P',monospace;font-size:0.65rem;
+  padding:10px 24px;cursor:pointer;letter-spacing:1px;
+  box-shadow:0 0 20px rgba(255,60,60,0.4),4px 4px 0 #8b0000;
+  animation:btnBlink 1s step-end infinite;transition:all 0.1s;
+}
+@keyframes btnBlink{0%,100%{opacity:1}50%{opacity:0.7}}
+#tjcf-ov-btn:hover{transform:translate(-2px,-2px);box-shadow:0 0 30px rgba(255,60,60,0.6),6px 6px 0 #8b0000;}
 
-    #cx-hp-bar {
-      display: flex;
-      align-items: center;
-      gap: 6px;
-    }
-    #cx-hp-label {
-      font-family: 'Press Start 2P', monospace;
-      font-size: 0.48rem;
-      color: rgba(255,255,255,0.35);
-    }
-    #cx-hp-pips {
-      display: flex;
-      gap: 3px;
-    }
-    .cx-hp-pip {
-      width: 12px; height: 12px;
-      border-radius: 2px;
-      background: #ff3c3c;
-      box-shadow: 0 0 6px rgba(255,60,60,0.6);
-      transition: all 0.15s;
-    }
-    .cx-hp-pip.empty {
-      background: #2a0a0a;
-      box-shadow: none;
-      border: 1px solid #3a1a1a;
-    }
+/* CHARACTER SELECT */
+#tjcf-charselect{
+  position:absolute;top:0;left:0;right:0;bottom:0;
+  background:rgba(5,5,15,0.97);z-index:25;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:16px;
+}
+#tjcf-charselect.hidden{display:none;}
+.tjcf-cs-title{font-family:'Press Start 2P',monospace;font-size:0.9rem;color:#ffe600;letter-spacing:3px;}
+#tjcf-char-grid{display:flex;gap:10px;flex-wrap:wrap;justify-content:center;}
+.tjcf-char-card{
+  width:88px;background:#0d0d1a;border:2px solid #333;border-radius:6px;
+  padding:10px 6px;cursor:pointer;transition:all 0.2s;display:flex;flex-direction:column;align-items:center;gap:6px;
+  font-family:'Press Start 2P',monospace;
+}
+.tjcf-char-card:hover,.tjcf-char-card.selected{transform:translateY(-4px);}
+.tjcf-char-card.selected{box-shadow:0 0 20px var(--cclr, #ff9900);}
+.tjcf-char-canvas{width:64px;height:64px;border-radius:4px;background:#050510;}
+.tjcf-char-name{font-size:0.42rem;color:#fff;text-align:center;line-height:1.5;}
+.tjcf-char-elem{font-size:0.38rem;padding:2px 6px;border-radius:3px;margin-top:2px;}
+.tjcf-char-desc{font-size:0.35rem;color:rgba(255,255,255,0.35);text-align:center;line-height:1.5;min-height:28px;}
+#tjcf-start-btn{
+  background:linear-gradient(90deg,#ff3c3c,#ff9900);border:none;border-radius:3px;
+  color:#fff;font-family:'Press Start 2P',monospace;font-size:0.7rem;
+  padding:10px 30px;cursor:pointer;box-shadow:0 0 20px rgba(255,153,0,0.4),4px 4px 0 #663300;
+  transition:all 0.1s;
+}
+#tjcf-start-btn:hover{transform:translate(-2px,-2px);box-shadow:0 0 30px rgba(255,153,0,0.6),6px 6px 0 #663300;}
 
-    #cx-menu-btns { display: flex; gap: 6px; }
-    .cx-menu-btn {
-      background: #1a1a1a;
-      border: 1px solid #444;
-      border-radius: 3px;
-      color: #aaa;
-      font-family: 'Press Start 2P', monospace;
-      font-size: 0.5rem;
-      padding: 5px 9px;
-      cursor: pointer;
-      transition: all 0.15s;
-      letter-spacing: 0.5px;
-    }
-    .cx-menu-btn:hover { border-color: #ff9900; color: #ff9900; }
-    .cx-menu-btn.cx-pause   { border-color: #ffe600; color: #ffe600; }
-    .cx-menu-btn.cx-restart { border-color: #ff3c3c; color: #ff3c3c; }
-
-    #cx-canvas-wrapper {
-      position: relative !important;
-      width: 560px !important;
-      max-width: 100% !important;
-      height: 220px !important;
-      overflow: hidden !important;
-      display: block !important;
-      background: #050508 !important;
-    }
-    #cxGameCanvas {
-      display: block !important;
-      width: 560px !important;
-      max-width: 100% !important;
-      height: 220px !important;
-      image-rendering: pixelated;
-    }
-
-    #cx-scanlines {
-      position: absolute;
-      top: 0; left: 0; right: 0; bottom: 0;
-      background: repeating-linear-gradient(
-        0deg,
-        transparent,
-        transparent 2px,
-        rgba(0,0,0,0.08) 2px,
-        rgba(0,0,0,0.08) 4px
-      );
-      pointer-events: none;
-      z-index: 5;
-    }
-
-    #cx-bottom-strip {
-      width: 100%;
-      height: 3px;
-      background: repeating-linear-gradient(90deg, #ff3c3c 0, #ff3c3c 6px, #ff9900 6px, #ff9900 12px,
-                  #ffe600 12px, #ffe600 18px, #ff3c3c 18px, #ff3c3c 24px);
-      background-size: 24px 100%;
-      animation: cxStripScroll 0.6s linear infinite;
-    }
-    @keyframes cxStripScroll {
-      0%   { background-position: 0 0; }
-      100% { background-position: 24px 0; }
-    }
-
-    #cx-instructions {
-      text-align: center;
-      font-size: 0.58rem;
-      color: rgba(255,255,255,0.3);
-      font-family: 'Press Start 2P', monospace;
-      letter-spacing: 1px;
-      padding: 6px 0 8px;
-      line-height: 1.8;
-    }
-    #cx-instructions span { color: #ff9900; }
-
-    /* OVERLAY */
-    #cx-overlay {
-      position: absolute !important;
-      top: 0 !important; left: 0 !important;
-      right: 0 !important; bottom: 0 !important;
-      display: flex !important;
-      flex-direction: column !important;
-      align-items: center !important;
-      justify-content: center !important;
-      background: rgba(5,5,8,0.92) !important;
-      z-index: 10 !important;
-      gap: 12px !important;
-    }
-    #cx-overlay.hidden { display: none !important; }
-
-    #cx-overlay-title {
-      font-family: 'Press Start 2P', monospace;
-      font-size: 1.2rem;
-      color: #fff;
-      text-align: center;
-      line-height: 1.5;
-    }
-    #cx-overlay-title.gameover { color: #ff3c3c; text-shadow: 0 0 20px rgba(255,60,60,0.8); }
-    #cx-overlay-title.paused   { color: #ffe600; text-shadow: 0 0 20px rgba(255,230,0,0.6); }
-    #cx-overlay-title.start    { color: #ff9900; text-shadow: 0 0 20px rgba(255,153,0,0.6); }
-
-    #cx-overlay-sub {
-      font-family: 'Press Start 2P', monospace;
-      font-size: 0.55rem;
-      color: rgba(255,255,255,0.5);
-      text-align: center;
-      line-height: 2;
-    }
-
-    #cx-overlay-btn {
-      background: #ff3c3c;
-      border: none;
-      border-radius: 3px;
-      color: #fff;
-      font-family: 'Press Start 2P', monospace;
-      font-size: 0.65rem;
-      padding: 10px 24px;
-      cursor: pointer;
-      letter-spacing: 1px;
-      box-shadow: 0 0 20px rgba(255,60,60,0.4), 4px 4px 0 #8b0000;
-      transition: all 0.1s;
-      animation: cxBtnBlink 1s step-end infinite;
-    }
-    @keyframes cxBtnBlink {
-      0%,100% { opacity: 1; } 50% { opacity: 0.7; }
-    }
-    #cx-overlay-btn:hover { transform: translate(-2px,-2px); box-shadow: 0 0 30px rgba(255,60,60,0.6), 6px 6px 0 #8b0000; }
-    #cx-overlay-btn:active { transform: translate(2px,2px); box-shadow: 2px 2px 0 #8b0000; }
-
-    /* LEADERBOARD */
-    #cx-leaderboard {
-      width: 560px !important;
-      max-width: 100% !important;
-      background: #0a0a0a !important;
-      border-radius: 4px !important;
-      border: 2px solid #333 !important;
-      box-shadow: 0 0 30px rgba(255,60,60,0.08) !important;
-      overflow: hidden !important;
-      box-sizing: border-box !important;
-    }
-    #cx-lb-header {
-      padding: 10px 16px;
-      background: #111;
-      border-bottom: 2px solid #ff3c3c;
-      font-family: 'Press Start 2P', monospace;
-      font-size: 0.7rem;
-      color: #ff3c3c;
-      letter-spacing: 3px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-    }
-    #cx-lb-live-dot {
-      display: inline-flex;
-      align-items: center;
-      gap: 5px;
-      font-size: 0.5rem;
-      color: #39ff14;
-      font-family: 'Press Start 2P', monospace;
-    }
-    #cx-lb-live-dot::before {
-      content: '';
-      display: inline-block;
-      width: 7px; height: 7px;
-      border-radius: 50%;
-      background: #39ff14;
-      box-shadow: 0 0 6px #39ff14;
-      animation: cxLivePulse 1s step-end infinite;
-    }
-    @keyframes cxLivePulse { 0%,100% { opacity: 1; } 50% { opacity: 0; } }
-    #cx-lb-list {
-      padding: 8px 12px;
-      display: flex;
-      flex-direction: column;
-      gap: 5px;
-      min-height: 80px;
-    }
-    .cx-lb-entry {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      padding: 6px 10px;
-      border-radius: 2px;
-      background: rgba(255,255,255,0.03);
-      border-left: 3px solid transparent;
-      font-family: 'Press Start 2P', monospace;
-      font-size: 0.55rem;
-      transition: all 0.2s;
-    }
-    .cx-lb-entry.cx-lb-highlight {
-      background: rgba(255,60,60,0.07);
-      border-left-color: #ff3c3c;
-    }
-    .cx-lb-rank { font-size: 0.7rem; width: 24px; text-align: center; }
-    .cx-rank-1    { color: #ffe600; text-shadow: 0 0 8px rgba(255,230,0,0.6); }
-    .cx-rank-2    { color: #c0c0c0; }
-    .cx-rank-3    { color: #cd7f32; }
-    .cx-rank-other{ color: rgba(255,255,255,0.25); }
-    .cx-lb-role {
-      font-size: 0.42rem; padding: 2px 5px; border-radius: 2px;
-      letter-spacing: 0.5px; text-transform: uppercase; white-space: nowrap;
-    }
-    .cx-role-super_admin { background: #ff3c3c; color: #fff; }
-    .cx-role-admin       { background: #ff9900; color: #000; }
-    .cx-role-user        { background: rgba(255,255,255,0.08); color: rgba(255,255,255,0.5); border: 1px solid rgba(255,255,255,0.1); }
-    .cx-lb-name  { flex: 1; color: #fff; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: 0.6rem; }
-    .cx-lb-score { color: #ff9900; font-size: 0.65rem; text-shadow: 0 0 8px rgba(255,153,0,0.4); }
-    .cx-lb-empty   { color: rgba(255,255,255,0.2); font-size: 0.55rem; text-align: center; padding: 20px 0; font-family: 'Press Start 2P', monospace; }
-    .cx-lb-loading { color: rgba(255,60,60,0.4); font-size: 0.55rem; text-align: center; padding: 20px 0; font-family: 'Press Start 2P', monospace; animation: cxFade 0.8s step-end infinite alternate; }
-    @keyframes cxFade { from{opacity:0.2} to{opacity:1} }
-  </style>
+/* LEADERBOARD */
+#tjcf-lb{
+  width:620px;max-width:100%;background:#080810;border:2px solid #333;border-radius:4px;
+  box-shadow:0 0 30px rgba(255,153,0,0.06);overflow:hidden;box-sizing:border-box;
+}
+#tjcf-lb-hdr{
+  padding:10px 16px;background:#0d0d1a;border-bottom:2px solid #ff9900;
+  font-family:'Press Start 2P',monospace;font-size:0.65rem;color:#ff9900;letter-spacing:3px;
+  display:flex;align-items:center;justify-content:space-between;
+}
+#tjcf-lb-live{display:inline-flex;align-items:center;gap:5px;font-size:0.5rem;color:#39ff14;}
+#tjcf-lb-live::before{
+  content:'';display:inline-block;width:7px;height:7px;border-radius:50%;
+  background:#39ff14;box-shadow:0 0 6px #39ff14;animation:livePulse 1s step-end infinite;
+}
+@keyframes livePulse{0%,100%{opacity:1}50%{opacity:0}}
+#tjcf-lb-list{padding:8px 12px;display:flex;flex-direction:column;gap:5px;min-height:80px;}
+.tjcf-lb-row{
+  display:flex;align-items:center;gap:10px;padding:6px 10px;border-radius:2px;
+  background:rgba(255,255,255,0.03);border-left:3px solid transparent;
+  font-family:'Press Start 2P',monospace;font-size:0.5rem;transition:all 0.2s;
+}
+.tjcf-lb-row.me{background:rgba(255,153,0,0.07);border-left-color:#ff9900;}
+.tjcf-lb-rank{font-size:0.7rem;width:24px;text-align:center;}
+.r1{color:#ffe600;text-shadow:0 0 8px rgba(255,230,0,0.6);}
+.r2{color:#c0c0c0;}.r3{color:#cd7f32;}.rx{color:rgba(255,255,255,0.25);}
+.tjcf-lb-role{font-size:0.38rem;padding:2px 5px;border-radius:2px;text-transform:uppercase;white-space:nowrap;}
+.role-super_admin{background:#ff3c3c;color:#fff;}
+.role-admin{background:#ff9900;color:#000;}
+.role-user{background:rgba(255,255,255,0.06);color:rgba(255,255,255,0.45);border:1px solid rgba(255,255,255,0.1);}
+.tjcf-lb-name{flex:1;color:#fff;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:0.55rem;}
+.tjcf-lb-score{color:#ff9900;font-size:0.6rem;text-shadow:0 0 8px rgba(255,153,0,0.4);}
+.tjcf-lb-empty{color:rgba(255,255,255,0.2);font-size:0.5rem;text-align:center;padding:20px 0;font-family:'Press Start 2P',monospace;}
+.tjcf-lb-load{color:rgba(255,153,0,0.4);font-size:0.5rem;text-align:center;padding:20px 0;font-family:'Press Start 2P',monospace;animation:lbFade 0.8s step-end infinite alternate;}
+@keyframes lbFade{from{opacity:0.2}to{opacity:1}}
+</style>
 </head>
 <body>
-  <div class="bg"></div>
+<div class="bg"></div>
 
-  <header class="topbar">
-    <div class="brand">
-      <a href="team-members.html" class="brand-logo" rel="noopener">
-        <img src="TJC_320x320.png" alt="TJC Group Logo" />
-      </a>
-      <div class="brand-text">
-        <div class="title">TJC ทีมประมูล</div>
-        <div class="subtitle" id="whoami">กำลังโหลด...</div>
-      </div>
+<header class="topbar">
+  <div class="brand">
+    <a href="team-members.html" class="brand-logo" rel="noopener">
+      <img src="TJC_320x320.png" alt="TJC Group Logo"/>
+    </a>
+    <div class="brand-text">
+      <div class="title">TJC ทีมประมูล</div>
+      <div class="subtitle" id="whoami">กำลังโหลด...</div>
     </div>
-    <div class="company-mini">
-      <div class="company-name">บริษัท ทีเจซี คอร์ปอเรชั่น จำกัด</div>
-      <div class="company-sub">311/1 หมู่ 4 ต.คำน้ำแซบ อ.วารินชำราบ จ.อุบลราชธานี 34190</div>
-      <div class="company-sub">เลขผู้เสียภาษี: 0325563000203</div>
+  </div>
+  <div class="company-mini">
+    <div class="company-name">บริษัท ทีเจซี คอร์ปอเรชั่น จำกัด</div>
+    <div class="company-sub">311/1 หมู่ 4 ต.คำน้ำแซบ อ.วารินชำราบ จ.อุบลราชธานี 34190</div>
+    <div class="company-sub">เลขผู้เสียภาษี: 0325563000203</div>
+  </div>
+  <div class="actions">
+    <button class="btn ghost" id="themeToggle" type="button">
+      <span class="icon" id="themeIcon"><svg viewBox="0 0 24 24"><path d="M21 12.6A8.5 8.5 0 0 1 11.4 3a7 7 0 1 0 9.6 9.6Z"/></svg></span>
+      <span id="themeLabel">Dark</span>
+    </button>
+    <a class="btn ghost" href="profile.html">Profile</a>
+    <button class="btn danger" id="btnLogout" type="button">Logout</button>
+  </div>
+</header>
+
+<main class="container">
+  <section class="card">
+    <h1 class="h1">TJC Marketing Assistant</h1>
+    <p class="muted">กดปุ่มเพื่อไปยังหน้าที่ต้องการ</p>
+    <div class="menuGrid">
+      <a class="btn primary wide" href="https://tjc-report.oo.gd/Announcement.php" target="_blank" rel="noopener">TJC ONE</a>
+      <a class="btn secondary wide" href="https://thegood-918.sg4.quickconnect.to/" target="_blank" rel="noopener">ลิ้งค์ NAS นอกสถานที่</a>
+      <a class="btn wide" href="https://docs.google.com/forms/d/e/1FAIpQLSdKiak_1-ZHw3l1OcOfRp107MMOTna5DWzM95jr4KWAoD-khA/viewform" target="_blank" rel="noopener">ลิ้งค์ เบิกสินค้า IT</a>
+      <a class="btn wide" href="https://docs.google.com/forms/d/e/1FAIpQLSdrUtYurzsDa6wYFRStj9ms_zwqpQTFg1juDKotIbFCTGU2Ig/viewform" target="_blank" rel="noopener">ลิ้งค์ เบิกสต๊อก PD</a>
+      <a class="btn wide" href="https://drive.google.com/drive/folders/1epvdX538AReQgI7m6Kn9xgMKRRtPs1TT?usp=sharing" target="_blank" rel="noopener">Brands Pricelist</a>
+      <a class="btn wide" href="https://drive.google.com/drive/folders/1eyvXrI_grxBX6UoC8zWSOezskrHs_zF8?usp=drive_link" target="_blank" rel="noopener">TOR Stock</a>
+      <a class="btn wide" href="https://thegood-918.sg4.quickconnect.to/oo/r/vTlrAOTkV1df10VG7vCfcvRWEfGb89iK" target="_blank" rel="noopener">ข้อมูลรวมตารางราคา</a>
+      <a class="btn wide" href="https://calendar.google.com/calendar/u/4?cid=Y19lODY2ZmI5ODA3ZDlkOTdkYWI0NzU3ZGU5NDk4OWQ0Y2ZlZWE5ZTNjMzU4ZThjY2E0NThhY2JjYzRiYTRkMDgzQGdyb3VwLmNhbGVuZGFyLmdvb2dsZS5jb20" target="_blank" rel="noopener">ปฏิทินงานทีมประมูล TJC</a>
+      <a class="btn wide" href="Ot-portal-page.html" target="_blank" rel="noopener">OT Management Portal</a>
+      <a class="btn wide canva-btn" href="https://www.canva.com/" target="_blank" rel="noopener">Canva</a>
+      <a class="btn wide" href="https://chatgpt.com/" target="_blank" rel="noopener">ChatGPT</a>
+      <a class="btn wide" href="https://gemini.google.com/" target="_blank" rel="noopener">Gemini</a>
     </div>
-    <div class="actions">
-      <button class="btn ghost" id="themeToggle" type="button" aria-label="สลับโหมดสี">
-        <span class="icon" id="themeIcon" aria-hidden="true">
-          <svg viewBox="0 0 24 24"><path d="M21 12.6A8.5 8.5 0 0 1 11.4 3a7 7 0 1 0 9.6 9.6Z"/></svg>
-        </span>
-        <span id="themeLabel">Dark</span>
-      </button>
-      <a class="btn ghost" href="profile.html">Profile</a>
-      <button class="btn danger" id="btnLogout" type="button">Logout</button>
-    </div>
-  </header>
+  </section>
+</main>
 
-  <main class="container">
-    <section class="card">
-      <h1 class="h1">TJC Marketing Assistant</h1>
-      <p class="muted">กดปุ่มเพื่อไปยังหน้าที่ต้องการ</p>
-      <div class="menuGrid">
-        <a class="btn primary wide" href="https://tjc-report.oo.gd/Announcement.php" target="_blank" rel="noopener">TJC ONE</a>
-        <a class="btn secondary wide" href="https://thegood-918.sg4.quickconnect.to/" target="_blank" rel="noopener">ลิ้งค์ NAS นอกสถานที่</a>
-        <a class="btn wide" href="https://docs.google.com/forms/d/e/1FAIpQLSdKiak_1-ZHw3l1OcOfRp107MMOTna5DWzM95jr4KWAoD-khA/viewform" target="_blank" rel="noopener">ลิ้งค์ เบิกสินค้า IT</a>
-        <a class="btn wide" href="https://docs.google.com/forms/d/e/1FAIpQLSdrUtYurzsDa6wYFRStj9ms_zwqpQTFg1juDKotIbFCTGU2Ig/viewform" target="_blank" rel="noopener">ลิ้งค์ เบิกสต๊อก PD</a>
-        <a class="btn wide" href="https://drive.google.com/drive/folders/1epvdX538AReQgI7m6Kn9xgMKRRtPs1TT?usp=sharing" target="_blank" rel="noopener">Brands Pricelist</a>
-        <a class="btn wide" href="https://drive.google.com/drive/folders/1eyvXrI_grxBX6UoC8zWSOezskrHs_zF8?usp=drive_link" target="_blank" rel="noopener">TOR Stock</a>
-        <a class="btn wide" href="https://thegood-918.sg4.quickconnect.to/oo/r/vTlrAOTkV1df10VG7vCfcvRWEfGb89iK" target="_blank" rel="noopener">ข้อมูลรวมตารางราคา</a>
-        <a class="btn wide" href="https://calendar.google.com/calendar/u/4?cid=Y19lODY2ZmI5ODA3ZDlkOTdkYWI0NzU3ZGU5NDk4OWQ0Y2ZlZWE5ZTNjMzU4ZThjY2E0NThhY2JjYzRiYTRkMDgzQGdyb3VwLmNhbGVuZGFyLmdvb2dsZS5jb20" target="_blank" rel="noopener">ปฏิทินงานทีมประมูล TJC</a>
-        <a class="btn wide" href="Ot-portal-page.html" target="_blank" rel="noopener">OT Management Portal</a>
-        <a class="btn wide canva-btn" href="https://www.canva.com/" target="_blank" rel="noopener">
-          <span class="icon" aria-hidden="true">
-            <svg viewBox="0 0 64 64" fill="none">
-              <defs><linearGradient id="canvaGradient" x1="0" y1="0" x2="64" y2="64"><stop offset="0%" stop-color="#00C4CC"/><stop offset="100%" stop-color="#7D2AE8"/></linearGradient></defs>
-              <circle cx="32" cy="32" r="28" fill="url(#canvaGradient)"/>
-              <path d="M39.8 40.6c-1.8 1.5-4.2 2.3-6.8 2.3-6 0-10.5-4.1-10.5-10.5s4.5-10.5 10.5-10.5c2.5 0 4.8.7 6.5 2.1l-2.2 2.7c-1.1-.9-2.5-1.4-4.1-1.4-3.9 0-6.6 2.8-6.6 7.1s2.7 7.1 6.6 7.1c1.8 0 3.3-.6 4.4-1.6l2.2 2.7Z" fill="white"/>
-            </svg>
-          </span>Canva</a>
-        <a class="btn wide" href="https://chatgpt.com/" target="_blank" rel="noopener">ChatGPT</a>
-        <a class="btn wide" href="https://gemini.google.com/" target="_blank" rel="noopener">Gemini</a>
+<script type="module" src="./firebase.js?v=42"></script>
+<script type="module" src="./app-page.js?v=42"></script>
+
+<!-- ============================================================
+     ⚔️ TJC FIGHTER — Little Fighter 2 Inspired Beat-em-up
+     ============================================================ -->
+<div id="tjcf-section">
+  <div id="tjcf-title">⚔️ TJC FIGHTER</div>
+
+  <div id="tjcf-wrap">
+    <!-- HUD -->
+    <div id="tjcf-hud">
+      <div id="tjcf-hp-wrap">
+        <span class="tjcf-hud-label">HP</span>
+        <div class="tjcf-bar-bg"><div class="tjcf-bar-fill" id="tjcf-hp-fill" style="width:100%"></div></div>
       </div>
-    </section>
-  </main>
-
-  <script type="module" src="./firebase.js?v=42"></script>
-  <script type="module" src="./app-page.js?v=42"></script>
-
-  <!-- ============================================================
-       🔫 CONEXTRA — Contra-style side-scrolling shooter
-       ============================================================ -->
-  <div id="conextra-section">
-    <div id="cx-game-title">🔫 CONEXTRA</div>
-
-    <div id="cx-game-container">
-      <div id="cx-top-bar">
-        <div id="cx-status-left">
-          <div class="cx-stat">
-            <span class="cx-stat-label">SCORE</span>
-            <span class="cx-stat-val" id="cxScoreVal">0</span>
-          </div>
-          <div class="cx-stat">
-            <span class="cx-stat-label">HI</span>
-            <span class="cx-stat-val" id="cxHiVal">0</span>
-          </div>
-          <div class="cx-stat">
-            <span class="cx-stat-label">LIVES</span>
-            <span class="cx-stat-val" id="cxLivesVal">3</span>
-          </div>
-          <div id="cx-hp-bar">
-            <span id="cx-hp-label">HP</span>
-            <div id="cx-hp-pips">
-              <div class="cx-hp-pip" id="cxHp0"></div>
-              <div class="cx-hp-pip" id="cxHp1"></div>
-              <div class="cx-hp-pip" id="cxHp2"></div>
-            </div>
-          </div>
-        </div>
-        <div id="cx-menu-btns">
-          <button class="cx-menu-btn cx-pause"   id="cx-btn-pause">⏸</button>
-          <button class="cx-menu-btn cx-restart"  id="cx-btn-restart">↺</button>
-        </div>
+      <div id="tjcf-mp-wrap">
+        <span class="tjcf-hud-label">MP</span>
+        <div class="tjcf-bar-bg"><div class="tjcf-bar-fill" id="tjcf-mp-fill" style="width:100%"></div></div>
       </div>
-
-      <div id="cx-canvas-wrapper">
-        <canvas id="cxGameCanvas" width="560" height="220"></canvas>
-        <div id="cx-scanlines"></div>
-        <div id="cx-overlay">
-          <div id="cx-overlay-title" class="start">CONEXTRA</div>
-          <div id="cx-overlay-sub">กด SPACE / ↑ = กระโดด | Z / X = ยิง<br>↓ = หมอบ | มือถือ: แตะซ้าย/ขวา</div>
-          <button id="cx-overlay-btn">INSERT COIN</button>
-        </div>
-      </div>
-
-      <div id="cx-bottom-strip"></div>
-      <div id="cx-instructions">
-        <span>Z</span> หรือ <span>X</span> = ยิง &nbsp;|&nbsp; <span>↑/SPACE</span> = กระโดด &nbsp;|&nbsp; <span>↓</span> = หมอบ &nbsp;|&nbsp; มือถือ: <span>แตะซ้าย</span>=ยิง <span>แตะขวา</span>=กระโดด
+      <div class="tjcf-hud-stat"><span class="tjcf-hud-label">STAGE</span><span class="tjcf-hud-val" id="tjcf-stage-val">1-1</span></div>
+      <div class="tjcf-hud-stat"><span class="tjcf-hud-label">SCORE</span><span class="tjcf-hud-val" id="tjcf-score-val">0</span></div>
+      <div class="tjcf-hud-stat"><span class="tjcf-hud-label">KILLS</span><span class="tjcf-hud-val" id="tjcf-kills-val">0</span></div>
+      <div id="tjcf-hud-btns">
+        <button class="tjcf-hud-btn" id="tjcf-btn-pause">⏸</button>
+        <button class="tjcf-hud-btn" id="tjcf-btn-back">↩</button>
       </div>
     </div>
 
-    <div id="cx-leaderboard">
-      <div id="cx-lb-header">
-        🏆 HALL OF FAME
-        <span id="cx-lb-live-dot">LIVE</span>
+    <!-- CANVAS -->
+    <div id="tjcf-canvas-wrap">
+      <canvas id="tjcfCanvas" width="620" height="280"></canvas>
+      <div id="tjcf-scanlines"></div>
+
+      <!-- CHARACTER SELECT OVERLAY -->
+      <div id="tjcf-charselect">
+        <div class="tjcf-cs-title">SELECT YOUR FIGHTER</div>
+        <div id="tjcf-char-grid"></div>
+        <button id="tjcf-start-btn">▶ START GAME</button>
       </div>
-      <div id="cx-lb-list">
-        <div class="cx-lb-loading">LOADING...</div>
+
+      <!-- PAUSE / GAMEOVER OVERLAY -->
+      <div id="tjcf-overlay" class="hidden">
+        <div id="tjcf-ov-title">PAUSED</div>
+        <div id="tjcf-ov-sub"></div>
+        <button id="tjcf-ov-btn">CONTINUE</button>
       </div>
+    </div>
+
+    <!-- SKILL BAR -->
+    <div id="tjcf-skillbar">
+      <span style="font-family:'Press Start 2P',monospace;font-size:0.45rem;color:rgba(255,255,255,0.3);margin-right:4px;">SKILLS</span>
+      <div class="tjcf-skill-slot">
+        <div class="tjcf-skill-icon" id="sk0"><span id="sk0-ico">⚔️</span><div class="tjcf-skill-cd" id="sk0-cd" style="width:0%"></div></div>
+        <span class="tjcf-skill-key">A</span>
+      </div>
+      <div class="tjcf-skill-slot">
+        <div class="tjcf-skill-icon" id="sk1"><span id="sk1-ico">💥</span><div class="tjcf-skill-cd" id="sk1-cd" style="width:0%"></div></div>
+        <span class="tjcf-skill-key">S</span>
+      </div>
+      <div class="tjcf-skill-slot">
+        <div class="tjcf-skill-icon" id="sk2"><span id="sk2-ico">🌀</span><div class="tjcf-skill-cd" id="sk2-cd" style="width:0%"></div></div>
+        <span class="tjcf-skill-key">D</span>
+      </div>
+      <div style="flex:1"></div>
+      <div style="font-family:'Press Start 2P',monospace;font-size:0.4rem;color:rgba(255,255,255,0.2);text-align:right;line-height:1.8;">
+        MOVE: ←→↑↓<br>ATTACK: A S D
+      </div>
+    </div>
+    <div id="tjcf-bottom-strip"></div>
+    <div id="tjcf-keys-hint">
+      <span>←→</span> เดิน &nbsp;|&nbsp; <span>↑</span> กระโดด &nbsp;|&nbsp; <span>↓</span> หมอบ &nbsp;|&nbsp;
+      <span>A</span> สกิล1 &nbsp;|&nbsp; <span>S</span> สกิล2 &nbsp;|&nbsp; <span>D</span> สกิล3 &nbsp;|&nbsp;
+      มือถือ: <span>แตะปุ่ม</span>
     </div>
   </div>
 
-  <!-- 🔫 CONEXTRA SCRIPT -->
-  <script type="module">
-    import { saveScore, subscribeLeaderboard } from './firebase.js?v=42';
-    'use strict';
+  <!-- LEADERBOARD -->
+  <div id="tjcf-lb">
+    <div id="tjcf-lb-hdr">🏆 HALL OF CHAMPIONS <span id="tjcf-lb-live">LIVE</span></div>
+    <div id="tjcf-lb-list"><div class="tjcf-lb-load">LOADING...</div></div>
+  </div>
+</div>
 
-    /* ══════════════════════════════════
-       SECRET CHEAT — UNLIMITED AMMO MODE
-       รหัส: "uuu"  → ยิงได้ไม่มีคูลดาวน์ + กระสุนขนาดใหญ่
-    ══════════════════════════════════════ */
-    let cheatUnlocked = false;
-    let secretBuffer  = '';
-    const SECRET_CODE = 'tjc';
+<script type="module">
+import { saveScore, subscribeLeaderboard } from './firebase.js?v=42';
+'use strict';
 
-    function unlockCheat() {
-      cheatUnlocked = true;
-      showOverlay('start','⚡ CHEAT ON','UNLIMITED AMMO MODE ACTIVATED!','OK!');
-      setTimeout(()=>{ if(gameState==='playing') hideOverlay(); },900);
-    }
+/* ══════════════════════════════════════════════════════════
+   ⚔️ TJC FIGHTER ENGINE
+   Little Fighter 2 inspired — elemental characters, 100 stages
+══════════════════════════════════════════════════════════ */
 
-    /* ══════════════════════════════════
-       CANVAS + CONSTANTS
-    ══════════════════════════════════════ */
-    const canvas = document.getElementById('cxGameCanvas');
-    const ctx    = canvas.getContext('2d');
-    const W = 560, H = 220;
-    const GROUND_Y = 175;
-    const CROUCH_H = 22, STAND_H = 36;
-    const PLAYER_W = 16;
+const canvas = document.getElementById('tjcfCanvas');
+const ctx    = canvas.getContext('2d');
+const W = 620, H = 280;
+const GROUND = 210, FLOOR_H = 20;
+const GRAVITY = 0.55, JUMP_POWER = -13;
 
-    /* ══════════════════════════════════
-       GAME STATE
-    ══════════════════════════════════════ */
-    let gameState = 'idle'; // idle | playing | paused | gameover | dying
-    let score = 0, hiScore = 0, lives = 3, hp = 3;
-    let frame = 0, rafId = null;
-    let scrollX = 0, bgLayers = [];
-    let spawnTimer = 0, spawnInterval = 120;
-    let bulletCooldown = 0;
-    let deathTimer = 0;
+/* ══════════ CHARACTER DEFINITIONS ══════════ */
+const CHARACTERS = [
+  {
+    id:'pyro', name:'PYRO', element:'🔥 FIRE',
+    color:'#ff4422', accentColor:'#ff9900', helmColor:'#cc2200',
+    bodyColor:'#ff5533', desc:'เร็ว ความเสียหายสูง\nเผาศัตรูได้',
+    hp:180, mp:100, speed:3.5, atk:22,
+    skills:[
+      { name:'Flame Rush',  ico:'🔥', mp:15, cd:60,  color:'#ff6600', desc:'พุ่งกระโดดเตะไฟ' },
+      { name:'Fire Blast',  ico:'💥', mp:30, cd:120, color:'#ff3300', desc:'ยิงลูกไฟใหญ่' },
+      { name:'Inferno',     ico:'🌋', mp:60, cd:300, color:'#ff0000', desc:'ระเบิดไฟรอบตัว' },
+    ]
+  },
+  {
+    id:'aqua', name:'AQUA', element:'💧 WATER',
+    color:'#00aaff', accentColor:'#00d4ff', helmColor:'#0055aa',
+    bodyColor:'#0088dd', desc:'ป้องกันดี ฟื้น HP\nทำให้ศัตรูช้า',
+    hp:240, mp:120, speed:2.8, atk:16,
+    skills:[
+      { name:'Tidal Wave',  ico:'🌊', mp:20, cd:90,  color:'#00aaff', desc:'คลื่นน้ำกวาดหน้า' },
+      { name:'Ice Shard',   ico:'❄️', mp:35, cd:150, color:'#88ddff', desc:'ยิงเข็มน้ำแข็ง' },
+      { name:'Tsunami',     ico:'🌀', mp:70, cd:360, color:'#0044cc', desc:'พายุน้ำทั่วฉาก' },
+    ]
+  },
+  {
+    id:'terra', name:'TERRA', element:'🌿 EARTH',
+    color:'#44bb44', accentColor:'#88ff44', helmColor:'#226622',
+    bodyColor:'#339933', desc:'แข็งแกร่งมาก HP สูง\nสร้างกำแพงหิน',
+    hp:320, mp:80, speed:2.2, atk:28,
+    skills:[
+      { name:'Stone Smash', ico:'🪨', mp:15, cd:80,  color:'#888844', desc:'กระแทกพื้นสั่น' },
+      { name:'Rock Wall',   ico:'🛡️', mp:25, cd:200, color:'#666633', desc:'สร้างโล่กำแพง' },
+      { name:'Earthquake',  ico:'💥', mp:65, cd:400, color:'#aa8844', desc:'สั่นสะเทือนฉาก' },
+    ]
+  },
+  {
+    id:'storm', name:'STORM', element:'⚡ THUNDER',
+    color:'#ffe600', accentColor:'#ffffff', helmColor:'#998800',
+    bodyColor:'#ddcc00', desc:'ความเร็วสูงสุด\nสายฟ้าช็อตศัตรู',
+    hp:160, mp:110, speed:4.5, atk:20,
+    skills:[
+      { name:'Thunder Dash',ico:'⚡', mp:18, cd:50,  color:'#ffe600', desc:'พุ่งฟ้าผ่า' },
+      { name:'Ball Lightning',ico:'🌩️',mp:32, cd:130, color:'#ffff44', desc:'ยิงลูกไฟฟ้า' },
+      { name:'Thunderstorm', ico:'☈',  mp:65, cd:320, color:'#ffffff', desc:'ฟ้าผ่าทั่วฉาก' },
+    ]
+  },
+  {
+    id:'shadow', name:'SHADOW', element:'🌑 DARK',
+    color:'#aa44ff', accentColor:'#ff44ff', helmColor:'#550088',
+    bodyColor:'#8822cc', desc:'ล่องหนได้\nดูดชีวิตศัตรู',
+    hp:200, mp:130, speed:3.2, atk:25,
+    skills:[
+      { name:'Shadow Step', ico:'👻', mp:20, cd:70,  color:'#aa44ff', desc:'เทเลพอร์ต+โจมตี' },
+      { name:'Dark Drain',  ico:'🩸', mp:35, cd:160, color:'#ff00ff', desc:'ดูดชีวิตศัตรู' },
+      { name:'Void Pulse',  ico:'🌑', mp:70, cd:350, color:'#660099', desc:'คลื่นความมืดทั่วฉาก' },
+    ]
+  },
+  {
+    id:'solar', name:'SOLAR', element:'☀️ LIGHT',
+    color:'#ffee88', accentColor:'#ffffff', helmColor:'#cc9900',
+    bodyColor:'#ffdd44', desc:'รักษา HP ตัวเอง\nแสงทำตาบอด',
+    hp:210, mp:140, speed:3.0, atk:18,
+    skills:[
+      { name:'Solar Blade', ico:'☀️', mp:22, cd:75,  color:'#ffee00', desc:'คมดาบแสงสุริยา' },
+      { name:'Holy Flash',  ico:'✨', mp:38, cd:180, color:'#ffffff', desc:'แสงเจิดจ้าทำตาบอด' },
+      { name:'Radiance',    ico:'🌟', mp:75, cd:380, color:'#ffffaa', desc:'ระเบิดแสงทั่วฉาก' },
+    ]
+  },
+];
 
-    // input
-    const keys = {};
-    let touchLeft = false, touchRight = false;
+/* ══════════ BOSS DEFINITIONS (100 bosses, generated procedurally) ══════════ */
+const BOSS_NAMES = [
+  'IGNIS REX','GLACIUS','STONE GOLEM','THUNDERLORD','SHADOW REAPER',
+  'SOLAR KING','BLOOD TITAN','VOID WALKER','LAVA BEAST','STORM GIANT',
+  'PLAGUE LORD','FROST WYRM','MAGMA DEMON','THUNDER GOD','DARK EMPEROR',
+  'TWIN BLADES','CHAOS KNIGHT','BONE CRUSHER','INFERNAL DUKE','RIFT SPAWN',
+];
+const BOSS_EMOJIS = ['👹','👺','🐉','🦂','💀','👾','🔱','⚡','🌊','🔥','🌑','☠️','🐲','🦁','🦅','🐺','🐗','🦇','🌋','🪐'];
 
-    /* ══════════════════════════════════
-       ENTITIES
-    ══════════════════════════════════════ */
-    const player = {
-      x: 80, y: GROUND_Y - STAND_H,
-      vy: 0, onGround: true,
-      crouching: false,
-      invincible: 0,  // frames of invincibility after hit
-      animFrame: 0,
-      get h() { return this.crouching ? CROUCH_H : STAND_H; }
+function getBossData(stage) {
+  const idx = (stage - 1) % BOSS_NAMES.length;
+  const tier = Math.floor((stage-1)/20); // 0-4
+  const baseHP  = 300 + stage * 35 + tier * 200;
+  const baseAtk = 15  + stage * 1.5 + tier * 8;
+  const colors  = ['#ff3c3c','#aa44ff','#00d4ff','#ffe600','#44ff44'];
+  return {
+    name: BOSS_NAMES[idx] + (stage > 20 ? ' Ω'.repeat(Math.min(tier,4)) : ''),
+    emoji: BOSS_EMOJIS[idx % BOSS_EMOJIS.length],
+    hp: Math.round(baseHP), maxHp: Math.round(baseHP),
+    atk: Math.round(baseAtk),
+    color: colors[tier % colors.length],
+    size: 1.2 + tier * 0.12,
+    speed: 1.0 + tier * 0.15,
+    stage,
+  };
+}
+
+/* ══════════ ENEMY TYPES per Stage Tier ══════════ */
+function getEnemyColor(stage) {
+  const t = Math.floor((stage-1)/20);
+  return [['#e94560','#cc3355'],['#aa44ff','#8822cc'],['#00d4ff','#0088aa'],['#ffe600','#cc9900'],['#ff9900','#cc6600']][t];
+}
+
+/* ══════════════════════════════════════
+   GAME STATE
+══════════════════════════════════════ */
+let gs = 'charselect'; // charselect | playing | paused | gameover | stagewin | waveclear
+let chosenChar = null;
+let stage = 1, wave = 1;
+let score = 0, kills = 0, hiScore = 0;
+let frameCount = 0, rafId = null;
+
+/* ══════════ PLAYER ══════════ */
+const player = {
+  x: 80, y: GROUND - 48, w: 28, h: 48,
+  vx: 0, vy: 0, onGround: true,
+  hp: 200, maxHp: 200, mp: 100, maxMp: 100,
+  facing: 1, // 1=right, -1=left
+  state: 'idle', // idle|walk|jump|attack|skill|hurt|dead
+  stateTimer: 0,
+  invincible: 0,
+  attackHitbox: null,
+  skillCDs: [0,0,0],
+  skillMaxCDs: [60,120,300],
+  def: 0,
+  char: null,
+  animFrame: 0,
+  get speed(){ return this.char ? this.char.speed : 3; },
+  get atk()  { return this.char ? this.char.atk   : 20; },
+};
+
+/* ══════════ ENEMIES ══════════ */
+let enemies = [];
+let projectiles = []; // player & enemy projectiles
+let particles  = [];
+let hitTexts   = [];
+let waveCleared = false;
+let waveTimer   = 0;
+let enemiesThisWave = 0;
+let enemiesSpawned  = 0;
+let spawnTimer = 0;
+let bossSpawned = false;
+
+/* ══════════════════════════════════════
+   CHARACTER SELECT SCREEN
+══════════════════════════════════════ */
+(function buildCharSelect(){
+  const grid = document.getElementById('tjcf-char-grid');
+  CHARACTERS.forEach(c => {
+    const card = document.createElement('div');
+    card.className = 'tjcf-char-card';
+    card.style.setProperty('--cclr', c.accentColor);
+    card.innerHTML = `
+      <canvas class="tjcf-char-canvas" width="64" height="64" id="cc-${c.id}"></canvas>
+      <div class="tjcf-char-name">${c.name}</div>
+      <div class="tjcf-char-elem" style="background:${c.color}22;color:${c.accentColor};border:1px solid ${c.color}66">${c.element}</div>
+      <div class="tjcf-char-desc">${c.desc}</div>
+    `;
+    card.onclick = () => {
+      document.querySelectorAll('.tjcf-char-card').forEach(cc=>cc.classList.remove('selected'));
+      card.classList.add('selected');
+      card.style.borderColor = c.accentColor;
+      chosenChar = c;
     };
+    grid.appendChild(card);
+    // draw preview
+    setTimeout(()=>drawCharPreview(c, document.getElementById('cc-'+c.id)), 50);
+  });
+  // default select first
+  grid.children[0].click();
+})();
 
-    let bullets    = [];  // player bullets
-    let enemies    = [];  // enemy soldiers
-    let eBullets   = [];  // enemy bullets
-    let particles  = [];  // visual effects
-    let explosions = [];  // boom animations
+function drawCharPreview(c, cv) {
+  if (!cv) return;
+  const cx = cv.getContext('2d');
+  cx.clearRect(0,0,64,64);
+  drawCharacter(cx, 32, 48, c, 1, 'idle', 0, 1.1, true);
+}
 
-    /* ══════════════════════════════════
-       PARALLAX BG INIT
-    ══════════════════════════════════════ */
-    function initBg() {
-      bgLayers = [
-        { speed: 0.2, color: '#0d0d1a', stars: generateStars(40, '#334') },
-        { speed: 0.5, color: null,      stars: generateStars(20, '#556') },
-        { speed: 0.9, color: null,      hills: generateHills(5, H-60, 60, '#1a1a2e') },
-        { speed: 1.4, color: null,      hills: generateHills(8, H-40, 40, '#16213e') },
-      ];
-    }
-    function generateStars(n, color) {
-      return Array.from({length:n}, () => ({
-        x: Math.random()*W*2, y: Math.random()*(H-60),
-        r: Math.random()*1.5+0.3, color
-      }));
-    }
-    function generateHills(n, baseY, h, color) {
-      return Array.from({length:n}, (_,i) => ({
-        x: (i/n)*W*2, y: baseY - h*0.5, w: W/n*1.8, h, color
-      }));
-    }
+document.getElementById('tjcf-start-btn').onclick = () => {
+  if (!chosenChar) return;
+  startGame();
+};
 
-    /* ══════════════════════════════════
-       OVERLAY
-    ══════════════════════════════════════ */
-    function showOverlay(type, title, sub, btn) {
-      document.getElementById('cx-overlay-title').textContent = title;
-      document.getElementById('cx-overlay-title').className   = type;
-      document.getElementById('cx-overlay-sub').innerHTML     = sub || '';
-      document.getElementById('cx-overlay-btn').textContent   = btn || 'START';
-      document.getElementById('cx-overlay').classList.remove('hidden');
-    }
-    function hideOverlay() {
-      document.getElementById('cx-overlay').classList.add('hidden');
-    }
+/* ══════════════════════════════════════
+   START GAME
+══════════════════════════════════════ */
+function startGame() {
+  document.getElementById('tjcf-charselect').classList.add('hidden');
+  const c = chosenChar;
+  player.char   = c;
+  player.hp     = c.hp; player.maxHp = c.hp;
+  player.mp     = c.mp; player.maxMp = c.mp;
+  player.skillCDs   = [0,0,0];
+  player.skillMaxCDs = c.skills.map(s=>s.cd);
+  player.x = 80; player.y = GROUND - player.h;
+  player.vx = 0; player.vy = 0; player.onGround = true;
+  player.facing = 1; player.state = 'idle'; player.invincible = 0;
+  stage = 1; wave = 1; score = 0; kills = 0;
+  updateSkillBar();
+  updateHUD();
+  gs = 'playing';
+  enemies = []; projectiles = []; particles = []; hitTexts = [];
+  beginWave();
+  if (rafId) cancelAnimationFrame(rafId);
+  loop();
+}
 
-    /* ══════════════════════════════════
-       UI UPDATE
-    ══════════════════════════════════════ */
-    function updateHpUI() {
-      for (let i = 0; i < 3; i++) {
-        const pip = document.getElementById(`cxHp${i}`);
-        if (pip) pip.className = 'cx-hp-pip' + (i < hp ? '' : ' empty');
+/* ══════════════════════════════════════
+   WAVE SYSTEM
+══════════════════════════════════════ */
+function beginWave() {
+  waveCleared = false; waveTimer = 0; bossSpawned = false;
+  spawnTimer = 0; enemiesSpawned = 0;
+  const isBoss = (wave === 5);
+  enemiesThisWave = isBoss ? 1 : (3 + Math.floor(stage/5) + wave);
+  enemies = []; projectiles = [];
+  updateHUD();
+  // flash stage text
+  hitTexts.push({ x:W/2, y:H/2-20, text: `${stage}-${wave}${isBoss?' 👹BOSS!':''}`,
+    color: isBoss?'#ff3c3c':'#ffe600', life:1.5, vy:-0.5, size:isBoss?22:16, bold:true });
+}
+
+function spawnEnemy(isBoss=false) {
+  if (isBoss) {
+    const bd = getBossData(stage);
+    enemies.push({
+      x: W - 60, y: GROUND - Math.round(58 * bd.size),
+      w: Math.round(32 * bd.size), h: Math.round(58 * bd.size),
+      hp: bd.hp, maxHp: bd.maxHp,
+      atk: bd.atk, speed: bd.speed,
+      isBoss: true, bossData: bd,
+      vx: 0, vy: 0, onGround: true, facing: -1,
+      state: 'walk', stateTimer: 0, invincible: 0,
+      color: bd.color, accentColor: '#fff',
+      attackCd: 0, shootCd: Math.random()*60+60,
+      animFrame: 0,
+    });
+    return;
+  }
+  const tier = Math.floor((stage-1)/20);
+  const [col, acc] = getEnemyColor(stage);
+  const spd = 1.0 + (stage/30) + Math.random()*0.5;
+  const hp  = Math.round(40 + stage*6 + wave*4);
+  const atk = Math.round(8  + stage*0.8 + wave*1.2);
+  const types = ['soldier','archer','heavy'];
+  const type  = types[Math.floor(Math.random()*( wave===4?3:2 ))];
+  const heights = {soldier:42, archer:38, heavy:52};
+  const h = heights[type] || 42;
+  enemies.push({
+    x: W + 20 + Math.random()*60, y: GROUND - h,
+    w: type==='heavy'?28:22, h,
+    hp, maxHp:hp, atk, speed:spd,
+    type, isBoss:false,
+    vx:0, vy:0, onGround:true, facing:-1,
+    state:'walk', stateTimer:0, invincible:0,
+    color:col, accentColor:acc,
+    attackCd:0, shootCd: type==='archer' ? 80+Math.random()*40 : 9999,
+    animFrame:0,
+  });
+}
+
+/* ══════════════════════════════════════
+   CONTROLS
+══════════════════════════════════════ */
+const keys = {};
+document.addEventListener('keydown', e => {
+  keys[e.code] = true;
+  if (e.code==='ArrowLeft'||e.code==='ArrowRight'||e.code==='ArrowUp'||e.code==='ArrowDown'||e.code==='Space') e.preventDefault();
+  if (e.code==='KeyP') togglePause();
+  if (gs==='gameover') return;
+  if (e.code==='KeyA'||e.code==='KeyZ') useSkill(0);
+  if (e.code==='KeyS'||e.code==='KeyX') useSkill(1);
+  if (e.code==='KeyD'||e.code==='KeyC') useSkill(2);
+});
+document.addEventListener('keyup', e => { keys[e.code] = false; });
+
+document.getElementById('tjcf-btn-pause').onclick  = togglePause;
+document.getElementById('tjcf-btn-back').onclick   = () => {
+  if (rafId) cancelAnimationFrame(rafId);
+  gs = 'charselect';
+  document.getElementById('tjcf-charselect').classList.remove('hidden');
+  document.getElementById('tjcf-overlay').classList.add('hidden');
+};
+document.getElementById('tjcf-ov-btn').onclick = () => {
+  if (gs==='paused') { togglePause(); }
+  else { startGame(); }
+};
+
+/* ══════════ MOBILE SKILL BUTTONS ══════════ */
+[0,1,2].forEach(i => {
+  document.getElementById(`sk${i}`).addEventListener('touchstart', e=>{e.preventDefault();useSkill(i);},{passive:false});
+  document.getElementById(`sk${i}`).addEventListener('click', ()=>useSkill(i));
+});
+
+function togglePause() {
+  if (gs==='playing') {
+    gs='paused';
+    showOverlay('paused','⏸ PAUSED',`STAGE ${stage}-${wave}  SCORE: ${score}`,'CONTINUE');
+  } else if (gs==='paused') {
+    gs='playing'; hideOverlay(); loop();
+  }
+}
+
+/* ══════════════════════════════════════
+   SKILL USE
+══════════════════════════════════════ */
+function useSkill(idx) {
+  if (gs!=='playing') return;
+  if (!player.char) return;
+  const sk = player.char.skills[idx];
+  if (!sk) return;
+  if (player.skillCDs[idx] > 0) return;
+  if (player.mp < sk.mp) return;
+  player.mp -= sk.mp;
+  player.skillCDs[idx] = sk.cd;
+  player.state = 'skill'; player.stateTimer = 25;
+
+  const cx = player.x + player.w/2;
+  const cy = player.y + player.h/2;
+
+  if (idx === 0) {
+    // Skill 1 — melee dash / close range burst
+    // Player dashes and creates a large hitbox
+    player.vx = player.facing * 8;
+    createHitEffect(cx + player.facing*40, cy, sk.color, 1.2, player.atk * 2);
+    spawnSkillParticles(cx, cy, sk.color, 12);
+    doMeleeHit(player.atk * 2, 80, sk.color);
+  } else if (idx === 1) {
+    // Skill 2 — projectile
+    projectiles.push({
+      x: cx + player.facing*20, y: cy,
+      vx: player.facing * 9, vy: -0.5,
+      w:16, h:16, color: sk.color,
+      dmg: Math.round(player.atk * 2.5),
+      fromPlayer: true, pierce: false,
+      emoji: sk.ico, life: 1.5,
+      trailColor: sk.color,
+    });
+    spawnSkillParticles(cx, cy, sk.color, 6);
+  } else {
+    // Skill 3 — AOE ultimate
+    spawnSkillParticles(cx, cy, sk.color, 30);
+    createBigExplosion(cx, cy, sk.color);
+    enemies.forEach(e => {
+      const dist = Math.abs((e.x+e.w/2) - cx);
+      if (dist < 200) {
+        const dmg = Math.round(player.atk * 4 * (1 - dist/280));
+        hitEnemy(e, dmg, sk.color);
+      }
+    });
+  }
+  updateHUD();
+  updateSkillBar();
+}
+
+/* ══════════════════════════════════════
+   ATTACK (basic) — auto attack on approach
+══════════════════════════════════════ */
+function doBasicAttack() {
+  if (player.state === 'skill') return;
+  player.state = 'attack'; player.stateTimer = 15;
+  doMeleeHit(player.atk, 55, player.char?.accentColor || '#ffe600');
+}
+
+function doMeleeHit(dmg, range, color) {
+  enemies.forEach(e => {
+    const ex = e.x + e.w/2, ey = e.y + e.h/2;
+    const px = player.x + (player.facing>0 ? player.w : 0);
+    const py = player.y + player.h/2;
+    if (Math.abs(ex - px) < range && Math.abs(ey - py) < 50) {
+      hitEnemy(e, dmg, color);
+    }
+  });
+}
+
+function hitEnemy(e, dmg, color) {
+  if (e.invincible > 0) return;
+  e.hp -= dmg;
+  e.invincible = 12;
+  e.vx = player.facing * 3;
+  hitTexts.push({ x: e.x + e.w/2, y: e.y - 8, text: dmg, color, life: 1, vy: -1.8, size: 11 });
+  spawnHitParticles(e.x + e.w/2, e.y + e.h/3, color, 5);
+  if (e.hp <= 0) killEnemy(e);
+}
+
+function killEnemy(e) {
+  e.dead = true;
+  kills++;
+  const pts = e.isBoss ? (stage * 500) : (stage * 10 + wave * 5);
+  score += pts;
+  hiScore = Math.max(score, hiScore);
+  createBigExplosion(e.x + e.w/2, e.y + e.h/2, e.color);
+  // MP regen on kill
+  player.mp = Math.min(player.maxMp, player.mp + (e.isBoss ? 30 : 8));
+  updateHUD();
+}
+
+/* ══════════════════════════════════════
+   EFFECTS
+══════════════════════════════════════ */
+function createHitEffect(x, y, color, scale=1, dmg=0) {
+  for(let i=0;i<8;i++){
+    const a=Math.PI*2*(i/8), sp=2+Math.random()*3;
+    particles.push({x,y,vx:Math.cos(a)*sp*scale,vy:Math.sin(a)*sp*scale-1,
+      r:3+Math.random()*4*scale,color,life:1,decay:0.05+Math.random()*0.03});
+  }
+}
+function spawnHitParticles(x, y, color, n=5) {
+  for(let i=0;i<n;i++){
+    const a=Math.random()*Math.PI*2,sp=1+Math.random()*3;
+    particles.push({x,y,vx:Math.cos(a)*sp,vy:Math.sin(a)*sp-1,
+      r:2+Math.random()*3,color,life:1,decay:0.06+Math.random()*0.04});
+  }
+}
+function spawnSkillParticles(x,y,color,n){
+  for(let i=0;i<n;i++){
+    const a=Math.random()*Math.PI*2,sp=1+Math.random()*6;
+    particles.push({x,y,vx:Math.cos(a)*sp,vy:Math.sin(a)*sp-2,
+      r:3+Math.random()*6,color,life:1,decay:0.025+Math.random()*0.025});
+  }
+}
+function createBigExplosion(x,y,color){
+  for(let i=0;i<20;i++){
+    const a=Math.random()*Math.PI*2,sp=1+Math.random()*7;
+    particles.push({x,y,vx:Math.cos(a)*sp,vy:Math.sin(a)*sp-2,
+      r:4+Math.random()*8,color,life:1,decay:0.02+Math.random()*0.025});
+  }
+  hitTexts.push({x,y,text:'💥',color:'#ff9900',life:0.8,vy:-1.5,size:24,isEmoji:true});
+}
+
+/* ══════════════════════════════════════
+   DRAW — CHARACTER (pixel art procedural)
+══════════════════════════════════════ */
+function drawCharacter(cx2, x, y, charDef, facing, state, animF, scale=1, preview=false) {
+  const c = charDef;
+  const w = Math.round(28*scale), h = Math.round(48*scale);
+  const fw = Math.round(10*scale), fh = Math.round(12*scale); // face
+  const bw = Math.round(16*scale), bh = Math.round(18*scale); // body
+  const lw = Math.round(8*scale),  lh = Math.round(16*scale); // leg
+  const armW = Math.round(7*scale), armH = Math.round(14*scale);
+
+  const runBob = state==='walk' ? Math.sin(animF*0.25)*3*scale : 0;
+  const legSwing = state==='walk' ? Math.sin(animF*0.25)*6*scale : 0;
+  const jumpSq   = state==='jump' ? 1.15 : (state==='attack'||state==='skill') ? 1.05 : 1;
+
+  cx2.save();
+  cx2.translate(x, y);
+  if (facing < 0) { cx2.scale(-1, 1); }
+  cx2.shadowBlur = 12; cx2.shadowColor = c.color;
+
+  // glow effect for skills
+  if (state==='skill') {
+    cx2.shadowBlur = 24; cx2.shadowColor = c.accentColor;
+  }
+
+  // LEGS
+  cx2.fillStyle = c.bodyColor;
+  cx2.fillRect(-lw + Math.round(legSwing), runBob - Math.round(lh*jumpSq), lw-1, Math.round(lh*jumpSq));
+  cx2.fillRect(1,                          runBob - Math.round(lh*jumpSq*0.9), lw-1, Math.round(lh*jumpSq*0.9));
+  // boots
+  cx2.fillStyle = '#222';
+  cx2.fillRect(-lw + Math.round(legSwing), runBob - 4, lw+1, 4);
+  cx2.fillRect(1,                          runBob - 4, lw+1, 4);
+
+  // BODY
+  const bodyY = runBob - Math.round(lh*jumpSq) - bh;
+  cx2.fillStyle = c.color;
+  cx2.fillRect(-Math.round(bw/2), bodyY, bw, bh);
+  // belt
+  cx2.fillStyle = '#111';
+  cx2.fillRect(-Math.round(bw/2), bodyY + Math.round(bh*0.65), bw, 3);
+
+  // ARMS
+  const attackSwing = (state==='attack'||state==='skill') ? Math.round(8*scale) : 0;
+  cx2.fillStyle = c.color;
+  // right arm (weapon hand) — swings forward on attack
+  cx2.fillRect(Math.round(bw/2)-1, bodyY + 2 - attackSwing, armW, armH);
+  // left arm
+  cx2.fillRect(-Math.round(bw/2)-armW+1, bodyY + 2, armW, armH);
+
+  // WEAPON in hand
+  if (state==='attack'||state==='skill') {
+    cx2.fillStyle = c.accentColor;
+    cx2.shadowColor = c.accentColor;
+    cx2.fillRect(Math.round(bw/2)+armW-2, bodyY - 4 - attackSwing, 4, Math.round(22*scale));
+    // weapon glow trail
+    cx2.globalAlpha = 0.4;
+    cx2.fillStyle = c.accentColor;
+    cx2.fillRect(Math.round(bw/2)+armW+2, bodyY - 8 - attackSwing, 3, Math.round(18*scale));
+    cx2.globalAlpha = 1;
+  } else {
+    cx2.fillStyle = '#888';
+    cx2.fillRect(Math.round(bw/2)+armW-1, bodyY + 2, 3, Math.round(18*scale));
+  }
+
+  // HELMET
+  const headY = bodyY - fh - Math.round(4*scale);
+  cx2.fillStyle = c.helmColor;
+  cx2.fillRect(-Math.round(fw/2)-2, headY, fw+4, fh+2);
+  // visor
+  cx2.fillStyle = 'rgba(0,0,0,0.5)';
+  cx2.fillRect(-Math.round(fw/2), headY + Math.round(3*scale), fw, Math.round(4*scale));
+  // eyes glow
+  cx2.fillStyle = c.accentColor;
+  cx2.shadowBlur = 6; cx2.shadowColor = c.accentColor;
+  cx2.fillRect(-Math.round(fw/2)+2, headY + Math.round(3*scale)+1, Math.round(3*scale), Math.round(2*scale));
+  cx2.fillRect(Math.round(fw/4)-1,  headY + Math.round(3*scale)+1, Math.round(3*scale), Math.round(2*scale));
+
+  // element aura
+  if (state==='skill' || state==='idle') {
+    cx2.globalAlpha = state==='skill' ? 0.6 : 0.15;
+    const grad = cx2.createRadialGradient(0, bodyY+bh/2, 5, 0, bodyY+bh/2, Math.round(30*scale));
+    grad.addColorStop(0, c.accentColor);
+    grad.addColorStop(1, 'transparent');
+    cx2.fillStyle = grad;
+    cx2.beginPath(); cx2.arc(0, bodyY+bh/2, Math.round(30*scale), 0, Math.PI*2); cx2.fill();
+    cx2.globalAlpha = 1;
+  }
+
+  cx2.restore();
+}
+
+/* ══════════════════════════════════════
+   DRAW — ENEMY
+══════════════════════════════════════ */
+function drawEnemy(e) {
+  if (e.dead) return;
+  if (e.invincible > 0 && Math.floor(e.invincible/3)%2===0) return;
+  const x = e.x + e.w/2;
+  const y = e.y + e.h;
+
+  if (e.isBoss) {
+    drawBossChar(e, x, y);
+    return;
+  }
+  // Normal enemy — procedural
+  ctx.save();
+  ctx.translate(x, y);
+  if (e.facing > 0) ctx.scale(-1,1);
+  ctx.shadowBlur = 8; ctx.shadowColor = e.color;
+
+  const run = Math.sin(e.animFrame*0.2)*5;
+  const bh = e.h;
+
+  // legs
+  ctx.fillStyle = e.color;
+  ctx.fillRect(-9, -Math.round(bh*0.35)+run, 7, Math.round(bh*0.35));
+  ctx.fillRect(2,  -Math.round(bh*0.35)-run, 7, Math.round(bh*0.35));
+  ctx.fillStyle = '#222';
+  ctx.fillRect(-10, -2, 9, 4); ctx.fillRect(1, -2, 9, 4);
+
+  // body
+  ctx.fillStyle = e.color;
+  ctx.fillRect(-10, -Math.round(bh*0.75), 20, Math.round(bh*0.38));
+
+  // arms
+  const swing = (e.state==='attack') ? -10 : 0;
+  ctx.fillRect(-16, -Math.round(bh*0.72)+swing, 6, 14);
+  ctx.fillRect( 10, -Math.round(bh*0.72), 6, 14);
+
+  // weapon
+  if (e.type==='archer') {
+    ctx.fillStyle = '#886633';
+    ctx.fillRect(-18, -Math.round(bh*0.8)+swing, 3, 20);
+  } else {
+    ctx.fillStyle = '#888';
+    ctx.fillRect(-20, -Math.round(bh*0.75)+swing, 3, 16);
+  }
+
+  // head
+  ctx.fillStyle = e.color;
+  ctx.fillRect(-8, -bh, 16, Math.round(bh*0.28));
+  ctx.fillStyle = 'rgba(0,0,0,0.5)';
+  ctx.fillRect(-7, -bh+4, 14, 5);
+  ctx.fillStyle = '#ff4444';
+  ctx.fillRect(-5, -bh+5, 4, 3); ctx.fillRect(2, -bh+5, 4, 3);
+
+  ctx.restore();
+
+  // HP bar
+  const bw = e.w + 8;
+  ctx.fillStyle = '#1a0000'; ctx.fillRect(e.x-4, e.y-8, bw, 5);
+  ctx.fillStyle = e.color;
+  ctx.fillRect(e.x-4, e.y-8, bw*(e.hp/e.maxHp), 5);
+}
+
+function drawBossChar(e, x, y) {
+  const bd = e.bossData;
+  const s = bd.size;
+  ctx.save();
+  ctx.translate(x, y);
+  if (e.facing > 0) ctx.scale(-1, 1);
+  ctx.shadowBlur = 20; ctx.shadowColor = bd.color;
+
+  const pulse = 1 + Math.sin(frameCount*0.08)*0.04;
+  ctx.scale(pulse, pulse);
+
+  const h = e.h/s;
+  const bob = Math.sin(e.animFrame*0.1)*3;
+
+  // BOSS BODY — multi-layered imposing frame
+  // Legs (thick)
+  ctx.fillStyle = bd.color;
+  const ls = Math.round(14*s);
+  ctx.fillRect(-ls, bob - Math.round(h*0.35*s), ls-1, Math.round(h*0.35*s));
+  ctx.fillRect(2,   bob - Math.round(h*0.35*s), ls-1, Math.round(h*0.35*s));
+
+  // Body
+  const bws = Math.round(22*s), bhs = Math.round(h*0.38*s);
+  ctx.fillStyle = bd.color;
+  ctx.fillRect(-bws/2, bob - Math.round(h*0.75*s), bws, bhs);
+  // body detail
+  ctx.fillStyle = 'rgba(0,0,0,0.35)';
+  ctx.fillRect(-bws/2+2, bob - Math.round(h*0.75*s)+2, bws-4, 4);
+  ctx.fillRect(-bws/2+2, bob - Math.round(h*0.55*s), bws-4, 3);
+
+  // Shoulders / pauldrons
+  ctx.fillStyle = bd.color;
+  ctx.fillRect(-bws/2-Math.round(8*s), bob - Math.round(h*0.75*s), Math.round(10*s), Math.round(8*s));
+  ctx.fillRect(bws/2-2,               bob - Math.round(h*0.75*s), Math.round(10*s), Math.round(8*s));
+
+  // Arms
+  const swing = (e.state==='attack') ? -12 : bob;
+  ctx.fillRect(-bws/2-Math.round(10*s), bob - Math.round(h*0.7*s)+swing, Math.round(9*s), Math.round(20*s));
+  ctx.fillRect(bws/2+1,                 bob - Math.round(h*0.7*s),       Math.round(9*s), Math.round(20*s));
+
+  // BOSS WEAPON — huge
+  ctx.fillStyle = '#cc4444';
+  ctx.fillRect(-bws/2-Math.round(22*s), bob - Math.round(h*0.9*s)+swing, Math.round(5*s), Math.round(32*s));
+  // weapon glow
+  ctx.shadowColor = '#ff4444'; ctx.shadowBlur = 14;
+  ctx.fillStyle = 'rgba(255,80,80,0.5)';
+  ctx.fillRect(-bws/2-Math.round(24*s), bob - Math.round(h*0.95*s)+swing, Math.round(3*s), Math.round(28*s));
+  ctx.shadowBlur = 20; ctx.shadowColor = bd.color;
+
+  // HEAD — menacing
+  const hw = Math.round(20*s), hh = Math.round(h*0.3*s);
+  ctx.fillStyle = bd.color;
+  ctx.fillRect(-hw/2, bob - Math.round(h*s) - 2, hw, hh);
+  // helmet spikes
+  ctx.fillStyle = '#cc1111';
+  for(let sp=-1;sp<=1;sp++){
+    ctx.beginPath();
+    ctx.moveTo(sp*Math.round(6*s), bob - Math.round(h*s)-2);
+    ctx.lineTo(sp*Math.round(6*s)-Math.round(3*s), bob - Math.round(h*s)-Math.round(12*s));
+    ctx.lineTo(sp*Math.round(6*s)+Math.round(3*s), bob - Math.round(h*s)-Math.round(12*s));
+    ctx.closePath(); ctx.fill();
+  }
+  // glowing eyes (BOSS)
+  ctx.fillStyle = '#ff0000'; ctx.shadowColor='#ff0000'; ctx.shadowBlur=12;
+  ctx.fillRect(-hw/2+Math.round(3*s), bob - Math.round(h*s)+Math.round(4*s), Math.round(5*s), Math.round(4*s));
+  ctx.fillRect(hw/2-Math.round(8*s),  bob - Math.round(h*s)+Math.round(4*s), Math.round(5*s), Math.round(4*s));
+  // emoji icon above
+  ctx.shadowBlur = 0; ctx.font = `${Math.round(18*s)}px serif`;
+  ctx.textAlign = 'center'; ctx.globalAlpha = 0.8;
+  ctx.fillText(bd.emoji, 0, bob - Math.round(h*s) - Math.round(20*s));
+  ctx.globalAlpha = 1;
+
+  ctx.restore();
+
+  // BOSS HP bar (wide, above)
+  const barW = e.w + 40;
+  const barX = e.x - 20;
+  ctx.fillStyle = '#220000'; ctx.fillRect(barX, e.y - 16, barW, 8);
+  const fill = Math.max(0, barW * (e.hp/e.maxHp));
+  const grad = ctx.createLinearGradient(barX,0,barX+barW,0);
+  grad.addColorStop(0,'#ff0000'); grad.addColorStop(1,'#ff9900');
+  ctx.fillStyle = grad; ctx.fillRect(barX, e.y - 16, fill, 8);
+  ctx.strokeStyle = '#ff3c3c'; ctx.lineWidth = 1; ctx.strokeRect(barX, e.y-16, barW, 8);
+  ctx.fillStyle = '#fff'; ctx.font = '7px "Press Start 2P", monospace'; ctx.textAlign = 'center';
+  ctx.fillText(`${bd.name}`, barX + barW/2, e.y - 19);
+}
+
+/* ══════════════════════════════════════
+   DRAW — BACKGROUND (parallax)
+══════════════════════════════════════ */
+function drawBackground() {
+  // Sky
+  const tier = Math.floor((stage-1)/20);
+  const skyColors = [
+    ['#060614','#0d0d28'],
+    ['#140614','#1a0a1a'],
+    ['#060e0a','#0a1c10'],
+    ['#141000','#1c1600'],
+    ['#0a0000','#1a0505'],
+  ];
+  const [s1,s2] = skyColors[tier];
+  const sky = ctx.createLinearGradient(0,0,0,H);
+  sky.addColorStop(0,s1); sky.addColorStop(1,s2);
+  ctx.fillStyle=sky; ctx.fillRect(0,0,W,H);
+
+  // Stars / BG elements
+  ctx.save();
+  for(let i=0;i<20;i++){
+    const sx = ((i*137+frameCount*0.1)%W);
+    const sy = ((i*73) % (GROUND-40));
+    const sr = 0.5+((i*17)%3)*0.5;
+    ctx.fillStyle = `rgba(255,255,255,${0.1+((i%5)*0.06)})`;
+    ctx.fillRect(sx,sy,sr*2,sr*2);
+  }
+  ctx.restore();
+
+  // Distant mountains / structures
+  ctx.save();
+  ctx.globalAlpha = 0.18;
+  const bgColors = ['#3344aa','#6622aa','#224422','#997700','#441111'];
+  ctx.fillStyle = bgColors[tier];
+  const mx = -(frameCount*0.3)%W;
+  for(let m=0;m<4;m++){
+    const bx = ((mx + m*180)%W + W)%W;
+    ctx.beginPath();
+    ctx.moveTo(bx, GROUND); ctx.lineTo(bx+40, GROUND-90); ctx.lineTo(bx+90, GROUND);
+    ctx.fill();
+  }
+  ctx.restore();
+
+  // Mid-ground structures
+  ctx.save();
+  ctx.globalAlpha = 0.25;
+  const mgColors = ['#1a2266','#441166','#113322','#664400','#330000'];
+  ctx.fillStyle = mgColors[tier];
+  const ox = -(frameCount*0.7)%W;
+  for(let b=0;b<5;b++){
+    const bx = ((ox + b*120)%W + W)%W;
+    const bh2 = 30+b*12;
+    ctx.fillRect(bx, GROUND-bh2, 24, bh2);
+    ctx.fillRect(bx+8, GROUND-bh2-12, 8, 12);
+  }
+  ctx.restore();
+
+  // Ground
+  const gg = ctx.createLinearGradient(0,GROUND,0,H);
+  gg.addColorStop(0,'#1a1020'); gg.addColorStop(1,'#08080f');
+  ctx.fillStyle=gg; ctx.fillRect(0,GROUND,W,H-GROUND);
+
+  // Ground glow line
+  ctx.save();
+  const glowColors = ['#4444ff','#9922ff','#22aa44','#ffaa00','#ff2222'];
+  ctx.shadowBlur=8; ctx.shadowColor=glowColors[tier];
+  ctx.fillStyle=glowColors[tier];
+  ctx.fillRect(0,GROUND,W,3);
+  // moving grid
+  ctx.globalAlpha=0.12;
+  for(let gx=((frameCount*1.2)%40); gx<W; gx+=40){
+    ctx.fillStyle=glowColors[tier];
+    ctx.fillRect(gx,GROUND,2,H-GROUND);
+  }
+  ctx.restore();
+}
+
+/* ══════════════════════════════════════
+   DRAW — PROJECTILES
+══════════════════════════════════════ */
+function drawProjectile(p) {
+  ctx.save();
+  ctx.globalAlpha = p.life;
+  ctx.shadowBlur = 12; ctx.shadowColor = p.color;
+  // trail
+  for(let t=1;t<=4;t++){
+    ctx.globalAlpha = p.life*(1-t*0.2)*0.4;
+    ctx.fillStyle = p.trailColor || p.color;
+    ctx.beginPath();
+    ctx.arc(p.x - p.vx*t*0.5, p.y - p.vy*t*0.5, (p.w/2)*(1-t*0.15), 0, Math.PI*2);
+    ctx.fill();
+  }
+  ctx.globalAlpha = p.life;
+  if (p.emoji) {
+    ctx.font = `${p.w+6}px serif`;
+    ctx.textAlign='center'; ctx.textBaseline='middle';
+    ctx.fillText(p.emoji, p.x, p.y);
+  } else {
+    ctx.fillStyle = p.color;
+    ctx.beginPath(); ctx.arc(p.x, p.y, p.w/2, 0, Math.PI*2); ctx.fill();
+  }
+  ctx.restore();
+}
+
+/* ══════════════════════════════════════
+   UPDATE — PLAYER
+══════════════════════════════════════ */
+function updatePlayer() {
+  if (!player.char) return;
+
+  // horizontal movement
+  const spd = player.speed * (player.state==='skill' ? 1.5 : 1);
+  let moving = false;
+  if (keys['ArrowLeft']  || keys['KeyQ']) { player.vx = -spd; player.facing = -1; moving = true; }
+  else if (keys['ArrowRight'] || keys['KeyE']) { player.vx = spd; player.facing = 1; moving = true; }
+  else { player.vx *= 0.7; if(Math.abs(player.vx)<0.1) player.vx=0; }
+
+  // dash from skill 0
+  if (player.state === 'skill' && player.stateTimer > 20) {
+    // keep momentum
+  } else {
+    player.vx = moving ? player.vx : player.vx * 0.7;
+  }
+
+  player.x += player.vx;
+  player.x = Math.max(10, Math.min(W - player.w - 10, player.x));
+
+  // vertical
+  if ((keys['ArrowUp']||keys['Space']||keys['KeyW']) && player.onGround) {
+    player.vy = JUMP_POWER; player.onGround = false;
+    spawnHitParticles(player.x+player.w/2, player.y+player.h, player.char.accentColor, 4);
+  }
+  player.vy += GRAVITY;
+  player.y += player.vy;
+  if (player.y >= GROUND - player.h) {
+    player.y = GROUND - player.h; player.vy = 0; player.onGround = true;
+  }
+
+  // basic attack auto (when near enemy & no skill active) — manual only
+  if ((keys['KeyA']||keys['KeyZ']) && player.stateTimer <= 0 && player.state !== 'skill') {
+    doBasicAttack();
+  }
+
+  // state timer
+  if (player.stateTimer > 0) player.stateTimer--;
+  else if (player.state !== 'idle' && player.state !== 'walk') {
+    player.state = moving ? 'walk' : 'idle';
+  } else {
+    player.state = moving ? 'walk' : 'idle';
+  }
+
+  if (player.onGround && moving) player.animFrame++;
+  else if (!player.onGround) player.animFrame++;
+
+  if (player.invincible > 0) player.invincible--;
+
+  // MP regen
+  if (frameCount % 30 === 0) {
+    player.mp = Math.min(player.maxMp, player.mp + 2);
+  }
+
+  // skill cooldowns
+  player.skillCDs = player.skillCDs.map(cd => Math.max(0, cd-1));
+  updateSkillBar();
+}
+
+/* ══════════════════════════════════════
+   UPDATE — ENEMIES
+══════════════════════════════════════ */
+function updateEnemies() {
+  // spawn
+  if (wave < 5 && !waveCleared) {
+    if (enemiesSpawned < enemiesThisWave) {
+      const living = enemies.filter(e=>!e.dead).length;
+      if (living < Math.min(3 + Math.floor(wave/2), 5) && ++spawnTimer > (80 - stage)) {
+        spawnTimer = 0;
+        spawnEnemy(false);
+        enemiesSpawned++;
       }
     }
-    function updateScoreUI() {
-      document.getElementById('cxScoreVal').textContent  = score;
-      document.getElementById('cxHiVal').textContent     = hiScore;
-      document.getElementById('cxLivesVal').textContent  = lives;
+  } else if (wave === 5 && !bossSpawned) {
+    if (++spawnTimer > 90) { spawnEnemy(true); bossSpawned = true; }
+  }
+
+  enemies = enemies.filter(e => {
+    if (e.dead) return false;
+    e.animFrame++;
+    if (e.invincible > 0) e.invincible--;
+
+    // gravity
+    e.vy += GRAVITY * 0.8;
+    e.y += e.vy;
+    if (e.y >= GROUND - e.h) { e.y = GROUND - e.h; e.vy = 0; e.onGround = true; }
+
+    // AI: chase player
+    const dx = (player.x + player.w/2) - (e.x + e.w/2);
+    e.facing = dx > 0 ? 1 : -1;
+    const dist = Math.abs(dx);
+    const meleeRange = e.isBoss ? 70 : 45;
+    const attackRange = e.type==='archer' ? 200 : meleeRange;
+
+    if (dist > meleeRange) {
+      e.vx = e.facing * e.speed * (e.isBoss ? 1 : 1);
+    } else {
+      e.vx = 0;
+      e.state = 'attack';
     }
 
-    /* ══════════════════════════════════
-       GAME START / RESTART
-    ══════════════════════════════════════ */
-    function cxStartGame() {
-      gameState = 'playing';
-      score = 0; hp = 3; lives = 3; frame = 0;
-      bullets = []; enemies = []; eBullets = []; particles = []; explosions = [];
-      spawnTimer = 0; spawnInterval = 120; bulletCooldown = 0; scrollX = 0;
-      player.x = 80; player.y = GROUND_Y - STAND_H;
-      player.vy = 0; player.onGround = true; player.crouching = false;
-      player.invincible = 0; player.animFrame = 0;
-      initBg();
-      updateScoreUI(); updateHpUI();
-      hideOverlay();
-      if (rafId) cancelAnimationFrame(rafId);
-      loop();
+    // random small jump
+    if (e.onGround && Math.random() < 0.004 && dist < 150) {
+      e.vy = -8; e.onGround = false;
     }
 
-    function cxTogglePause() {
-      if (gameState === 'playing') {
-        gameState = 'paused';
-        showOverlay('paused', 'PAUSED', `SCORE: ${score}`, 'CONTINUE');
-      } else if (gameState === 'paused') {
-        gameState = 'playing';
-        hideOverlay();
-        loop();
+    e.x += e.vx;
+    e.x = Math.max(-e.w, Math.min(W, e.x));
+
+    // ATTACK
+    if (--e.attackCd <= 0 && dist < meleeRange + 5) {
+      e.attackCd = e.isBoss ? 60 : 80;
+      e.state = 'attack';
+      if (player.invincible <= 0) {
+        const dmg = Math.round(e.atk * (0.8 + Math.random()*0.4));
+        player.hp = Math.max(0, player.hp - dmg);
+        player.invincible = 60;
+        hitTexts.push({x:player.x+player.w/2, y:player.y-10, text:'-'+dmg, color:'#ff3c3c', life:1, vy:-2, size:12});
+        spawnHitParticles(player.x+player.w/2, player.y+player.h/2, '#ff3c3c', 6);
+        if (player.hp <= 0) { doGameOver(); return false; }
+        updateHUD();
       }
     }
 
-    /* ══════════════════════════════════
-       DEATH / GAME OVER LOGIC
-    ══════════════════════════════════════ */
-    function playerHit() {
-      if (player.invincible > 0) return;
-      hp--;
-      updateHpUI();
-      player.invincible = 90;
-      spawnExplosion(player.x + PLAYER_W/2, player.y + player.h/2, 8, '#ff3c3c');
-      if (hp <= 0) {
-        lives--;
-        updateScoreUI();
-        if (lives <= 0) {
-          doGameOver();
-        } else {
-          hp = 3; updateHpUI();
-          // respawn effect
-          player.invincible = 120;
-          spawnExplosion(player.x + PLAYER_W/2, player.y + player.h/2, 16, '#ffe600');
-        }
-      }
-    }
-
-    async function doGameOver() {
-      gameState = 'gameover';
-      hiScore = Math.max(score, hiScore);
-      spawnExplosion(player.x + PLAYER_W/2, player.y + player.h/2, 24, '#ff9900');
-      showOverlay('gameover', 'GAME OVER', `SCORE: ${score}  HI: ${hiScore}`, 'PLAY AGAIN');
-      const user = getCurrentUser();
-      await saveScore(user.name, user.role, score);
-    }
-
-    /* ══════════════════════════════════
-       SHOOT
-    ══════════════════════════════════════ */
-    function shoot() {
-      if (gameState !== 'playing') return;
-      const cd = cheatUnlocked ? 3 : 14;
-      if (bulletCooldown > 0) return;
-      bulletCooldown = cd;
-      const by = player.crouching ? player.y + CROUCH_H/2 : player.y + STAND_H/2 - 2;
-      const size = cheatUnlocked ? 5 : 3;
-      bullets.push({ x: player.x + PLAYER_W, y: by, vx: 10, size, color: cheatUnlocked ? '#ffe600' : '#ff9900' });
-    }
-
-    /* ══════════════════════════════════
-       JUMP
-    ══════════════════════════════════════ */
-    function jump() {
-      if (gameState !== 'playing') return;
-      if (player.onGround) {
-        player.vy = -10;
-        player.onGround = false;
-        spawnParticles(player.x + PLAYER_W/2, player.y + player.h, 4, '#ff9900');
-      }
-    }
-
-    /* ══════════════════════════════════
-       SPAWN ENEMY
-    ══════════════════════════════════════ */
-    function spawnEnemy() {
-      const types = [
-        // walker — วิ่งมาหา
-        { type: 'walker', w:16, h:32, hp:2, speed:1.2+Math.random()*1.2,
-          color:'#e94560', helmColor:'#8b0000', shootTimer:80+Math.random()*60 },
-        // heavy — ช้าแต่แน่น
-        { type: 'heavy', w:22, h:36, hp:4, speed:0.6+Math.random()*0.5,
-          color:'#7a2e8e', helmColor:'#3d0066', shootTimer:60+Math.random()*40 },
-        // fast — เร็วมาก
-        { type: 'fast', w:12, h:26, hp:1, speed:2.5+Math.random()*1.5,
-          color:'#ff6600', helmColor:'#993300', shootTimer:120+Math.random()*60 },
-      ];
-      const t = types[Math.floor(Math.random()*types.length)];
-      enemies.push({
-        ...t,
-        x: W + 10, y: GROUND_Y - t.h,
-        vy: 0, shootCd: t.shootTimer,
-        animFrame: 0, invincible: 0,
-        onGround: true,
+    // ARCHER SHOOT
+    if (e.type==='archer' && --e.shootCd <= 0 && dist < 250) {
+      e.shootCd = 70 + Math.random()*40;
+      projectiles.push({
+        x: e.x + (e.facing>0?e.w:0), y: e.y + e.h*0.4,
+        vx: e.facing * 6, vy: -0.3,
+        w:8, h:8, color:'#ff6644',
+        dmg: Math.round(e.atk*0.8),
+        fromPlayer:false, life:1.5,
+        trailColor:'#ff4422',
       });
     }
 
-    /* ══════════════════════════════════
-       PARTICLES / EXPLOSIONS
-    ══════════════════════════════════════ */
-    function spawnParticles(x, y, count, color) {
-      for (let i = 0; i < count; i++) {
-        const a = Math.random()*Math.PI*2, sp = 1+Math.random()*4;
-        particles.push({ x, y, vx: Math.cos(a)*sp, vy: Math.sin(a)*sp-2,
-          r: 2+Math.random()*3, color, life: 1, decay: 0.03+Math.random()*0.05 });
-      }
-    }
-    function spawnExplosion(x, y, count, color) {
-      explosions.push({ x, y, count, color, r: 0, maxR: 30+count, life: 1, decay: 0.05 });
-      spawnParticles(x, y, count, color);
-    }
-
-    /* ══════════════════════════════════
-       DRAW HELPERS
-    ══════════════════════════════════════ */
-    function drawPixelRect(x, y, w, h, color) {
-      ctx.fillStyle = color;
-      ctx.fillRect(Math.round(x), Math.round(y), w, h);
-    }
-
-    // Draw player (pixel soldier)
-    function drawPlayer() {
-      const { x, y, crouching, invincible, animFrame } = player;
-      if (invincible > 0 && Math.floor(invincible/4)%2 === 0) return; // blink
-
-      const runCycle = [0,2,0,-2];
-      const legOff = player.onGround ? runCycle[Math.floor(animFrame/8)%4] : 0;
-
-      ctx.save();
-      ctx.shadowBlur = 10; ctx.shadowColor = '#ff9900';
-
-      if (crouching) {
-        // crouched body
-        drawPixelRect(x+2, y+6, 12, 14, '#4a9eff'); // torso
-        drawPixelRect(x+3, y, 10, 8, '#f5c842');     // head/helmet
-        drawPixelRect(x, y+8, 4, 10, '#4a9eff');     // left arm
-        drawPixelRect(x+12, y+8, 6, 4, '#888');      // gun arm
-        drawPixelRect(x+17, y+8, 4, 3, '#ff9900');   // gun barrel
-        drawPixelRect(x+3, y+18, 5, 4, '#4a9eff');   // legs
-        drawPixelRect(x+8, y+18, 5, 4, '#4a9eff');
-      } else {
-        // standing body
-        drawPixelRect(x+2, y+10, 12, 18, '#4a9eff'); // torso
-        drawPixelRect(x+3, y, 10, 12, '#f5c842');    // helmet
-        drawPixelRect(x+4, y+2, 8, 2, '#ff3c3c');    // visor
-        // eyes
-        drawPixelRect(x+5, y+5, 2, 2, '#ffe600');
-        drawPixelRect(x+9, y+5, 2, 2, '#ffe600');
-        // gun arm
-        drawPixelRect(x+12, y+13, 8, 4, '#4a9eff');
-        drawPixelRect(x+18, y+12, 5, 3, '#888');     // gun
-        drawPixelRect(x+22, y+12, 4, 3, '#ff9900');  // barrel
-        // legs with run animation
-        drawPixelRect(x+4, y+26+legOff, 5, 10, '#2d6bc4');
-        drawPixelRect(x+8, y+26-legOff, 5, 10, '#2d6bc4');
-        // boots
-        drawPixelRect(x+3, y+34+legOff, 6, 4, '#333');
-        drawPixelRect(x+7, y+34-legOff, 6, 4, '#333');
-      }
-      ctx.restore();
-
-      // muzzle flash on shoot
-      if (bulletCooldown > 10) {
-        const fy = crouching ? y + CROUCH_H/2 - 1 : y + STAND_H/2 - 2;
-        ctx.save();
-        ctx.globalAlpha = (bulletCooldown-10)/4 * 0.8;
-        ctx.fillStyle = '#ffe600';
-        ctx.shadowBlur = 12; ctx.shadowColor = '#ffe600';
-        ctx.beginPath(); ctx.arc(x+26, fy, 5, 0, Math.PI*2); ctx.fill();
-        ctx.restore();
-      }
-    }
-
-    // Draw enemy soldier
-    function drawEnemy(e) {
-      if (e.invincible > 0 && Math.floor(e.invincible/3)%2 === 0) return;
-      const { x, y, w, h, color, helmColor, animFrame } = e;
-      const runOff = e.onGround ? [0,2,0,-2][Math.floor(animFrame/8)%4] : 0;
-      ctx.save();
-      ctx.shadowBlur = 8; ctx.shadowColor = color;
-      // helmet
-      drawPixelRect(x+w/2-5, y, 10, 10, helmColor);
-      // visor
-      drawPixelRect(x+w/2-4, y+2, 8, 3, '#ff3c3c');
-      // body
-      drawPixelRect(x+w/2-6, y+9, 12, 14, color);
-      // gun (pointing left)
-      drawPixelRect(x, y+14, 8, 3, '#888');
-      drawPixelRect(x-4, y+13, 5, 3, '#ff9900');
-      // legs
-      drawPixelRect(x+w/2-6, y+22+runOff, 5, 9, color);
-      drawPixelRect(x+w/2, y+22-runOff, 5, 9, color);
-      ctx.restore();
-
-      // HP bar for heavy
-      if (e.type === 'heavy') {
-        const bw = w+4, bx = x-2, by = y-8;
-        ctx.fillStyle = '#2a0a0a'; ctx.fillRect(bx, by, bw, 4);
-        ctx.fillStyle = '#ff3c3c';
-        ctx.fillRect(bx, by, bw * (e.hp/4), 4);
-      }
-    }
-
-    // Draw bullet
-    function drawBullet(b, isEnemy) {
-      ctx.save();
-      ctx.shadowBlur = 8; ctx.shadowColor = isEnemy ? '#ff3c3c' : b.color;
-      ctx.fillStyle = isEnemy ? '#ff3c3c' : b.color;
-      ctx.beginPath();
-      ctx.arc(b.x, b.y, b.size || 3, 0, Math.PI*2);
-      ctx.fill();
-      // trail
-      ctx.globalAlpha = 0.3;
-      ctx.beginPath(); ctx.arc(b.x - (isEnemy?-1:1)*8, b.y, (b.size||3)*0.7, 0, Math.PI*2); ctx.fill();
-      ctx.restore();
-    }
-
-    // Draw ground
-    function drawGround() {
-      // ground fill
-      const gg = ctx.createLinearGradient(0, GROUND_Y, 0, H);
-      gg.addColorStop(0,'#1a0a0a'); gg.addColorStop(1,'#0a0505');
-      ctx.fillStyle = gg; ctx.fillRect(0, GROUND_Y, W, H - GROUND_Y);
-      // ground line
-      ctx.save();
-      ctx.shadowBlur = 6; ctx.shadowColor = '#ff3c3c';
-      ctx.fillStyle = '#ff3c3c';
-      ctx.fillRect(0, GROUND_Y, W, 2);
-      // grid lines on ground
-      ctx.globalAlpha = 0.15;
-      ctx.fillStyle = '#ff9900';
-      for (let gx = (scrollX*0.5) % 40; gx < W; gx += 40) {
-        ctx.fillRect(gx, GROUND_Y, 1, H - GROUND_Y);
-      }
-      ctx.restore();
-    }
-
-    // Draw parallax bg
-    function drawBg() {
-      // sky gradient
-      const sky = ctx.createLinearGradient(0,0,0,H);
-      sky.addColorStop(0,'#050508'); sky.addColorStop(1,'#0f0a14');
-      ctx.fillStyle = sky; ctx.fillRect(0,0,W,H);
-
-      bgLayers.forEach(layer => {
-        const ox = -(scrollX * layer.speed) % (W*2);
-        if (layer.stars) {
-          layer.stars.forEach(s => {
-            const sx = ((s.x + ox) % (W*2) + W*2) % (W*2);
-            ctx.fillStyle = s.color;
-            ctx.fillRect(sx < W ? sx : sx - W*2, s.y, s.r*2, s.r*2);
-          });
-        }
-        if (layer.hills) {
-          layer.hills.forEach(h2 => {
-            const hx = ((h2.x + ox) % (W*2) + W*2) % (W*2);
-            ctx.fillStyle = h2.color;
-            ctx.beginPath();
-            ctx.ellipse(hx < W ? hx : hx - W*2, h2.y, h2.w/2, h2.h, 0, Math.PI, 0);
-            ctx.fill();
-          });
-        }
-      });
-    }
-
-    // Draw explosion ring
-    function drawExplosions() {
-      explosions.forEach(ex => {
-        ctx.save();
-        ctx.globalAlpha = ex.life * 0.5;
-        ctx.strokeStyle = ex.color;
-        ctx.lineWidth = 2;
-        ctx.shadowBlur = 12; ctx.shadowColor = ex.color;
-        ctx.beginPath(); ctx.arc(ex.x, ex.y, ex.r, 0, Math.PI*2); ctx.stroke();
-        ctx.restore();
-      });
-    }
-
-    // Draw particles
-    function drawParticles() {
-      particles.forEach(p => {
-        ctx.save();
-        ctx.globalAlpha = p.life;
-        ctx.fillStyle = p.color;
-        ctx.shadowBlur = 6; ctx.shadowColor = p.color;
-        ctx.beginPath(); ctx.arc(p.x, p.y, p.r*p.life, 0, Math.PI*2); ctx.fill();
-        ctx.restore();
-      });
-    }
-
-    // Score popup (floating text)
-    let scorePopups = [];
-    function spawnScorePopup(x, y, val) {
-      scorePopups.push({ x, y, val: '+'+val, life: 1, vy: -1.5 });
-    }
-    function drawScorePopups() {
-      scorePopups.forEach(p => {
-        ctx.save();
-        ctx.globalAlpha = p.life;
-        ctx.fillStyle = '#ffe600';
-        ctx.font = '700 10px "Press Start 2P", monospace';
-        ctx.fillText(p.val, p.x, p.y);
-        ctx.restore();
-      });
-    }
-
-    /* ══════════════════════════════════
-       COLLISION (AABB)
-    ══════════════════════════════════════ */
-    function aabb(ax, ay, aw, ah, bx, by, bw, bh, m=0) {
-      return ax+m < bx+bw && ax+aw-m > bx &&
-             ay+m < by+bh && ay+ah-m > by;
-    }
-
-    /* ══════════════════════════════════
-       MAIN LOOP
-    ══════════════════════════════════════ */
-    function loop() {
-      if (gameState !== 'playing') return;
-      ctx.clearRect(0,0,W,H);
-      frame++;
-
-      // score ticks up automatically
-      if (frame % 10 === 0) {
-        score += 1;
-        hiScore = Math.max(score, hiScore);
-        updateScoreUI();
-      }
-
-      // scroll
-      const scrollSpeed = 2 + Math.min(4, score/500);
-      scrollX += scrollSpeed;
-
-      // difficulty — faster spawns
-      spawnInterval = Math.max(40, 120 - Math.floor(score/200)*5);
-
-      // INPUT
-      const isShooting  = keys['z'] || keys['x'] || keys['KeyZ'] || keys['KeyX'] || touchLeft;
-      const isJumping   = keys[' '] || keys['arrowup'] || touchRight;
-      const isCrouching = keys['arrowdown'] || keys['s'];
-
-      if (isShooting) shoot();
-      if (isJumping && player.onGround) jump();
-
-      player.crouching = isCrouching && player.onGround;
-
-      // player physics
-      player.vy += 0.6;
-      player.y  += player.vy;
-      const groundTarget = GROUND_Y - player.h;
-      if (player.y >= groundTarget) {
-        player.y = groundTarget; player.vy = 0; player.onGround = true;
-      } else {
-        player.onGround = false;
-      }
-      if (player.invincible > 0) player.invincible--;
-      if (player.onGround) player.animFrame++;
-
-      // bullet cooldown
-      if (bulletCooldown > 0) bulletCooldown--;
-
-      // move player bullets
-      bullets = bullets.filter(b => b.x < W + 20);
-      bullets.forEach(b => { b.x += b.vx; });
-
-      // spawn enemies
-      if (++spawnTimer >= spawnInterval) { spawnTimer = 0; spawnEnemy(); }
-
-      // update enemies
-      enemies.forEach(e => {
-        e.x -= e.speed;
-        e.vy += 0.5;
-        e.y  += e.vy;
-        const eg = GROUND_Y - e.h;
-        if (e.y >= eg) { e.y = eg; e.vy = 0; e.onGround = true; }
-        if (e.onGround) e.animFrame++;
-        if (e.invincible > 0) e.invincible--;
-
-        // enemy shoots
-        if (--e.shootCd <= 0) {
-          e.shootCd = e.shootTimer + Math.random()*40;
-          const ey = e.y + e.h*0.4;
-          eBullets.push({ x: e.x-2, y: ey, vx: -5-Math.random()*2, size: 3 });
-        }
-      });
-
-      // move enemy bullets
-      eBullets = eBullets.filter(b => b.x > -10);
-      eBullets.forEach(b => { b.x += b.vx; });
-
-      // PLAYER vs ENEMY BULLETS
-      eBullets = eBullets.filter(b => {
-        const ph = player.crouching ? CROUCH_H : STAND_H;
-        if (aabb(player.x, player.y, PLAYER_W, ph, b.x-3, b.y-3, 6, 6, 3)) {
-          playerHit();
-          spawnParticles(b.x, b.y, 4, '#ff3c3c');
-          if (gameState !== 'playing') return false;
-          return false;
-        }
-        return true;
-      });
-
-      // PLAYER vs ENEMY (contact)
-      enemies.forEach(e => {
-        if (aabb(player.x, player.y, PLAYER_W, player.h, e.x, e.y, e.w, e.h, 4)) {
-          playerHit();
-        }
-      });
-
-      // PLAYER BULLETS vs ENEMIES
-      bullets = bullets.filter(b => {
-        let hit = false;
-        enemies = enemies.filter(e => {
-          if (!hit && aabb(b.x-b.size, b.y-b.size, b.size*2, b.size*2, e.x, e.y, e.w, e.h)) {
-            e.hp -= 1;
-            e.invincible = 10;
-            spawnParticles(b.x, b.y, 5, '#ff9900');
-            if (e.hp <= 0) {
-              const pts = e.type==='heavy' ? 50 : e.type==='fast' ? 30 : 20;
-              score += pts; hiScore = Math.max(score, hiScore);
-              updateScoreUI();
-              spawnExplosion(e.x+e.w/2, e.y+e.h/2, 14, e.color);
-              spawnScorePopup(e.x, e.y-10, pts);
-              return false;
-            }
-            hit = true;
-          }
-          return true;
+    // BOSS special shoot
+    if (e.isBoss && --e.shootCd <= 0) {
+      e.shootCd = 50 + Math.random()*30;
+      const bd = e.bossData;
+      for(let ang=-1;ang<=1;ang++) {
+        projectiles.push({
+          x:e.x+e.w/2, y:e.y+e.h*0.3,
+          vx: e.facing*5 + ang*1.5, vy: -0.5 + ang*0.8,
+          w:12, h:12, color:bd.color,
+          dmg: Math.round(e.atk*0.6),
+          fromPlayer:false, life:2,
+          trailColor:bd.color, emoji:'💢',
         });
-        return !hit;
-      });
-
-      // remove off-screen enemies
-      enemies = enemies.filter(e => e.x > -60);
-
-      // update particles / explosions / popups
-      particles.forEach(p => { p.x+=p.vx; p.y+=p.vy; p.vy+=0.12; p.life-=p.decay; });
-      particles = particles.filter(p => p.life > 0);
-
-      explosions.forEach(ex => { ex.r += 2; ex.life -= ex.decay; });
-      explosions = explosions.filter(ex => ex.life > 0);
-
-      scorePopups.forEach(p => { p.y += p.vy; p.life -= 0.02; });
-      scorePopups = scorePopups.filter(p => p.life > 0);
-
-      // ── DRAW ──
-      drawBg();
-      drawExplosions();
-      drawGround();
-      eBullets.forEach(b => drawBullet(b, true));
-      bullets.forEach(b  => drawBullet(b, false));
-      enemies.forEach(drawEnemy);
-      drawPlayer();
-      drawParticles();
-      drawScorePopups();
-
-      // danger vignette when hp=1
-      if (hp === 1) {
-        const vig = ctx.createRadialGradient(W/2,H/2,H*0.2,W/2,H/2,H*0.8);
-        vig.addColorStop(0,'transparent');
-        vig.addColorStop(1,`rgba(255,0,0,${0.15+0.1*Math.sin(frame*0.2)})`);
-        ctx.fillStyle = vig; ctx.fillRect(0,0,W,H);
       }
-
-      rafId = requestAnimationFrame(loop);
     }
 
-    /* ══════════════════════════════════
-       INPUT HANDLERS
-    ══════════════════════════════════════ */
-    document.addEventListener('keydown', e => {
-      const k = e.key.toLowerCase();
-      keys[k] = true;
-      keys[e.code] = true;
+    return true;
+  });
+}
 
-      // secret code input
-      if (/^[a-z]$/.test(k)) {
-        secretBuffer += k;
-        if (secretBuffer.length > SECRET_CODE.length) secretBuffer = secretBuffer.slice(-SECRET_CODE.length);
-        if (secretBuffer === SECRET_CODE) { unlockCheat(); secretBuffer = ''; }
-      }
+/* ══════════════════════════════════════
+   UPDATE — PROJECTILES
+══════════════════════════════════════ */
+function updateProjectiles() {
+  projectiles = projectiles.filter(p => {
+    p.x += p.vx; p.y += p.vy;
+    p.vy += 0.1;
+    p.life -= 0.015;
+    if (p.x < -20 || p.x > W+20 || p.y > GROUND+20 || p.life <= 0) return false;
 
-      if (e.code === 'Space' || e.code === 'ArrowUp') e.preventDefault();
-      if (e.code === 'KeyP') cxTogglePause();
-      if (e.code === 'KeyR') cxStartGame();
-
-      // start game on any action key
-      if ((e.code === 'Space'||e.code==='ArrowUp'||e.code==='KeyZ'||e.code==='KeyX') && gameState === 'idle') {
-        cxStartGame();
-      }
-    });
-    document.addEventListener('keyup', e => {
-      keys[e.key.toLowerCase()] = false;
-      keys[e.code] = false;
-    });
-
-    // touch controls
-    const wrapper = document.getElementById('cx-canvas-wrapper');
-    wrapper.addEventListener('touchstart', e => {
-      e.preventDefault();
-      if (gameState === 'idle' || gameState === 'gameover') { cxStartGame(); return; }
-      Array.from(e.changedTouches).forEach(t => {
-        const rect = canvas.getBoundingClientRect();
-        const tx = t.clientX - rect.left;
-        if (tx < rect.width / 2) touchLeft = true;
-        else touchRight = true;
+    if (p.fromPlayer) {
+      // check hit enemies
+      let hit = false;
+      enemies.forEach(e => {
+        if (!hit && !e.dead && p.x>e.x && p.x<e.x+e.w && p.y>e.y && p.y<e.y+e.h) {
+          hitEnemy(e, p.dmg, p.color);
+          if (!p.pierce) hit = true;
+        }
       });
-    }, { passive: false });
-    wrapper.addEventListener('touchend', e => {
-      e.preventDefault();
-      touchLeft = false; touchRight = false;
-    }, { passive: false });
-
-    /* ══════════════════════════════════
-       BUTTON HANDLERS
-    ══════════════════════════════════════ */
-    document.getElementById('cx-btn-pause').addEventListener('click', cxTogglePause);
-    document.getElementById('cx-btn-restart').addEventListener('click', cxStartGame);
-    document.getElementById('cx-overlay-btn').addEventListener('click', () => {
-      if (gameState === 'paused') cxTogglePause();
-      else cxStartGame();
-    });
-
-    /* ══════════════════════════════════
-       USER HELPER (same as original)
-    ══════════════════════════════════════ */
-    function getCurrentUser() {
-      if (window.tdCurrentUser) return window.tdCurrentUser;
-      const txt = (document.getElementById('whoami')?.textContent || '').trim();
-      if (txt && txt !== 'กำลังโหลด...') {
-        const name = txt.split('•')[0].trim();
-        let role = 'user';
-        if (/super_admin|super admin/i.test(txt)) role = 'super_admin';
-        else if (/admin/i.test(txt))              role = 'admin';
-        return { name, role };
+      if (hit) { spawnHitParticles(p.x, p.y, p.color, 5); return false; }
+    } else {
+      // check hit player
+      if (player.invincible<=0 && p.x>player.x && p.x<player.x+player.w && p.y>player.y && p.y<player.y+player.h) {
+        const dmg = Math.round(p.dmg*(0.8+Math.random()*0.4));
+        player.hp = Math.max(0, player.hp - dmg);
+        player.invincible = 50;
+        hitTexts.push({x:player.x+player.w/2, y:player.y-8, text:'-'+dmg, color:'#ff3c3c', life:1, vy:-2, size:11});
+        spawnHitParticles(p.x,p.y,'#ff3c3c',5);
+        if (player.hp<=0) doGameOver();
+        else updateHUD();
+        return false;
       }
-      return { name: localStorage.getItem('tdGuestName') || 'Guest', role: 'user' };
     }
+    return true;
+  });
+}
 
-    /* ══════════════════════════════════
-       LEADERBOARD — Real-time Firebase
-    ══════════════════════════════════════ */
-    let currentUserName = getCurrentUser().name;
+/* ══════════════════════════════════════
+   WAVE CLEAR CHECK
+══════════════════════════════════════ */
+function checkWaveClear() {
+  if (waveCleared) return;
+  const allDead = enemies.filter(e=>!e.dead).length === 0;
+  const spawnDone = (wave < 5 && enemiesSpawned >= enemiesThisWave) ||
+                    (wave === 5 && bossSpawned);
+  if (!allDead || !spawnDone) return;
 
-    function renderLB(entries) {
-      const list = document.getElementById('cx-lb-list');
-      if (!entries || entries.length === 0) {
-        list.innerHTML = '<div class="cx-lb-empty">NO SCORES YET</div>';
-        return;
-      }
-      list.innerHTML = entries.map((e, i) => {
-        const rankClass = i===0?'cx-rank-1':i===1?'cx-rank-2':i===2?'cx-rank-3':'cx-rank-other';
-        const rankIcon  = i===0?'🥇':i===1?'🥈':i===2?'🥉':`#${i+1}`;
-        const roleKey   = (e.role||'user').replace(/[^a-z_]/gi,'');
-        const isMe      = e.name === currentUserName;
-        return `
-          <div class="cx-lb-entry${isMe?' cx-lb-highlight':''}">
-            <div class="cx-lb-rank ${rankClass}">${rankIcon}</div>
-            <span class="cx-lb-role cx-role-${roleKey}">${(e.role||'user').replace('_',' ')}</span>
-            <div class="cx-lb-name">${e.name}${isMe?' ★':''}</div>
-            <div class="cx-lb-score">${Number(e.score).toLocaleString()}</div>
-          </div>`;
-      }).join('');
+  waveCleared = true;
+  score += wave === 5 ? stage * 200 : stage * 30 + wave * 20;
+  hiScore = Math.max(score, hiScore);
+  updateHUD();
+
+  if (wave === 5) {
+    // Stage clear!
+    hitTexts.push({x:W/2, y:H/2-30, text:'STAGE CLEAR! 🎉', color:'#ffe600', life:2.5, vy:-0.3, size:18, bold:true});
+    player.hp = Math.min(player.maxHp, player.hp + Math.round(player.maxHp*0.3));
+    player.mp = Math.min(player.maxMp, player.mp + 40);
+    updateHUD();
+    if (stage >= 100) {
+      setTimeout(()=>doClear(), 2500);
+    } else {
+      setTimeout(()=>{ stage++; wave=1; enemies=[]; projectiles=[]; waveCleared=false; bossSpawned=false; beginWave(); }, 2500);
     }
+  } else {
+    hitTexts.push({x:W/2, y:H/2-20, text:`WAVE ${wave} CLEAR!`, color:'#39ff14', life:1.5, vy:-0.3, size:14, bold:true});
+    player.mp = Math.min(player.maxMp, player.mp + 20);
+    updateHUD();
+    setTimeout(()=>{ wave++; enemies=[]; projectiles=[]; waveCleared=false; beginWave(); }, 1500);
+  }
+}
 
-    subscribeLeaderboard(renderLB);
+/* ══════════════════════════════════════
+   GAME OVER / CLEAR
+══════════════════════════════════════ */
+async function doGameOver() {
+  gs = 'gameover';
+  createBigExplosion(player.x+player.w/2, player.y+player.h/2, '#ff3c3c');
+  showOverlay('gameover','💀 GAME OVER',`STAGE ${stage}-${wave}\nSCORE: ${score}\nHI: ${hiScore}`,'PLAY AGAIN');
+  const u = getCurrentUser();
+  await saveScore(u.name, u.role, score);
+}
 
-    /* ══════════════════════════════════
-       BOOT — draw static frame
-    ══════════════════════════════════════ */
-    initBg();
-    (function staticFrame() {
-      const sky = ctx.createLinearGradient(0,0,0,H);
-      sky.addColorStop(0,'#050508'); sky.addColorStop(1,'#0f0a14');
-      ctx.fillStyle = sky; ctx.fillRect(0,0,W,H);
-      drawGround();
-      drawPlayer();
-    })();
-  </script>
-  <!-- END CONEXTRA -->
+function doClear() {
+  gs='gameover';
+  showOverlay('win','🏆 CHAMPION!',`ALL 100 STAGES CLEARED!\nFINAL SCORE: ${score}`,'PLAY AGAIN');
+  const u = getCurrentUser();
+  saveScore(u.name, u.role, score);
+}
 
-  <!-- Theme Toggle -->
-  <script>
-    (function () {
-      const root = document.documentElement;
-      const themeToggle = document.getElementById("themeToggle");
-      const themeLabel  = document.getElementById("themeLabel");
-      const themeIcon   = document.getElementById("themeIcon");
-      const saved = localStorage.getItem("theme");
-      const systemDark = window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches;
-      const initialTheme = saved || (systemDark ? "dark" : "light");
-      function moonSvg() { return `<svg viewBox="0 0 24 24"><path d="M21 12.6A8.5 8.5 0 0 1 11.4 3a7 7 0 1 0 9.6 9.6Z"/></svg>`; }
-      function sunSvg()  { return `<svg viewBox="0 0 24 24"><path d="M12 18a6 6 0 1 0 0-12 6 6 0 0 0 0 12Zm0-16h0.01M12 22h0.01M4.22 4.22h0.01M19.78 19.78h0.01M2 12h0.01M22 12h0.01M4.22 19.78h0.01M19.78 4.22h0.01"/></svg>`; }
-      function applyTheme(theme) {
-        root.setAttribute("data-theme", theme);
-        localStorage.setItem("theme", theme);
-        if (themeLabel) themeLabel.textContent = theme === "dark" ? "Light" : "Dark";
-        if (themeIcon)  themeIcon.innerHTML    = theme === "dark" ? sunSvg() : moonSvg();
-      }
-      applyTheme(initialTheme);
-      themeToggle?.addEventListener("click", () => {
-        const current = root.getAttribute("data-theme") || "light";
-        applyTheme(current === "dark" ? "light" : "dark");
-      });
-    })();
-  </script>
+/* ══════════════════════════════════════
+   HUD / UI UPDATES
+══════════════════════════════════════ */
+function updateHUD() {
+  const hpPct = Math.max(0, player.hp/player.maxHp*100);
+  const mpPct = Math.max(0, player.mp/player.maxMp*100);
+  document.getElementById('tjcf-hp-fill').style.width = hpPct+'%';
+  document.getElementById('tjcf-mp-fill').style.width = mpPct+'%';
+  document.getElementById('tjcf-hp-fill').style.background =
+    hpPct < 25 ? 'linear-gradient(90deg,#ff0000,#ff3300)' :
+    hpPct < 50 ? 'linear-gradient(90deg,#ff6600,#ff9900)' :
+    'linear-gradient(90deg,#ff3c3c,#ff6b35)';
+  document.getElementById('tjcf-stage-val').textContent = `${stage}-${wave}`;
+  document.getElementById('tjcf-score-val').textContent = score;
+  document.getElementById('tjcf-kills-val').textContent = kills;
+}
+
+function updateSkillBar() {
+  if (!player.char) return;
+  player.char.skills.forEach((sk,i)=>{
+    const cd = player.skillCDs[i];
+    const maxCd = sk.cd;
+    const icon = document.getElementById(`sk${i}-icon`);
+    const cdBar = document.getElementById(`sk${i}-cd`);
+    if (cdBar) cdBar.style.width = (cd/maxCd*100)+'%';
+    const slot = document.getElementById(`sk${i}`);
+    if (slot) {
+      slot.className = 'tjcf-skill-icon' + (cd===0 && player.mp>=sk.mp ? ' ready' : '');
+    }
+    const ico = document.getElementById(`sk${i}-ico`);
+    if (ico) ico.textContent = sk.ico;
+  });
+}
+
+/* ══════════════════════════════════════
+   OVERLAY
+══════════════════════════════════════ */
+function showOverlay(type, title, sub, btn) {
+  document.getElementById('tjcf-ov-title').textContent = title;
+  document.getElementById('tjcf-ov-title').className   = type;
+  document.getElementById('tjcf-ov-sub').innerHTML     = (sub||'').replace(/\n/g,'<br>');
+  document.getElementById('tjcf-ov-btn').textContent   = btn||'OK';
+  document.getElementById('tjcf-overlay').classList.remove('hidden');
+}
+function hideOverlay() {
+  document.getElementById('tjcf-overlay').classList.add('hidden');
+}
+
+/* ══════════════════════════════════════
+   MAIN LOOP
+══════════════════════════════════════ */
+function loop() {
+  if (gs !== 'playing') return;
+  ctx.clearRect(0,0,W,H);
+  frameCount++;
+
+  updatePlayer();
+  updateEnemies();
+  updateProjectiles();
+  checkWaveClear();
+
+  // update particles
+  particles.forEach(p=>{p.x+=p.vx;p.y+=p.vy;p.vy+=0.1;p.life-=p.decay;});
+  particles=particles.filter(p=>p.life>0);
+  hitTexts.forEach(t=>{t.y+=t.vy;t.life-=0.02;});
+  hitTexts=hitTexts.filter(t=>t.life>0);
+
+  // DRAW
+  drawBackground();
+  projectiles.forEach(drawProjectile);
+
+  // draw player
+  if (gs==='playing') {
+    const show = player.invincible<=0 || Math.floor(player.invincible/5)%2===0;
+    if (show && player.char) {
+      drawCharacter(ctx, player.x+player.w/2, player.y+player.h,
+        player.char, player.facing, player.state, player.animFrame, 1.0);
+      // shadow
+      ctx.save(); ctx.globalAlpha=0.2; ctx.fillStyle='#000';
+      ctx.ellipse(player.x+player.w/2, GROUND+2, player.w*0.6, 4, 0, 0, Math.PI*2);
+      ctx.fill(); ctx.restore();
+    }
+  }
+
+  // draw enemies
+  enemies.forEach(drawEnemy);
+
+  // draw particles
+  particles.forEach(p=>{
+    ctx.save();ctx.globalAlpha=p.life;ctx.fillStyle=p.color;
+    ctx.shadowBlur=6;ctx.shadowColor=p.color;
+    ctx.beginPath();ctx.arc(p.x,p.y,p.r*p.life,0,Math.PI*2);ctx.fill();
+    ctx.restore();
+  });
+
+  // draw hit texts
+  hitTexts.forEach(t=>{
+    ctx.save();
+    ctx.globalAlpha=t.life;
+    ctx.fillStyle=t.color;
+    ctx.shadowBlur=8;ctx.shadowColor=t.color;
+    if(t.isEmoji){
+      ctx.font=`${t.size}px serif`;ctx.textAlign='center';ctx.textBaseline='middle';
+      ctx.fillText(t.text,t.x,t.y);
+    } else {
+      ctx.font=`${t.bold?'bold ':''}${t.size||11}px "Press Start 2P",monospace`;
+      ctx.textAlign='center';ctx.textBaseline='middle';
+      ctx.fillText(t.text,t.x,t.y);
+    }
+    ctx.restore();
+  });
+
+  // HP danger vignette
+  if (player.hp / player.maxHp < 0.3) {
+    const vig=ctx.createRadialGradient(W/2,H/2,H*0.2,W/2,H/2,H*0.8);
+    vig.addColorStop(0,'transparent');
+    vig.addColorStop(1,`rgba(255,0,0,${0.12+0.08*Math.sin(frameCount*0.2)})`);
+    ctx.fillStyle=vig;ctx.fillRect(0,0,W,H);
+  }
+
+  rafId=requestAnimationFrame(loop);
+}
+
+/* ══════════════════════════════════════
+   USER / LEADERBOARD
+══════════════════════════════════════ */
+function getCurrentUser() {
+  if (window.tdCurrentUser) return window.tdCurrentUser;
+  const txt=(document.getElementById('whoami')?.textContent||'').trim();
+  if(txt&&txt!=='กำลังโหลด...'){
+    const name=txt.split('•')[0].trim();
+    let role='user';
+    if(/super_admin|super admin/i.test(txt)) role='super_admin';
+    else if(/admin/i.test(txt)) role='admin';
+    return {name,role};
+  }
+  return {name:localStorage.getItem('tdGuestName')||'Guest',role:'user'};
+}
+
+let currentUserName = getCurrentUser().name;
+subscribeLeaderboard(entries => {
+  const list=document.getElementById('tjcf-lb-list');
+  if(!entries||entries.length===0){
+    list.innerHTML='<div class="tjcf-lb-empty">NO SCORES YET</div>';return;
+  }
+  list.innerHTML=entries.map((e,i)=>{
+    const rc=i===0?'r1':i===1?'r2':i===2?'r3':'rx';
+    const ri=i===0?'🥇':i===1?'🥈':i===2?'🥉':`#${i+1}`;
+    const rk=(e.role||'user').replace(/[^a-z_]/gi,'');
+    const me=e.name===currentUserName;
+    return `<div class="tjcf-lb-row${me?' me':''}">
+      <div class="tjcf-lb-rank ${rc}">${ri}</div>
+      <span class="tjcf-lb-role role-${rk}">${(e.role||'user').replace('_',' ')}</span>
+      <div class="tjcf-lb-name">${e.name}${me?' ★':''}</div>
+      <div class="tjcf-lb-score">${Number(e.score).toLocaleString()}</div>
+    </div>`;
+  }).join('');
+});
+
+/* ══════════════════════════════════════
+   BOOT — static frame
+══════════════════════════════════════ */
+(function boot(){
+  const sky=ctx.createLinearGradient(0,0,0,H);
+  sky.addColorStop(0,'#060614');sky.addColorStop(1,'#0d0d28');
+  ctx.fillStyle=sky;ctx.fillRect(0,0,W,H);
+  ctx.fillStyle='#1a1020';ctx.fillRect(0,GROUND,W,H-GROUND);
+  ctx.fillStyle='#4444ff';ctx.fillRect(0,GROUND,W,3);
+  // draw title
+  ctx.font='12px "Press Start 2P",monospace';
+  ctx.fillStyle='rgba(255,153,0,0.4)';ctx.textAlign='center';
+  ctx.fillText('SELECT YOUR FIGHTER ABOVE',W/2,H/2+10);
+})();
+</script>
+<!-- END TJC FIGHTER -->
+
+<script type="module" src="./firebase.js?v=42"></script>
+
+<!-- Theme Toggle -->
+<script>
+(function(){
+  const root=document.documentElement;
+  const saved=localStorage.getItem('theme');
+  const sys=window.matchMedia&&window.matchMedia('(prefers-color-scheme: dark)').matches;
+  const init=saved||(sys?'dark':'light');
+  function moon(){return`<svg viewBox="0 0 24 24"><path d="M21 12.6A8.5 8.5 0 0 1 11.4 3a7 7 0 1 0 9.6 9.6Z"/></svg>`;}
+  function sun() {return`<svg viewBox="0 0 24 24"><path d="M12 18a6 6 0 1 0 0-12 6 6 0 0 0 0 12Zm0-16h0.01M12 22h0.01M4.22 4.22h0.01M19.78 19.78h0.01M2 12h0.01M22 12h0.01M4.22 19.78h0.01M19.78 4.22h0.01"/></svg>`;}
+  function apply(t){
+    root.setAttribute('data-theme',t);localStorage.setItem('theme',t);
+    const tl=document.getElementById('themeLabel');if(tl)tl.textContent=t==='dark'?'Light':'Dark';
+    const ti=document.getElementById('themeIcon');if(ti)ti.innerHTML=t==='dark'?sun():moon();
+  }
+  apply(init);
+  document.getElementById('themeToggle')?.addEventListener('click',()=>{
+    apply(root.getAttribute('data-theme')==='dark'?'light':'dark');
+  });
+})();
+</script>
 </body>
 </html>
