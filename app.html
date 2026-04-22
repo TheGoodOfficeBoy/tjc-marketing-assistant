@@ -231,14 +231,10 @@
 <script type="module" src="./firebase.js?v=42"></script>
 <script type="module" src="./app-page.js?v=42"></script>
 
-<!-- ============================================================
-     ⚔️ TJC FIGHTER — Little Fighter 2 Inspired Beat-em-up
-     ============================================================ -->
 <div id="tjcf-section">
   <div id="tjcf-title">⚔️ TJC FIGHTER</div>
 
   <div id="tjcf-wrap">
-    <!-- HUD -->
     <div id="tjcf-hud">
       <div id="tjcf-hp-wrap">
         <span class="tjcf-hud-label">HP</span>
@@ -257,19 +253,16 @@
       </div>
     </div>
 
-    <!-- CANVAS -->
     <div id="tjcf-canvas-wrap">
       <canvas id="tjcfCanvas" width="620" height="280"></canvas>
       <div id="tjcf-scanlines"></div>
 
-      <!-- CHARACTER SELECT OVERLAY -->
       <div id="tjcf-charselect">
         <div class="tjcf-cs-title">SELECT YOUR FIGHTER</div>
         <div id="tjcf-char-grid"></div>
         <button id="tjcf-start-btn">▶ START GAME</button>
       </div>
 
-      <!-- PAUSE / GAMEOVER OVERLAY -->
       <div id="tjcf-overlay" class="hidden">
         <div id="tjcf-ov-title">PAUSED</div>
         <div id="tjcf-ov-sub"></div>
@@ -277,7 +270,6 @@
       </div>
     </div>
 
-    <!-- SKILL BAR -->
     <div id="tjcf-skillbar">
       <span style="font-family:'Press Start 2P',monospace;font-size:0.45rem;color:rgba(255,255,255,0.3);margin-right:4px;">SKILLS</span>
       <div class="tjcf-skill-slot">
@@ -305,7 +297,6 @@
     </div>
   </div>
 
-  <!-- LEADERBOARD -->
   <div id="tjcf-lb">
     <div id="tjcf-lb-hdr">🏆 HALL OF CHAMPIONS <span id="tjcf-lb-live">LIVE</span></div>
     <div id="tjcf-lb-list"><div class="tjcf-lb-load">LOADING...</div></div>
@@ -590,7 +581,7 @@ function spawnEnemy(isBoss=false) {
 }
 
 /* ══════════════════════════════════════
-   CONTROLS
+   CONTROLS & SKILL USAGE
 ══════════════════════════════════════ */
 const keys = {};
 document.addEventListener('keydown', e => {
@@ -631,8 +622,72 @@ function togglePause() {
   }
 }
 
+/* ══════════ SKILL LOGIC ══════════ */
+function useSkill(index) {
+  if (gs !== 'playing' || !player.char || player.state === 'skill') return;
+  const sk = player.char.skills[index];
+  
+  if (player.skillCDs[index] > 0 || player.mp < sk.mp) {
+    hitTexts.push({x: player.x+player.w/2, y: player.y-10, text: 'NOT READY', color: '#888', life: 1, vy: -1, size: 10});
+    return;
+  }
+  
+  // ใช้มานา & ตั้งคูลดาวน์
+  player.mp -= sk.mp;
+  player.skillCDs[index] = sk.cd;
+  player.state = 'skill';
+  player.stateTimer = index === 2 ? 45 : 20; // สกิลอัลติจะใช้เวลาออกท่านานกว่า
+  updateHUD();
+  updateSkillBar();
+
+  const charId = player.char.id;
+  const cx = player.x + player.w/2;
+  const cy = player.y + player.h/2;
+  const dir = player.facing;
+
+  hitTexts.push({x: cx, y: player.y-30, text: sk.name, color: sk.color, life: 1.5, vy: -1.5, size: 12, bold: true});
+
+  // รูปแบบสกิลพื้นฐาน
+  if (index === 0) {
+    // Skill 1: Dash / พุ่งโจมตี
+    player.vx = dir * 18; // พุ่งตัว
+    if(charId === 'aqua' || charId === 'solar') player.hp = Math.min(player.maxHp, player.hp + 20); // ฮีลนิดหน่อย
+    doMeleeHit(player.atk * 1.5, 90, sk.color);
+    spawnHitParticles(cx, cy, sk.color, 15);
+  } 
+  else if (index === 1) {
+    // Skill 2: Projectile / ยิงเวทย์
+    if(charId === 'terra') {
+        // บัฟเกราะให้ Terra
+        player.invincible = 120; // อมตะ 2 วิ
+        hitTexts.push({x: cx, y: player.y-45, text: '🛡️ GUARD!', color: '#fff', life: 1.5, vy: -1, size: 12});
+    } else {
+        projectiles.push({
+            x: cx + dir*10, y: cy - 10, vx: dir*8, vy: 0,
+            w: 24, h: 24, color: sk.color, dmg: player.atk * 2.5,
+            fromPlayer: true, life: 3, pierce: charId==='aqua' || charId==='shadow',
+            emoji: sk.ico
+        });
+    }
+  } 
+  else if (index === 2) {
+    // Skill 3: Ultimate / ระเบิดวงกว้าง
+    if(charId === 'solar') {
+        player.hp = Math.min(player.maxHp, player.hp + 150); // ฮีลหมู่
+    }
+    createBigExplosion(W/2, GROUND - 50, sk.color); // ระเบิดกลางจอ
+    enemies.forEach(e => {
+        if(!e.dead) {
+            hitEnemy(e, player.atk * 4.5, sk.color);
+            e.vx = dir * 12; // กระเด็นแรงมาก
+            e.vy = -5;
+        }
+    });
+  }
+}
+
 /* ══════════════════════════════════════
-   UPDATE — ENEMIES (With Boss Patterns)
+   UPDATE — ENEMIES (With Boss Patterns & Telegraph)
 ══════════════════════════════════════ */
 function updateEnemies() {
   // --- ระบบ SPAWN ---
@@ -682,7 +737,7 @@ function updateEnemies() {
         if (e.stateTimer <= 0) e.state = 'walk';
     } else {
         // โหมดเดินปกติ
-        const meleeRange = e.isBoss ? 70 : 45;
+        const meleeRange = e.isBoss ? 80 : 45;
         const stopDist = e.type === 'archer' ? 180 : meleeRange;
 
         if (dist > stopDist) {
@@ -694,8 +749,8 @@ function updateEnemies() {
             if (--e.attackCd <= 0) {
                 e.state = 'telegraph';
                 // บอสง้างนานกว่าเพื่อให้หลบทัน แต่ท่าจะใหญ่กว่า
-                e.stateTimer = e.isBoss ? 45 : 20; 
-                e.attackCd = e.isBoss ? 80 : 100;
+                e.stateTimer = e.isBoss ? 50 : 30; 
+                e.attackCd = e.isBoss ? 90 : 120;
             }
         }
     }
@@ -717,10 +772,10 @@ function executeEnemyAttack(e) {
         const bd = e.bossData;
         
         // 1. ท่าระเบิดพื้น (ถ้าผู้เล่นอยู่ใกล้)
-        if (dist < 100) {
+        if (dist < 120) {
             createBigExplosion(e.x + (e.facing * 40), e.y + e.h/2, bd.color);
-            if (dist < 90 && player.invincible <= 0) {
-                applyDamageToPlayer(bd.atk * 1.2, e.facing * 8);
+            if (dist < 100 && player.invincible <= 0) {
+                applyDamageToPlayer(bd.atk * 1.2, e.facing * 10);
             }
         }
         
@@ -729,14 +784,14 @@ function executeEnemyAttack(e) {
             projectiles.push({
                 x: e.x + e.w/2, 
                 y: e.y + e.h/2,
-                vx: e.facing * 5, 
-                vy: i * 1.5, // กระจายบน-กลาง-ล่าง
-                w: 14, h: 14, 
+                vx: e.facing * 6, 
+                vy: i * 2, // กระจายบน-กลาง-ล่าง
+                w: 16, h: 16, 
                 color: bd.color, 
-                dmg: Math.round(bd.atk * 0.6), 
+                dmg: Math.round(bd.atk * 0.7), 
                 fromPlayer: false, 
                 emoji: '💢', 
-                life: 2,
+                life: 2.5,
                 trailColor: bd.color
             });
         }
@@ -745,13 +800,13 @@ function executeEnemyAttack(e) {
         if (e.type === 'archer') {
             projectiles.push({
                 x: e.x + (e.facing * 10), y: e.y + 20,
-                vx: e.facing * 6, vy: -0.5,
-                w: 10, h: 6, color: e.color, dmg: e.atk, fromPlayer: false, life: 1.5
+                vx: e.facing * 7, vy: -0.5,
+                w: 12, h: 8, color: e.color, dmg: e.atk, fromPlayer: false, life: 2
             });
         } else {
             // โจมตีประชิดทั่วไป
-            if (dist < 60 && player.invincible <= 0) {
-                applyDamageToPlayer(e.atk, e.facing * 5);
+            if (dist < 70 && player.invincible <= 0) {
+                applyDamageToPlayer(e.atk, e.facing * 6);
             }
         }
     }
@@ -777,8 +832,9 @@ function applyDamageToPlayer(damage, knockback) {
     updateHUD();
     if (player.hp <= 0) doGameOver();
 }
+
 /* ══════════════════════════════════════
-   ATTACK (basic) — auto attack on approach
+   ATTACK (basic) — manual only
 ══════════════════════════════════════ */
 function doBasicAttack() {
   if (player.state === 'skill') return;
@@ -822,25 +878,11 @@ function killEnemy(e) {
 /* ══════════════════════════════════════
    EFFECTS
 ══════════════════════════════════════ */
-function createHitEffect(x, y, color, scale=1, dmg=0) {
-  for(let i=0;i<8;i++){
-    const a=Math.PI*2*(i/8), sp=2+Math.random()*3;
-    particles.push({x,y,vx:Math.cos(a)*sp*scale,vy:Math.sin(a)*sp*scale-1,
-      r:3+Math.random()*4*scale,color,life:1,decay:0.05+Math.random()*0.03});
-  }
-}
 function spawnHitParticles(x, y, color, n=5) {
   for(let i=0;i<n;i++){
     const a=Math.random()*Math.PI*2,sp=1+Math.random()*3;
     particles.push({x,y,vx:Math.cos(a)*sp,vy:Math.sin(a)*sp-1,
       r:2+Math.random()*3,color,life:1,decay:0.06+Math.random()*0.04});
-  }
-}
-function spawnSkillParticles(x,y,color,n){
-  for(let i=0;i<n;i++){
-    const a=Math.random()*Math.PI*2,sp=1+Math.random()*6;
-    particles.push({x,y,vx:Math.cos(a)*sp,vy:Math.sin(a)*sp-2,
-      r:3+Math.random()*6,color,life:1,decay:0.025+Math.random()*0.025});
   }
 }
 function createBigExplosion(x,y,color){
@@ -945,7 +987,7 @@ function drawCharacter(cx2, x, y, charDef, facing, state, animF, scale=1, previe
 }
 
 /* ══════════════════════════════════════
-   DRAW — ENEMY
+   DRAW — ENEMY (With Telegraphing)
 ══════════════════════════════════════ */
 function drawEnemy(e) {
   if (e.dead) return;
@@ -955,51 +997,65 @@ function drawEnemy(e) {
 
   if (e.isBoss) {
     drawBossChar(e, x, y);
-    return;
-  }
-  // Normal enemy — procedural
-  ctx.save();
-  ctx.translate(x, y);
-  if (e.facing > 0) ctx.scale(-1,1);
-  ctx.shadowBlur = 8; ctx.shadowColor = e.color;
-
-  const run = Math.sin(e.animFrame*0.2)*5;
-  const bh = e.h;
-
-  // legs
-  ctx.fillStyle = e.color;
-  ctx.fillRect(-9, -Math.round(bh*0.35)+run, 7, Math.round(bh*0.35));
-  ctx.fillRect(2,  -Math.round(bh*0.35)-run, 7, Math.round(bh*0.35));
-  ctx.fillStyle = '#222';
-  ctx.fillRect(-10, -2, 9, 4); ctx.fillRect(1, -2, 9, 4);
-
-  // body
-  ctx.fillStyle = e.color;
-  ctx.fillRect(-10, -Math.round(bh*0.75), 20, Math.round(bh*0.38));
-
-  // arms
-  const swing = (e.state==='attack') ? -10 : 0;
-  ctx.fillRect(-16, -Math.round(bh*0.72)+swing, 6, 14);
-  ctx.fillRect( 10, -Math.round(bh*0.72), 6, 14);
-
-  // weapon
-  if (e.type==='archer') {
-    ctx.fillStyle = '#886633';
-    ctx.fillRect(-18, -Math.round(bh*0.8)+swing, 3, 20);
   } else {
-    ctx.fillStyle = '#888';
-    ctx.fillRect(-20, -Math.round(bh*0.75)+swing, 3, 16);
+    // Normal enemy — procedural
+    ctx.save();
+    ctx.translate(x, y);
+    if (e.facing > 0) ctx.scale(-1,1);
+    ctx.shadowBlur = 8; ctx.shadowColor = e.color;
+
+    const run = Math.sin(e.animFrame*0.2)*5;
+    const bh = e.h;
+
+    // legs
+    ctx.fillStyle = e.color;
+    ctx.fillRect(-9, -Math.round(bh*0.35)+run, 7, Math.round(bh*0.35));
+    ctx.fillRect(2,  -Math.round(bh*0.35)-run, 7, Math.round(bh*0.35));
+    ctx.fillStyle = '#222';
+    ctx.fillRect(-10, -2, 9, 4); ctx.fillRect(1, -2, 9, 4);
+
+    // body
+    ctx.fillStyle = e.color;
+    ctx.fillRect(-10, -Math.round(bh*0.75), 20, Math.round(bh*0.38));
+
+    // arms
+    const swing = (e.state==='attack') ? -10 : 0;
+    ctx.fillRect(-16, -Math.round(bh*0.72)+swing, 6, 14);
+    ctx.fillRect( 10, -Math.round(bh*0.72), 6, 14);
+
+    // weapon
+    if (e.type==='archer') {
+      ctx.fillStyle = '#886633';
+      ctx.fillRect(-18, -Math.round(bh*0.8)+swing, 3, 20);
+    } else {
+      ctx.fillStyle = '#888';
+      ctx.fillRect(-20, -Math.round(bh*0.75)+swing, 3, 16);
+    }
+
+    // head
+    ctx.fillStyle = e.color;
+    ctx.fillRect(-8, -bh, 16, Math.round(bh*0.28));
+    ctx.fillStyle = 'rgba(0,0,0,0.5)';
+    ctx.fillRect(-7, -bh+4, 14, 5);
+    ctx.fillStyle = '#ff4444';
+    ctx.fillRect(-5, -bh+5, 4, 3); ctx.fillRect(2, -bh+5, 4, 3);
+    
+    ctx.restore();
   }
 
-  // head
-  ctx.fillStyle = e.color;
-  ctx.fillRect(-8, -bh, 16, Math.round(bh*0.28));
-  ctx.fillStyle = 'rgba(0,0,0,0.5)';
-  ctx.fillRect(-7, -bh+4, 14, 5);
-  ctx.fillStyle = '#ff4444';
-  ctx.fillRect(-5, -bh+5, 4, 3); ctx.fillRect(2, -bh+5, 4, 3);
-
-  ctx.restore();
+  // --- TELEGRAPHING INDICATOR (❗) ---
+  if (e.state === 'telegraph') {
+    ctx.fillStyle = '#ff3c3c';
+    ctx.font = 'bold 20px "Press Start 2P"';
+    ctx.textAlign = 'center';
+    ctx.fillText('❗', x, e.y - (e.isBoss?40:15));
+    
+    // แถบแดงที่พื้นบอกระยะโจมตี
+    ctx.fillStyle = 'rgba(255, 60, 60, 0.25)';
+    const range = e.isBoss ? 120 : (e.type==='archer'?200:60);
+    const startX = e.facing > 0 ? e.x + e.w : e.x - range;
+    ctx.fillRect(startX, GROUND - 4, range, 4);
+  }
 
   // HP bar
   const bw = e.w + 8;
@@ -1041,7 +1097,7 @@ function drawBossChar(e, x, y) {
   // Shoulders / pauldrons
   ctx.fillStyle = bd.color;
   ctx.fillRect(-bws/2-Math.round(8*s), bob - Math.round(h*0.75*s), Math.round(10*s), Math.round(8*s));
-  ctx.fillRect(bws/2-2,               bob - Math.round(h*0.75*s), Math.round(10*s), Math.round(8*s));
+  ctx.fillRect(bws/2-2,                bob - Math.round(h*0.75*s), Math.round(10*s), Math.round(8*s));
 
   // Arms
   const swing = (e.state==='attack') ? -12 : bob;
@@ -1108,7 +1164,7 @@ function drawBackground() {
     ['#141000','#1c1600'],
     ['#0a0000','#1a0505'],
   ];
-  const [s1,s2] = skyColors[tier];
+  const [s1,s2] = skyColors[tier % 5];
   const sky = ctx.createLinearGradient(0,0,0,H);
   sky.addColorStop(0,s1); sky.addColorStop(1,s2);
   ctx.fillStyle=sky; ctx.fillRect(0,0,W,H);
@@ -1124,34 +1180,6 @@ function drawBackground() {
   }
   ctx.restore();
 
-  // Distant mountains / structures
-  ctx.save();
-  ctx.globalAlpha = 0.18;
-  const bgColors = ['#3344aa','#6622aa','#224422','#997700','#441111'];
-  ctx.fillStyle = bgColors[tier];
-  const mx = -(frameCount*0.3)%W;
-  for(let m=0;m<4;m++){
-    const bx = ((mx + m*180)%W + W)%W;
-    ctx.beginPath();
-    ctx.moveTo(bx, GROUND); ctx.lineTo(bx+40, GROUND-90); ctx.lineTo(bx+90, GROUND);
-    ctx.fill();
-  }
-  ctx.restore();
-
-  // Mid-ground structures
-  ctx.save();
-  ctx.globalAlpha = 0.25;
-  const mgColors = ['#1a2266','#441166','#113322','#664400','#330000'];
-  ctx.fillStyle = mgColors[tier];
-  const ox = -(frameCount*0.7)%W;
-  for(let b=0;b<5;b++){
-    const bx = ((ox + b*120)%W + W)%W;
-    const bh2 = 30+b*12;
-    ctx.fillRect(bx, GROUND-bh2, 24, bh2);
-    ctx.fillRect(bx+8, GROUND-bh2-12, 8, 12);
-  }
-  ctx.restore();
-
   // Ground
   const gg = ctx.createLinearGradient(0,GROUND,0,H);
   gg.addColorStop(0,'#1a1020'); gg.addColorStop(1,'#08080f');
@@ -1160,26 +1188,19 @@ function drawBackground() {
   // Ground glow line
   ctx.save();
   const glowColors = ['#4444ff','#9922ff','#22aa44','#ffaa00','#ff2222'];
-  ctx.shadowBlur=8; ctx.shadowColor=glowColors[tier];
-  ctx.fillStyle=glowColors[tier];
+  ctx.shadowBlur=8; ctx.shadowColor=glowColors[tier % 5];
+  ctx.fillStyle=glowColors[tier % 5];
   ctx.fillRect(0,GROUND,W,3);
-  // moving grid
-  ctx.globalAlpha=0.12;
-  for(let gx=((frameCount*1.2)%40); gx<W; gx+=40){
-    ctx.fillStyle=glowColors[tier];
-    ctx.fillRect(gx,GROUND,2,H-GROUND);
-  }
   ctx.restore();
 }
 
 /* ══════════════════════════════════════
-   DRAW — PROJECTILES
+   DRAW & UPDATE — PROJECTILES
 ══════════════════════════════════════ */
 function drawProjectile(p) {
   ctx.save();
   ctx.globalAlpha = p.life;
   ctx.shadowBlur = 12; ctx.shadowColor = p.color;
-  // trail
   for(let t=1;t<=4;t++){
     ctx.globalAlpha = p.life*(1-t*0.2)*0.4;
     ctx.fillStyle = p.trailColor || p.color;
@@ -1199,22 +1220,47 @@ function drawProjectile(p) {
   ctx.restore();
 }
 
+function updateProjectiles() {
+  projectiles = projectiles.filter(p => {
+    p.x += p.vx; p.y += p.vy;
+    p.vy += 0.1;
+    p.life -= 0.015;
+    if (p.x < -20 || p.x > W+20 || p.y > GROUND+20 || p.life <= 0) return false;
+
+    if (p.fromPlayer) {
+      let hit = false;
+      enemies.forEach(e => {
+        if (!hit && !e.dead && p.x>e.x && p.x<e.x+e.w && p.y>e.y && p.y<e.y+e.h) {
+          hitEnemy(e, p.dmg, p.color);
+          if (!p.pierce) hit = true;
+        }
+      });
+      if (hit) { spawnHitParticles(p.x, p.y, p.color, 5); return false; }
+    } else {
+      if (player.invincible<=0 && p.x>player.x && p.x<player.x+player.w && p.y>player.y && p.y<player.y+player.h) {
+        applyDamageToPlayer(p.dmg, p.vx>0 ? 5 : -5);
+        spawnHitParticles(p.x,p.y,'#ff3c3c',5);
+        return false;
+      }
+    }
+    return true;
+  });
+}
+
 /* ══════════════════════════════════════
    UPDATE — PLAYER
 ══════════════════════════════════════ */
 function updatePlayer() {
   if (!player.char) return;
 
-  // horizontal movement
   const spd = player.speed * (player.state==='skill' ? 1.5 : 1);
   let moving = false;
   if (keys['ArrowLeft']  || keys['KeyQ']) { player.vx = -spd; player.facing = -1; moving = true; }
   else if (keys['ArrowRight'] || keys['KeyE']) { player.vx = spd; player.facing = 1; moving = true; }
   else { player.vx *= 0.7; if(Math.abs(player.vx)<0.1) player.vx=0; }
 
-  // dash from skill 0
   if (player.state === 'skill' && player.stateTimer > 20) {
-    // keep momentum
+    // Keep momentum from dash
   } else {
     player.vx = moving ? player.vx : player.vx * 0.7;
   }
@@ -1222,7 +1268,6 @@ function updatePlayer() {
   player.x += player.vx;
   player.x = Math.max(10, Math.min(W - player.w - 10, player.x));
 
-  // vertical
   if ((keys['ArrowUp']||keys['Space']||keys['KeyW']) && player.onGround) {
     player.vy = JUMP_POWER; player.onGround = false;
     spawnHitParticles(player.x+player.w/2, player.y+player.h, player.char.accentColor, 4);
@@ -1233,12 +1278,10 @@ function updatePlayer() {
     player.y = GROUND - player.h; player.vy = 0; player.onGround = true;
   }
 
-  // basic attack auto (when near enemy & no skill active) — manual only
   if ((keys['KeyA']||keys['KeyZ']) && player.stateTimer <= 0 && player.state !== 'skill') {
-    doBasicAttack();
+    useSkill(0); // Map A to Skill 1 instead of basic attack
   }
 
-  // state timer
   if (player.stateTimer > 0) player.stateTimer--;
   else if (player.state !== 'idle' && player.state !== 'walk') {
     player.state = moving ? 'walk' : 'idle';
@@ -1251,197 +1294,12 @@ function updatePlayer() {
 
   if (player.invincible > 0) player.invincible--;
 
-  // MP regen
   if (frameCount % 30 === 0) {
     player.mp = Math.min(player.maxMp, player.mp + 2);
   }
 
-  // skill cooldowns
   player.skillCDs = player.skillCDs.map(cd => Math.max(0, cd-1));
   updateSkillBar();
-}
-
-/* ══════════════════════════════════════
-   UPDATE — ENEMIES (With Boss Patterns)
-══════════════════════════════════════ */
-function updateEnemies() {
-  // --- ระบบ SPAWN ---
-  if (wave < 5 && !waveCleared) {
-    if (enemiesSpawned < enemiesThisWave) {
-      const living = enemies.filter(e => !e.dead).length;
-      if (living < Math.min(3 + Math.floor(wave/2), 5) && ++spawnTimer > (90 - stage)) {
-        spawnTimer = 0;
-        spawnEnemy(false);
-        enemiesSpawned++;
-      }
-    }
-  } else if (wave === 5 && !bossSpawned) {
-    if (++spawnTimer > 90) { 
-        spawnEnemy(true); // เกิดบอส
-        bossSpawned = true; 
-    }
-  }
-
-  // --- ระบบ AI & Movement ---
-  enemies = enemies.filter(e => {
-    if (e.dead) return false;
-    e.animFrame++;
-    if (e.invincible > 0) e.invincible--;
-
-    // Gravity & Ground
-    e.vy += GRAVITY * 0.8;
-    e.y += e.vy;
-    if (e.y >= GROUND - e.h) { e.y = GROUND - e.h; e.vy = 0; e.onGround = true; }
-
-    const dx = (player.x + player.w/2) - (e.x + e.w/2);
-    const dist = Math.abs(dx);
-    e.facing = dx > 0 ? 1 : -1;
-
-    // --- ENEMY STATE MACHINE ---
-    if (e.state === 'telegraph') {
-        // จังหวะง้าง (ศัตรูหยุดนิ่งและชาร์จพลัง)
-        e.vx = 0;
-        e.stateTimer--;
-        if (e.stateTimer <= 0) {
-            e.state = 'attack';
-            e.stateTimer = 20;
-            executeEnemyAttack(e); // ปล่อยการโจมตี
-        }
-    } else if (e.state === 'attack') {
-        e.stateTimer--;
-        if (e.stateTimer <= 0) e.state = 'walk';
-    } else {
-        // โหมดเดินปกติ
-        const meleeRange = e.isBoss ? 70 : 45;
-        const stopDist = e.type === 'archer' ? 180 : meleeRange;
-
-        if (dist > stopDist) {
-            e.vx = e.facing * e.speed;
-            e.state = 'walk';
-        } else {
-            e.vx = 0;
-            // เมื่อถึงระยะโจมตี จะสุ่มคูลดาวน์โจมตี
-            if (--e.attackCd <= 0) {
-                e.state = 'telegraph';
-                // บอสง้างนานกว่าเพื่อให้หลบทัน แต่ท่าจะใหญ่กว่า
-                e.stateTimer = e.isBoss ? 45 : 20; 
-                e.attackCd = e.isBoss ? 80 : 100;
-            }
-        }
-    }
-
-    e.x += e.vx;
-    return true;
-  });
-}
-
-/* ══════════════════════════════════════
-   EXECUTE ENEMY ATTACK (Pattern Logic)
-══════════════════════════════════════ */
-function executeEnemyAttack(e) {
-    const dx = (player.x + player.w/2) - (e.x + e.w/2);
-    const dist = Math.abs(dx);
-    
-    if (e.isBoss) {
-        // --- BOSS ATTACK PATTERNS ---
-        const bd = e.bossData;
-        
-        // 1. ท่าระเบิดพื้น (ถ้าผู้เล่นอยู่ใกล้)
-        if (dist < 100) {
-            createBigExplosion(e.x + (e.facing * 40), e.y + e.h/2, bd.color);
-            if (dist < 90 && player.invincible <= 0) {
-                applyDamageToPlayer(bd.atk * 1.2, e.facing * 8);
-            }
-        }
-        
-        // 2. ยิงกระสุนกระจาย 3 ทิศทาง
-        for (let i = -1; i <= 1; i++) {
-            projectiles.push({
-                x: e.x + e.w/2, 
-                y: e.y + e.h/2,
-                vx: e.facing * 5, 
-                vy: i * 1.5, // กระจายบน-กลาง-ล่าง
-                w: 14, h: 14, 
-                color: bd.color, 
-                dmg: Math.round(bd.atk * 0.6), 
-                fromPlayer: false, 
-                emoji: '💢', 
-                life: 2,
-                trailColor: bd.color
-            });
-        }
-    } else {
-        // --- NORMAL ENEMY ATTACKS ---
-        if (e.type === 'archer') {
-            projectiles.push({
-                x: e.x + (e.facing * 10), y: e.y + 20,
-                vx: e.facing * 6, vy: -0.5,
-                w: 10, h: 6, color: e.color, dmg: e.atk, fromPlayer: false, life: 1.5
-            });
-        } else {
-            // โจมตีประชิดทั่วไป
-            if (dist < 60 && player.invincible <= 0) {
-                applyDamageToPlayer(e.atk, e.facing * 5);
-            }
-        }
-    }
-}
-
-// ฟังก์ชันเสริมสำหรับหักเลือดผู้เล่นและทำ Knockback
-function applyDamageToPlayer(damage, knockback) {
-    const finalDmg = Math.round(damage * (0.8 + Math.random() * 0.4));
-    player.hp = Math.max(0, player.hp - finalDmg);
-    player.invincible = 60; // อมตะ 1 วินาที
-    player.vx = knockback; // กระเด็นถอยหลัง
-    player.vy = -3; // กระดอนขึ้นเล็กน้อย
-    hitTexts.push({
-        x: player.x + player.w/2, 
-        y: player.y - 10, 
-        text: '-' + finalDmg, 
-        color: '#ff3c3c', 
-        life: 1, 
-        vy: -2, 
-        size: 14,
-        bold: true
-    });
-    updateHUD();
-    if (player.hp <= 0) doGameOver();
-}
-/* ══════════════════════════════════════
-   UPDATE — PROJECTILES
-══════════════════════════════════════ */
-function updateProjectiles() {
-  projectiles = projectiles.filter(p => {
-    p.x += p.vx; p.y += p.vy;
-    p.vy += 0.1;
-    p.life -= 0.015;
-    if (p.x < -20 || p.x > W+20 || p.y > GROUND+20 || p.life <= 0) return false;
-
-    if (p.fromPlayer) {
-      // check hit enemies
-      let hit = false;
-      enemies.forEach(e => {
-        if (!hit && !e.dead && p.x>e.x && p.x<e.x+e.w && p.y>e.y && p.y<e.y+e.h) {
-          hitEnemy(e, p.dmg, p.color);
-          if (!p.pierce) hit = true;
-        }
-      });
-      if (hit) { spawnHitParticles(p.x, p.y, p.color, 5); return false; }
-    } else {
-      // check hit player
-      if (player.invincible<=0 && p.x>player.x && p.x<player.x+player.w && p.y>player.y && p.y<player.y+player.h) {
-        const dmg = Math.round(p.dmg*(0.8+Math.random()*0.4));
-        player.hp = Math.max(0, player.hp - dmg);
-        player.invincible = 50;
-        hitTexts.push({x:player.x+player.w/2, y:player.y-8, text:'-'+dmg, color:'#ff3c3c', life:1, vy:-2, size:11});
-        spawnHitParticles(p.x,p.y,'#ff3c3c',5);
-        if (player.hp<=0) doGameOver();
-        else updateHUD();
-        return false;
-      }
-    }
-    return true;
-  });
 }
 
 /* ══════════════════════════════════════
@@ -1460,7 +1318,6 @@ function checkWaveClear() {
   updateHUD();
 
   if (wave === 5) {
-    // Stage clear!
     hitTexts.push({x:W/2, y:H/2-30, text:'STAGE CLEAR! 🎉', color:'#ffe600', life:2.5, vy:-0.3, size:18, bold:true});
     player.hp = Math.min(player.maxHp, player.hp + Math.round(player.maxHp*0.3));
     player.mp = Math.min(player.maxMp, player.mp + 40);
@@ -1518,7 +1375,6 @@ function updateSkillBar() {
   player.char.skills.forEach((sk,i)=>{
     const cd = player.skillCDs[i];
     const maxCd = sk.cd;
-    const icon = document.getElementById(`sk${i}-icon`);
     const cdBar = document.getElementById(`sk${i}-cd`);
     if (cdBar) cdBar.style.width = (cd/maxCd*100)+'%';
     const slot = document.getElementById(`sk${i}`);
@@ -1557,7 +1413,6 @@ function loop() {
   updateProjectiles();
   checkWaveClear();
 
-  // update particles
   particles.forEach(p=>{p.x+=p.vx;p.y+=p.vy;p.vy+=0.1;p.life-=p.decay;});
   particles=particles.filter(p=>p.life>0);
   hitTexts.forEach(t=>{t.y+=t.vy;t.life-=0.02;});
@@ -1567,23 +1422,19 @@ function loop() {
   drawBackground();
   projectiles.forEach(drawProjectile);
 
-  // draw player
   if (gs==='playing') {
     const show = player.invincible<=0 || Math.floor(player.invincible/5)%2===0;
     if (show && player.char) {
       drawCharacter(ctx, player.x+player.w/2, player.y+player.h,
         player.char, player.facing, player.state, player.animFrame, 1.0);
-      // shadow
       ctx.save(); ctx.globalAlpha=0.2; ctx.fillStyle='#000';
       ctx.ellipse(player.x+player.w/2, GROUND+2, player.w*0.6, 4, 0, 0, Math.PI*2);
       ctx.fill(); ctx.restore();
     }
   }
 
-  // draw enemies
   enemies.forEach(drawEnemy);
 
-  // draw particles
   particles.forEach(p=>{
     ctx.save();ctx.globalAlpha=p.life;ctx.fillStyle=p.color;
     ctx.shadowBlur=6;ctx.shadowColor=p.color;
@@ -1591,7 +1442,6 @@ function loop() {
     ctx.restore();
   });
 
-  // draw hit texts
   hitTexts.forEach(t=>{
     ctx.save();
     ctx.globalAlpha=t.life;
@@ -1664,17 +1514,13 @@ subscribeLeaderboard(entries => {
   ctx.fillStyle=sky;ctx.fillRect(0,0,W,H);
   ctx.fillStyle='#1a1020';ctx.fillRect(0,GROUND,W,H-GROUND);
   ctx.fillStyle='#4444ff';ctx.fillRect(0,GROUND,W,3);
-  // draw title
   ctx.font='12px "Press Start 2P",monospace';
   ctx.fillStyle='rgba(255,153,0,0.4)';ctx.textAlign='center';
   ctx.fillText('SELECT YOUR FIGHTER ABOVE',W/2,H/2+10);
 })();
 </script>
-<!-- END TJC FIGHTER -->
-
 <script type="module" src="./firebase.js?v=42"></script>
 
-<!-- Theme Toggle -->
 <script>
 (function(){
   const root=document.documentElement;
