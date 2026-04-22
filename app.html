@@ -632,57 +632,151 @@ function togglePause() {
 }
 
 /* ══════════════════════════════════════
-   SKILL USE
+   UPDATE — ENEMIES (With Boss Patterns)
 ══════════════════════════════════════ */
-function useSkill(idx) {
-  if (gs!=='playing') return;
-  if (!player.char) return;
-  const sk = player.char.skills[idx];
-  if (!sk) return;
-  if (player.skillCDs[idx] > 0) return;
-  if (player.mp < sk.mp) return;
-  player.mp -= sk.mp;
-  player.skillCDs[idx] = sk.cd;
-  player.state = 'skill'; player.stateTimer = 25;
-
-  const cx = player.x + player.w/2;
-  const cy = player.y + player.h/2;
-
-  if (idx === 0) {
-    // Skill 1 — melee dash / close range burst
-    // Player dashes and creates a large hitbox
-    player.vx = player.facing * 8;
-    createHitEffect(cx + player.facing*40, cy, sk.color, 1.2, player.atk * 2);
-    spawnSkillParticles(cx, cy, sk.color, 12);
-    doMeleeHit(player.atk * 2, 80, sk.color);
-  } else if (idx === 1) {
-    // Skill 2 — projectile
-    projectiles.push({
-      x: cx + player.facing*20, y: cy,
-      vx: player.facing * 9, vy: -0.5,
-      w:16, h:16, color: sk.color,
-      dmg: Math.round(player.atk * 2.5),
-      fromPlayer: true, pierce: false,
-      emoji: sk.ico, life: 1.5,
-      trailColor: sk.color,
-    });
-    spawnSkillParticles(cx, cy, sk.color, 6);
-  } else {
-    // Skill 3 — AOE ultimate
-    spawnSkillParticles(cx, cy, sk.color, 30);
-    createBigExplosion(cx, cy, sk.color);
-    enemies.forEach(e => {
-      const dist = Math.abs((e.x+e.w/2) - cx);
-      if (dist < 200) {
-        const dmg = Math.round(player.atk * 4 * (1 - dist/280));
-        hitEnemy(e, dmg, sk.color);
+function updateEnemies() {
+  // --- ระบบ SPAWN ---
+  if (wave < 5 && !waveCleared) {
+    if (enemiesSpawned < enemiesThisWave) {
+      const living = enemies.filter(e => !e.dead).length;
+      if (living < Math.min(3 + Math.floor(wave/2), 5) && ++spawnTimer > (90 - stage)) {
+        spawnTimer = 0;
+        spawnEnemy(false);
+        enemiesSpawned++;
       }
-    });
+    }
+  } else if (wave === 5 && !bossSpawned) {
+    if (++spawnTimer > 90) { 
+        spawnEnemy(true); // เกิดบอส
+        bossSpawned = true; 
+    }
   }
-  updateHUD();
-  updateSkillBar();
+
+  // --- ระบบ AI & Movement ---
+  enemies = enemies.filter(e => {
+    if (e.dead) return false;
+    e.animFrame++;
+    if (e.invincible > 0) e.invincible--;
+
+    // Gravity & Ground
+    e.vy += GRAVITY * 0.8;
+    e.y += e.vy;
+    if (e.y >= GROUND - e.h) { e.y = GROUND - e.h; e.vy = 0; e.onGround = true; }
+
+    const dx = (player.x + player.w/2) - (e.x + e.w/2);
+    const dist = Math.abs(dx);
+    e.facing = dx > 0 ? 1 : -1;
+
+    // --- ENEMY STATE MACHINE ---
+    if (e.state === 'telegraph') {
+        // จังหวะง้าง (ศัตรูหยุดนิ่งและชาร์จพลัง)
+        e.vx = 0;
+        e.stateTimer--;
+        if (e.stateTimer <= 0) {
+            e.state = 'attack';
+            e.stateTimer = 20;
+            executeEnemyAttack(e); // ปล่อยการโจมตี
+        }
+    } else if (e.state === 'attack') {
+        e.stateTimer--;
+        if (e.stateTimer <= 0) e.state = 'walk';
+    } else {
+        // โหมดเดินปกติ
+        const meleeRange = e.isBoss ? 70 : 45;
+        const stopDist = e.type === 'archer' ? 180 : meleeRange;
+
+        if (dist > stopDist) {
+            e.vx = e.facing * e.speed;
+            e.state = 'walk';
+        } else {
+            e.vx = 0;
+            // เมื่อถึงระยะโจมตี จะสุ่มคูลดาวน์โจมตี
+            if (--e.attackCd <= 0) {
+                e.state = 'telegraph';
+                // บอสง้างนานกว่าเพื่อให้หลบทัน แต่ท่าจะใหญ่กว่า
+                e.stateTimer = e.isBoss ? 45 : 20; 
+                e.attackCd = e.isBoss ? 80 : 100;
+            }
+        }
+    }
+
+    e.x += e.vx;
+    return true;
+  });
 }
 
+/* ══════════════════════════════════════
+   EXECUTE ENEMY ATTACK (Pattern Logic)
+══════════════════════════════════════ */
+function executeEnemyAttack(e) {
+    const dx = (player.x + player.w/2) - (e.x + e.w/2);
+    const dist = Math.abs(dx);
+    
+    if (e.isBoss) {
+        // --- BOSS ATTACK PATTERNS ---
+        const bd = e.bossData;
+        
+        // 1. ท่าระเบิดพื้น (ถ้าผู้เล่นอยู่ใกล้)
+        if (dist < 100) {
+            createBigExplosion(e.x + (e.facing * 40), e.y + e.h/2, bd.color);
+            if (dist < 90 && player.invincible <= 0) {
+                applyDamageToPlayer(bd.atk * 1.2, e.facing * 8);
+            }
+        }
+        
+        // 2. ยิงกระสุนกระจาย 3 ทิศทาง
+        for (let i = -1; i <= 1; i++) {
+            projectiles.push({
+                x: e.x + e.w/2, 
+                y: e.y + e.h/2,
+                vx: e.facing * 5, 
+                vy: i * 1.5, // กระจายบน-กลาง-ล่าง
+                w: 14, h: 14, 
+                color: bd.color, 
+                dmg: Math.round(bd.atk * 0.6), 
+                fromPlayer: false, 
+                emoji: '💢', 
+                life: 2,
+                trailColor: bd.color
+            });
+        }
+    } else {
+        // --- NORMAL ENEMY ATTACKS ---
+        if (e.type === 'archer') {
+            projectiles.push({
+                x: e.x + (e.facing * 10), y: e.y + 20,
+                vx: e.facing * 6, vy: -0.5,
+                w: 10, h: 6, color: e.color, dmg: e.atk, fromPlayer: false, life: 1.5
+            });
+        } else {
+            // โจมตีประชิดทั่วไป
+            if (dist < 60 && player.invincible <= 0) {
+                applyDamageToPlayer(e.atk, e.facing * 5);
+            }
+        }
+    }
+}
+
+// ฟังก์ชันเสริมสำหรับหักเลือดผู้เล่นและทำ Knockback
+function applyDamageToPlayer(damage, knockback) {
+    const finalDmg = Math.round(damage * (0.8 + Math.random() * 0.4));
+    player.hp = Math.max(0, player.hp - finalDmg);
+    player.invincible = 60; // อมตะ 1 วินาที
+    player.vx = knockback; // กระเด็นถอยหลัง
+    player.vy = -3; // กระดอนขึ้นเล็กน้อย
+    hitTexts.push({
+        x: player.x + player.w/2, 
+        y: player.y - 10, 
+        text: '-' + finalDmg, 
+        color: '#ff3c3c', 
+        life: 1, 
+        vy: -2, 
+        size: 14,
+        bold: true
+    });
+    updateHUD();
+    if (player.hp <= 0) doGameOver();
+}
 /* ══════════════════════════════════════
    ATTACK (basic) — auto attack on approach
 ══════════════════════════════════════ */
@@ -1168,103 +1262,151 @@ function updatePlayer() {
 }
 
 /* ══════════════════════════════════════
-   UPDATE — ENEMIES
+   UPDATE — ENEMIES (With Boss Patterns)
 ══════════════════════════════════════ */
 function updateEnemies() {
-  // spawn
+  // --- ระบบ SPAWN ---
   if (wave < 5 && !waveCleared) {
     if (enemiesSpawned < enemiesThisWave) {
-      const living = enemies.filter(e=>!e.dead).length;
-      if (living < Math.min(3 + Math.floor(wave/2), 5) && ++spawnTimer > (80 - stage)) {
+      const living = enemies.filter(e => !e.dead).length;
+      if (living < Math.min(3 + Math.floor(wave/2), 5) && ++spawnTimer > (90 - stage)) {
         spawnTimer = 0;
         spawnEnemy(false);
         enemiesSpawned++;
       }
     }
   } else if (wave === 5 && !bossSpawned) {
-    if (++spawnTimer > 90) { spawnEnemy(true); bossSpawned = true; }
+    if (++spawnTimer > 90) { 
+        spawnEnemy(true); // เกิดบอส
+        bossSpawned = true; 
+    }
   }
 
+  // --- ระบบ AI & Movement ---
   enemies = enemies.filter(e => {
     if (e.dead) return false;
     e.animFrame++;
     if (e.invincible > 0) e.invincible--;
 
-    // gravity
+    // Gravity & Ground
     e.vy += GRAVITY * 0.8;
     e.y += e.vy;
     if (e.y >= GROUND - e.h) { e.y = GROUND - e.h; e.vy = 0; e.onGround = true; }
 
-    // AI: chase player
     const dx = (player.x + player.w/2) - (e.x + e.w/2);
-    e.facing = dx > 0 ? 1 : -1;
     const dist = Math.abs(dx);
-    const meleeRange = e.isBoss ? 70 : 45;
-    const attackRange = e.type==='archer' ? 200 : meleeRange;
+    e.facing = dx > 0 ? 1 : -1;
 
-    if (dist > meleeRange) {
-      e.vx = e.facing * e.speed * (e.isBoss ? 1 : 1);
+    // --- ENEMY STATE MACHINE ---
+    if (e.state === 'telegraph') {
+        // จังหวะง้าง (ศัตรูหยุดนิ่งและชาร์จพลัง)
+        e.vx = 0;
+        e.stateTimer--;
+        if (e.stateTimer <= 0) {
+            e.state = 'attack';
+            e.stateTimer = 20;
+            executeEnemyAttack(e); // ปล่อยการโจมตี
+        }
+    } else if (e.state === 'attack') {
+        e.stateTimer--;
+        if (e.stateTimer <= 0) e.state = 'walk';
     } else {
-      e.vx = 0;
-      e.state = 'attack';
-    }
+        // โหมดเดินปกติ
+        const meleeRange = e.isBoss ? 70 : 45;
+        const stopDist = e.type === 'archer' ? 180 : meleeRange;
 
-    // random small jump
-    if (e.onGround && Math.random() < 0.004 && dist < 150) {
-      e.vy = -8; e.onGround = false;
+        if (dist > stopDist) {
+            e.vx = e.facing * e.speed;
+            e.state = 'walk';
+        } else {
+            e.vx = 0;
+            // เมื่อถึงระยะโจมตี จะสุ่มคูลดาวน์โจมตี
+            if (--e.attackCd <= 0) {
+                e.state = 'telegraph';
+                // บอสง้างนานกว่าเพื่อให้หลบทัน แต่ท่าจะใหญ่กว่า
+                e.stateTimer = e.isBoss ? 45 : 20; 
+                e.attackCd = e.isBoss ? 80 : 100;
+            }
+        }
     }
 
     e.x += e.vx;
-    e.x = Math.max(-e.w, Math.min(W, e.x));
-
-    // ATTACK
-    if (--e.attackCd <= 0 && dist < meleeRange + 5) {
-      e.attackCd = e.isBoss ? 60 : 80;
-      e.state = 'attack';
-      if (player.invincible <= 0) {
-        const dmg = Math.round(e.atk * (0.8 + Math.random()*0.4));
-        player.hp = Math.max(0, player.hp - dmg);
-        player.invincible = 60;
-        hitTexts.push({x:player.x+player.w/2, y:player.y-10, text:'-'+dmg, color:'#ff3c3c', life:1, vy:-2, size:12});
-        spawnHitParticles(player.x+player.w/2, player.y+player.h/2, '#ff3c3c', 6);
-        if (player.hp <= 0) { doGameOver(); return false; }
-        updateHUD();
-      }
-    }
-
-    // ARCHER SHOOT
-    if (e.type==='archer' && --e.shootCd <= 0 && dist < 250) {
-      e.shootCd = 70 + Math.random()*40;
-      projectiles.push({
-        x: e.x + (e.facing>0?e.w:0), y: e.y + e.h*0.4,
-        vx: e.facing * 6, vy: -0.3,
-        w:8, h:8, color:'#ff6644',
-        dmg: Math.round(e.atk*0.8),
-        fromPlayer:false, life:1.5,
-        trailColor:'#ff4422',
-      });
-    }
-
-    // BOSS special shoot
-    if (e.isBoss && --e.shootCd <= 0) {
-      e.shootCd = 50 + Math.random()*30;
-      const bd = e.bossData;
-      for(let ang=-1;ang<=1;ang++) {
-        projectiles.push({
-          x:e.x+e.w/2, y:e.y+e.h*0.3,
-          vx: e.facing*5 + ang*1.5, vy: -0.5 + ang*0.8,
-          w:12, h:12, color:bd.color,
-          dmg: Math.round(e.atk*0.6),
-          fromPlayer:false, life:2,
-          trailColor:bd.color, emoji:'💢',
-        });
-      }
-    }
-
     return true;
   });
 }
 
+/* ══════════════════════════════════════
+   EXECUTE ENEMY ATTACK (Pattern Logic)
+══════════════════════════════════════ */
+function executeEnemyAttack(e) {
+    const dx = (player.x + player.w/2) - (e.x + e.w/2);
+    const dist = Math.abs(dx);
+    
+    if (e.isBoss) {
+        // --- BOSS ATTACK PATTERNS ---
+        const bd = e.bossData;
+        
+        // 1. ท่าระเบิดพื้น (ถ้าผู้เล่นอยู่ใกล้)
+        if (dist < 100) {
+            createBigExplosion(e.x + (e.facing * 40), e.y + e.h/2, bd.color);
+            if (dist < 90 && player.invincible <= 0) {
+                applyDamageToPlayer(bd.atk * 1.2, e.facing * 8);
+            }
+        }
+        
+        // 2. ยิงกระสุนกระจาย 3 ทิศทาง
+        for (let i = -1; i <= 1; i++) {
+            projectiles.push({
+                x: e.x + e.w/2, 
+                y: e.y + e.h/2,
+                vx: e.facing * 5, 
+                vy: i * 1.5, // กระจายบน-กลาง-ล่าง
+                w: 14, h: 14, 
+                color: bd.color, 
+                dmg: Math.round(bd.atk * 0.6), 
+                fromPlayer: false, 
+                emoji: '💢', 
+                life: 2,
+                trailColor: bd.color
+            });
+        }
+    } else {
+        // --- NORMAL ENEMY ATTACKS ---
+        if (e.type === 'archer') {
+            projectiles.push({
+                x: e.x + (e.facing * 10), y: e.y + 20,
+                vx: e.facing * 6, vy: -0.5,
+                w: 10, h: 6, color: e.color, dmg: e.atk, fromPlayer: false, life: 1.5
+            });
+        } else {
+            // โจมตีประชิดทั่วไป
+            if (dist < 60 && player.invincible <= 0) {
+                applyDamageToPlayer(e.atk, e.facing * 5);
+            }
+        }
+    }
+}
+
+// ฟังก์ชันเสริมสำหรับหักเลือดผู้เล่นและทำ Knockback
+function applyDamageToPlayer(damage, knockback) {
+    const finalDmg = Math.round(damage * (0.8 + Math.random() * 0.4));
+    player.hp = Math.max(0, player.hp - finalDmg);
+    player.invincible = 60; // อมตะ 1 วินาที
+    player.vx = knockback; // กระเด็นถอยหลัง
+    player.vy = -3; // กระดอนขึ้นเล็กน้อย
+    hitTexts.push({
+        x: player.x + player.w/2, 
+        y: player.y - 10, 
+        text: '-' + finalDmg, 
+        color: '#ff3c3c', 
+        life: 1, 
+        vy: -2, 
+        size: 14,
+        bold: true
+    });
+    updateHUD();
+    if (player.hp <= 0) doGameOver();
+}
 /* ══════════════════════════════════════
    UPDATE — PROJECTILES
 ══════════════════════════════════════ */
