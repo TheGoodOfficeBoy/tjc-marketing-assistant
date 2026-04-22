@@ -73,6 +73,8 @@
   background:#0a0a1a;cursor:pointer;transition:all 0.15s;position:relative;
   overflow:hidden;
 }
+.tjcf-skill-icon.atk-btn{ border-color: #ff3c3c; box-shadow: 0 0 8px rgba(255,60,60,0.4); }
+.tjcf-skill-icon.atk-btn:active{ transform: scale(0.9); }
 .tjcf-skill-icon.ready{border-color:#ffe600;box-shadow:0 0 8px rgba(255,230,0,0.4);}
 .tjcf-skill-icon.active{border-color:#fff;background:rgba(255,255,255,0.15);}
 .tjcf-skill-cd{
@@ -271,28 +273,31 @@
     </div>
 
     <div id="tjcf-skillbar">
-      <span style="font-family:'Press Start 2P',monospace;font-size:0.45rem;color:rgba(255,255,255,0.3);margin-right:4px;">SKILLS</span>
-      <div class="tjcf-skill-slot">
-        <div class="tjcf-skill-icon" id="sk0"><span id="sk0-ico">⚔️</span><div class="tjcf-skill-cd" id="sk0-cd" style="width:0%"></div></div>
+      <div class="tjcf-skill-slot" style="margin-right:8px;">
+        <div class="tjcf-skill-icon atk-btn" id="btn-atk"><span id="atk-ico">⚔️</span></div>
         <span class="tjcf-skill-key">A</span>
       </div>
       <div class="tjcf-skill-slot">
-        <div class="tjcf-skill-icon" id="sk1"><span id="sk1-ico">💥</span><div class="tjcf-skill-cd" id="sk1-cd" style="width:0%"></div></div>
+        <div class="tjcf-skill-icon" id="sk0"><span id="sk0-ico"></span><div class="tjcf-skill-cd" id="sk0-cd" style="width:0%"></div></div>
         <span class="tjcf-skill-key">S</span>
       </div>
       <div class="tjcf-skill-slot">
-        <div class="tjcf-skill-icon" id="sk2"><span id="sk2-ico">🌀</span><div class="tjcf-skill-cd" id="sk2-cd" style="width:0%"></div></div>
+        <div class="tjcf-skill-icon" id="sk1"><span id="sk1-ico"></span><div class="tjcf-skill-cd" id="sk1-cd" style="width:0%"></div></div>
         <span class="tjcf-skill-key">D</span>
       </div>
+      <div class="tjcf-skill-slot">
+        <div class="tjcf-skill-icon" id="sk2"><span id="sk2-ico"></span><div class="tjcf-skill-cd" id="sk2-cd" style="width:0%"></div></div>
+        <span class="tjcf-skill-key">F</span>
+      </div>
       <div style="flex:1"></div>
-      <div style="font-family:'Press Start 2P',monospace;font-size:0.4rem;color:rgba(255,255,255,0.2);text-align:right;line-height:1.8;">
-        MOVE: ←→↑↓<br>ATTACK: A S D
+      <div style="font-family:'Press Start 2P',monospace;font-size:0.35rem;color:rgba(255,255,255,0.2);text-align:right;line-height:1.8;">
+        MOVE: ←→↑↓<br>ATK: A | SKILL: S D F
       </div>
     </div>
     <div id="tjcf-bottom-strip"></div>
     <div id="tjcf-keys-hint">
-      <span>←→</span> เดิน &nbsp;|&nbsp; <span>↑</span> กระโดด &nbsp;|&nbsp; <span>↓</span> หมอบ &nbsp;|&nbsp;
-      <span>A</span> สกิล1 &nbsp;|&nbsp; <span>S</span> สกิล2 &nbsp;|&nbsp; <span>D</span> สกิล3 &nbsp;|&nbsp;
+      <span>←→</span> เดิน &nbsp;|&nbsp; <span>↑</span> โดด &nbsp;|&nbsp; <span>A</span> โจมตี &nbsp;|&nbsp;
+      <span>S D F</span> สกิล &nbsp;|&nbsp;
       มือถือ: <span>แตะปุ่ม</span>
     </div>
   </div>
@@ -309,86 +314,79 @@ import { saveScore, subscribeLeaderboard } from './firebase.js?v=42';
 
 /* ══════════════════════════════════════════════════════════
    ⚔️ TJC FIGHTER ENGINE
-   Little Fighter 2 inspired — elemental characters, 100 stages
 ══════════════════════════════════════════════════════════ */
 
 const canvas = document.getElementById('tjcfCanvas');
 const ctx    = canvas.getContext('2d');
 const W = 620, H = 280;
-const GROUND = 210, FLOOR_H = 20;
+const GROUND = 210;
 const GRAVITY = 0.55, JUMP_POWER = -13;
 
 /* ══════════ CHARACTER DEFINITIONS ══════════ */
 const CHARACTERS = [
   {
     id:'pyro', name:'PYRO', element:'🔥 FIRE',
-    color:'#ff4422', accentColor:'#ff9900', helmColor:'#cc2200',
-    bodyColor:'#ff5533', desc:'เร็ว ความเสียหายสูง\nเผาศัตรูได้',
-    hp:180, mp:100, speed:3.5, atk:22,
+    color:'#ff4422', accentColor:'#ff9900', helmColor:'#cc2200', bodyColor:'#ff5533', 
+    desc:'เร็ว ดาเมจสูง\nแปลงร่างยิงไกลได้', hp:180, mp:100, speed:3.5, atk:22,
     skills:[
-      { name:'Flame Rush',  ico:'🔥', mp:15, cd:60,  color:'#ff6600', desc:'พุ่งกระโดดเตะไฟ' },
-      { name:'Fire Blast',  ico:'💥', mp:30, cd:120, color:'#ff3300', desc:'ยิงลูกไฟใหญ่' },
-      { name:'Inferno',     ico:'🌋', mp:60, cd:300, color:'#ff0000', desc:'ระเบิดไฟรอบตัว' },
+      { name:'Flamethrower',  ico:'🔥', mp:15, cd:80,  color:'#ff6600', desc:'พ่นไฟด้านหน้า' },
+      { name:'Rolling Fire',  ico:'☄️', mp:25, cd:120, color:'#ff3300', desc:'ลูกไฟกลิ้งเด้งพื้น' },
+      { name:'Ranged Form',   ico:'🌋', mp:50, cd:400, color:'#ff0000', desc:'โหมดตีไกล 10 วิ' },
     ]
   },
   {
     id:'aqua', name:'AQUA', element:'💧 WATER',
-    color:'#00aaff', accentColor:'#00d4ff', helmColor:'#0055aa',
-    bodyColor:'#0088dd', desc:'ป้องกันดี ฟื้น HP\nทำให้ศัตรูช้า',
-    hp:240, mp:120, speed:2.8, atk:16,
+    color:'#00aaff', accentColor:'#00d4ff', helmColor:'#0055aa', bodyColor:'#0088dd', 
+    desc:'ทำให้ศัตรูช้า\nโล่พลังอมตะ', hp:240, mp:120, speed:2.8, atk:16,
     skills:[
-      { name:'Tidal Wave',  ico:'🌊', mp:20, cd:90,  color:'#00aaff', desc:'คลื่นน้ำกวาดหน้า' },
-      { name:'Ice Shard',   ico:'❄️', mp:35, cd:150, color:'#88ddff', desc:'ยิงเข็มน้ำแข็ง' },
-      { name:'Tsunami',     ico:'🌀', mp:70, cd:360, color:'#0044cc', desc:'พายุน้ำทั่วฉาก' },
+      { name:'Water Splash',  ico:'💦', mp:15, cd:60,  color:'#00aaff', desc:'สาดน้ำรอบตัว' },
+      { name:'Slow Wave',     ico:'🌊', mp:30, cd:150, color:'#88ddff', desc:'คลื่นสโลว์ศัตรู' },
+      { name:'Water Shield',  ico:'🛡️', mp:60, cd:360, color:'#0044cc', desc:'โล่อมตะ 5 วิ' },
     ]
   },
   {
-    id:'terra', name:'TERRA', element:'🌿 EARTH',
-    color:'#44bb44', accentColor:'#88ff44', helmColor:'#226622',
-    bodyColor:'#339933', desc:'แข็งแกร่งมาก HP สูง\nสร้างกำแพงหิน',
-    hp:320, mp:80, speed:2.2, atk:28,
+    id:'terra', name:'TERRA', element:'🍃 WIND',
+    color:'#44bb44', accentColor:'#88ff44', helmColor:'#226622', bodyColor:'#339933', 
+    desc:'นินจาลม\nล่องหนและพายุ', hp:200, mp:110, speed:4.0, atk:20,
     skills:[
-      { name:'Stone Smash', ico:'🪨', mp:15, cd:80,  color:'#888844', desc:'กระแทกพื้นสั่น' },
-      { name:'Rock Wall',   ico:'🛡️', mp:25, cd:200, color:'#666633', desc:'สร้างโล่กำแพง' },
-      { name:'Earthquake',  ico:'💥', mp:65, cd:400, color:'#aa8844', desc:'สั่นสะเทือนฉาก' },
+      { name:'Wind Shuriken', ico:'🌀', mp:15, cd:50,  color:'#88ff44', desc:'ปาดาวกระจายลม' },
+      { name:'Stealth',       ico:'👻', mp:30, cd:240, color:'#666633', desc:'ล่องหน 5 วิ' },
+      { name:'Tornado',       ico:'🌪️', mp:55, cd:320, color:'#aa8844', desc:'ปล่อยพายุพัดทะลวง' },
     ]
   },
   {
     id:'storm', name:'STORM', element:'⚡ THUNDER',
-    color:'#ffe600', accentColor:'#ffffff', helmColor:'#998800',
-    bodyColor:'#ddcc00', desc:'ความเร็วสูงสุด\nสายฟ้าช็อตศัตรู',
-    hp:160, mp:110, speed:4.5, atk:20,
+    color:'#ffe600', accentColor:'#ffffff', helmColor:'#998800', bodyColor:'#ddcc00', 
+    desc:'ช็อตศัตรู\nโหมดความเร็วแสง', hp:160, mp:110, speed:4.5, atk:20,
     skills:[
-      { name:'Thunder Dash',ico:'⚡', mp:18, cd:50,  color:'#ffe600', desc:'พุ่งฟ้าผ่า' },
-      { name:'Ball Lightning',ico:'🌩️',mp:32, cd:130, color:'#ffff44', desc:'ยิงลูกไฟฟ้า' },
-      { name:'Thunderstorm', ico:'☈',  mp:65, cd:320, color:'#ffffff', desc:'ฟ้าผ่าทั่วฉาก' },
+      { name:'Lightning Bolt',ico:'⚡', mp:18, cd:60,  color:'#ffe600', desc:'ยิงกระแสไฟฟ้า' },
+      { name:'Paralyze',      ico:'🌩️', mp:35, cd:180, color:'#ffff44', desc:'ช็อตศัตรูหยุดนิ่ง' },
+      { name:'Lightning Form',ico:'⚡', mp:60, cd:400, color:'#ffffff', desc:'โหมดตีไววิ่งไว 10 วิ' },
     ]
   },
   {
     id:'shadow', name:'SHADOW', element:'🌑 DARK',
-    color:'#aa44ff', accentColor:'#ff44ff', helmColor:'#550088',
-    bodyColor:'#8822cc', desc:'ล่องหนได้\nดูดชีวิตศัตรู',
-    hp:200, mp:130, speed:3.2, atk:25,
+    color:'#aa44ff', accentColor:'#ff44ff', helmColor:'#550088', bodyColor:'#8822cc', 
+    desc:'ควบคุมพื้นที่\nใบ้ศัตรู/หลุมดำ', hp:220, mp:130, speed:3.0, atk:25,
     skills:[
-      { name:'Shadow Step', ico:'👻', mp:20, cd:70,  color:'#aa44ff', desc:'เทเลพอร์ต+โจมตี' },
-      { name:'Dark Drain',  ico:'🩸', mp:35, cd:160, color:'#ff00ff', desc:'ดูดชีวิตศัตรู' },
-      { name:'Void Pulse',  ico:'🌑', mp:70, cd:350, color:'#660099', desc:'คลื่นความมืดทั่วฉาก' },
+      { name:'Dark Ball',     ico:'🌑', mp:20, cd:70,  color:'#aa44ff', desc:'ยิงบอลความมืด' },
+      { name:'Blackhole',     ico:'🌌', mp:45, cd:300, color:'#ff00ff', desc:'หลุมดำดูดศัตรู' },
+      { name:'Silence',       ico:'🔇', mp:60, cd:360, color:'#660099', desc:'ใบ้ห้ามศัตรูโจมตี' },
     ]
   },
   {
     id:'solar', name:'SOLAR', element:'☀️ LIGHT',
-    color:'#ffee88', accentColor:'#ffffff', helmColor:'#cc9900',
-    bodyColor:'#ffdd44', desc:'รักษา HP ตัวเอง\nแสงทำตาบอด',
-    hp:210, mp:140, speed:3.0, atk:18,
+    color:'#ffee88', accentColor:'#ffffff', helmColor:'#cc9900', bodyColor:'#ffdd44', 
+    desc:'รัศมีแสงทำลาย\nดาบยักษ์และอมตะ', hp:210, mp:140, speed:3.2, atk:18,
     skills:[
-      { name:'Solar Blade', ico:'☀️', mp:22, cd:75,  color:'#ffee00', desc:'คมดาบแสงสุริยา' },
-      { name:'Holy Flash',  ico:'✨', mp:38, cd:180, color:'#ffffff', desc:'แสงเจิดจ้าทำตาบอด' },
-      { name:'Radiance',    ico:'🌟', mp:75, cd:380, color:'#ffffaa', desc:'ระเบิดแสงทั่วฉาก' },
+      { name:'Light AOE',     ico:'✨', mp:25, cd:90,  color:'#ffee00', desc:'ระเบิดแสงรอบตัว' },
+      { name:'Holy Sword',    ico:'🗡️', mp:40, cd:200, color:'#ffffff', desc:'เรียกดาบแสงฟันระยะไกล' },
+      { name:'Radiance',      ico:'🌟', mp:70, cd:380, color:'#ffffaa', desc:'แสงคุ้มครองอมตะ 5 วิ' },
     ]
   },
 ];
 
-/* ══════════ BOSS DEFINITIONS (100 bosses, generated procedurally) ══════════ */
+/* ══════════ BOSS DEFINITIONS (100 bosses) ══════════ */
 const BOSS_NAMES = [
   'IGNIS REX','GLACIUS','STONE GOLEM','THUNDERLORD','SHADOW REAPER',
   'SOLAR KING','BLOOD TITAN','VOID WALKER','LAVA BEAST','STORM GIANT',
@@ -399,7 +397,7 @@ const BOSS_EMOJIS = ['👹','👺','🐉','🦂','💀','👾','🔱','⚡','�
 
 function getBossData(stage) {
   const idx = (stage - 1) % BOSS_NAMES.length;
-  const tier = Math.floor((stage-1)/20); // 0-4
+  const tier = Math.floor((stage-1)/20);
   const baseHP  = 300 + stage * 35 + tier * 200;
   const baseAtk = 15  + stage * 1.5 + tier * 8;
   const colors  = ['#ff3c3c','#aa44ff','#00d4ff','#ffe600','#44ff44'];
@@ -415,7 +413,6 @@ function getBossData(stage) {
   };
 }
 
-/* ══════════ ENEMY TYPES per Stage Tier ══════════ */
 function getEnemyColor(stage) {
   const t = Math.floor((stage-1)/20);
   return [['#e94560','#cc3355'],['#aa44ff','#8822cc'],['#00d4ff','#0088aa'],['#ffe600','#cc9900'],['#ff9900','#cc6600']][t];
@@ -424,7 +421,7 @@ function getEnemyColor(stage) {
 /* ══════════════════════════════════════
    GAME STATE
 ══════════════════════════════════════ */
-let gs = 'charselect'; // charselect | playing | paused | gameover | stagewin | waveclear
+let gs = 'charselect'; 
 let chosenChar = null;
 let stage = 1, wave = 1;
 let score = 0, kills = 0, hiScore = 0;
@@ -435,27 +432,24 @@ const player = {
   x: 80, y: GROUND - 48, w: 28, h: 48,
   vx: 0, vy: 0, onGround: true,
   hp: 200, maxHp: 200, mp: 100, maxMp: 100,
-  facing: 1, // 1=right, -1=left
-  state: 'idle', // idle|walk|jump|attack|skill|hurt|dead
-  stateTimer: 0,
-  invincible: 0,
-  attackHitbox: null,
-  skillCDs: [0,0,0],
-  skillMaxCDs: [60,120,300],
-  def: 0,
-  char: null,
-  animFrame: 0,
-  get speed(){ return this.char ? this.char.speed : 3; },
-  get atk()  { return this.char ? this.char.atk   : 20; },
+  facing: 1, state: 'idle', stateTimer: 0,
+  invincible: 0, attackCd: 0,
+  skillCDs: [0,0,0], skillMaxCDs: [60,120,300],
+  char: null, animFrame: 0,
+  // Status Effect Timers
+  rangedTimer: 0, fastTimer: 0, invisTimer: 0, shieldTimer: 0,
+  get speed(){ return this.char ? (this.fastTimer > 0 ? this.char.speed * 1.5 : this.char.speed) : 3; },
+  get atk()  { return this.char ? this.char.atk : 20; },
 };
 
-/* ══════════ ENEMIES ══════════ */
+/* ══════════ ENEMIES & ENTITIES ══════════ */
 let enemies = [];
-let projectiles = []; // player & enemy projectiles
-let particles  = [];
-let hitTexts   = [];
+let projectiles = [];
+let particles = [];
+let hitTexts = [];
+let blackholes = []; // สำหรับสกิล Shadow
+
 let waveCleared = false;
-let waveTimer   = 0;
 let enemiesThisWave = 0;
 let enemiesSpawned  = 0;
 let spawnTimer = 0;
@@ -483,10 +477,8 @@ let bossSpawned = false;
       chosenChar = c;
     };
     grid.appendChild(card);
-    // draw preview
     setTimeout(()=>drawCharPreview(c, document.getElementById('cc-'+c.id)), 50);
   });
-  // default select first
   grid.children[0].click();
 })();
 
@@ -502,25 +494,22 @@ document.getElementById('tjcf-start-btn').onclick = () => {
   startGame();
 };
 
-/* ══════════════════════════════════════
-   START GAME
-══════════════════════════════════════ */
 function startGame() {
   document.getElementById('tjcf-charselect').classList.add('hidden');
   const c = chosenChar;
-  player.char   = c;
-  player.hp     = c.hp; player.maxHp = c.hp;
-  player.mp     = c.mp; player.maxMp = c.mp;
-  player.skillCDs   = [0,0,0];
+  player.char = c;
+  player.hp = c.hp; player.maxHp = c.hp;
+  player.mp = c.mp; player.maxMp = c.mp;
+  player.skillCDs = [0,0,0];
   player.skillMaxCDs = c.skills.map(s=>s.cd);
   player.x = 80; player.y = GROUND - player.h;
   player.vx = 0; player.vy = 0; player.onGround = true;
   player.facing = 1; player.state = 'idle'; player.invincible = 0;
+  player.rangedTimer = 0; player.fastTimer = 0; player.invisTimer = 0; player.shieldTimer = 0;
   stage = 1; wave = 1; score = 0; kills = 0;
-  updateSkillBar();
-  updateHUD();
+  updateSkillBar(); updateHUD();
   gs = 'playing';
-  enemies = []; projectiles = []; particles = []; hitTexts = [];
+  enemies = []; projectiles = []; particles = []; hitTexts = []; blackholes = [];
   beginWave();
   if (rafId) cancelAnimationFrame(rafId);
   loop();
@@ -530,13 +519,12 @@ function startGame() {
    WAVE SYSTEM
 ══════════════════════════════════════ */
 function beginWave() {
-  waveCleared = false; waveTimer = 0; bossSpawned = false;
+  waveCleared = false; bossSpawned = false;
   spawnTimer = 0; enemiesSpawned = 0;
   const isBoss = (wave === 5);
   enemiesThisWave = isBoss ? 1 : (3 + Math.floor(stage/5) + wave);
-  enemies = []; projectiles = [];
+  enemies = []; projectiles = []; blackholes = [];
   updateHUD();
-  // flash stage text
   hitTexts.push({ x:W/2, y:H/2-20, text: `${stage}-${wave}${isBoss?' 👹BOSS!':''}`,
     color: isBoss?'#ff3c3c':'#ffe600', life:1.5, vy:-0.5, size:isBoss?22:16, bold:true });
 }
@@ -547,14 +535,13 @@ function spawnEnemy(isBoss=false) {
     enemies.push({
       x: W - 60, y: GROUND - Math.round(58 * bd.size),
       w: Math.round(32 * bd.size), h: Math.round(58 * bd.size),
-      hp: bd.hp, maxHp: bd.maxHp,
-      atk: bd.atk, speed: bd.speed,
+      hp: bd.hp, maxHp: bd.maxHp, atk: bd.atk, speed: bd.speed,
       isBoss: true, bossData: bd,
       vx: 0, vy: 0, onGround: true, facing: -1,
       state: 'walk', stateTimer: 0, invincible: 0,
       color: bd.color, accentColor: '#fff',
-      attackCd: 0, shootCd: Math.random()*60+60,
-      animFrame: 0,
+      attackCd: 0, shootCd: Math.random()*60+60, animFrame: 0,
+      slowTimer: 0, stunTimer: 0, silenceTimer: 0
     });
     return;
   }
@@ -570,13 +557,12 @@ function spawnEnemy(isBoss=false) {
   enemies.push({
     x: W + 20 + Math.random()*60, y: GROUND - h,
     w: type==='heavy'?28:22, h,
-    hp, maxHp:hp, atk, speed:spd,
-    type, isBoss:false,
+    hp, maxHp:hp, atk, speed:spd, type, isBoss:false,
     vx:0, vy:0, onGround:true, facing:-1,
     state:'walk', stateTimer:0, invincible:0,
     color:col, accentColor:acc,
     attackCd:0, shootCd: type==='archer' ? 80+Math.random()*40 : 9999,
-    animFrame:0,
+    animFrame:0, slowTimer: 0, stunTimer: 0, silenceTimer: 0
   });
 }
 
@@ -589,9 +575,12 @@ document.addEventListener('keydown', e => {
   if (e.code==='ArrowLeft'||e.code==='ArrowRight'||e.code==='ArrowUp'||e.code==='ArrowDown'||e.code==='Space') e.preventDefault();
   if (e.code==='KeyP') togglePause();
   if (gs==='gameover') return;
-  if (e.code==='KeyA'||e.code==='KeyZ') useSkill(0);
-  if (e.code==='KeyS'||e.code==='KeyX') useSkill(1);
-  if (e.code==='KeyD'||e.code==='KeyC') useSkill(2);
+  // Attack = A
+  if (e.code==='KeyA') doBasicAttack();
+  // Skills = S, D, F
+  if (e.code==='KeyS') useSkill(0);
+  if (e.code==='KeyD') useSkill(1);
+  if (e.code==='KeyF') useSkill(2);
 });
 document.addEventListener('keyup', e => { keys[e.code] = false; });
 
@@ -603,11 +592,12 @@ document.getElementById('tjcf-btn-back').onclick   = () => {
   document.getElementById('tjcf-overlay').classList.add('hidden');
 };
 document.getElementById('tjcf-ov-btn').onclick = () => {
-  if (gs==='paused') { togglePause(); }
-  else { startGame(); }
+  if (gs==='paused') togglePause(); else startGame();
 };
 
-/* ══════════ MOBILE SKILL BUTTONS ══════════ */
+/* ══════════ MOBILE BUTTONS ══════════ */
+document.getElementById('btn-atk').addEventListener('touchstart', e=>{e.preventDefault();doBasicAttack();},{passive:false});
+document.getElementById('btn-atk').addEventListener('click', ()=>doBasicAttack());
 [0,1,2].forEach(i => {
   document.getElementById(`sk${i}`).addEventListener('touchstart', e=>{e.preventDefault();useSkill(i);},{passive:false});
   document.getElementById(`sk${i}`).addEventListener('click', ()=>useSkill(i));
@@ -615,11 +605,47 @@ document.getElementById('tjcf-ov-btn').onclick = () => {
 
 function togglePause() {
   if (gs==='playing') {
-    gs='paused';
-    showOverlay('paused','⏸ PAUSED',`STAGE ${stage}-${wave}  SCORE: ${score}`,'CONTINUE');
+    gs='paused'; showOverlay('paused','⏸ PAUSED',`STAGE ${stage}-${wave}  SCORE: ${score}`,'CONTINUE');
   } else if (gs==='paused') {
     gs='playing'; hideOverlay(); loop();
   }
+}
+
+/* ══════════ BASIC ATTACK ══════════ */
+function doBasicAttack() {
+  if (gs !== 'playing' || player.state === 'skill' || player.attackCd > 0) return;
+  
+  player.state = 'attack'; 
+  player.stateTimer = player.fastTimer > 0 ? 8 : 15; // ตีไวขึ้นถ้าร่างสายฟ้า
+  player.attackCd = player.fastTimer > 0 ? 12 : 25;
+  
+  const cx = player.x + player.w/2;
+  const cy = player.y + player.h/2;
+  const dir = player.facing;
+  const clr = player.char?.accentColor || '#fff';
+
+  if (player.rangedTimer > 0) {
+    // โหมดตีไกล (Pyro)
+    projectiles.push({
+      x: cx + dir*10, y: cy - 10, vx: dir*10, vy: 0,
+      w: 16, h: 16, color: clr, dmg: player.atk * 1.5,
+      fromPlayer: true, life: 2, emoji: '🔥'
+    });
+  } else {
+    // ตีใกล้ปกติ
+    doMeleeHit(player.atk, 55, clr);
+  }
+}
+
+function doMeleeHit(dmg, range, color) {
+  enemies.forEach(e => {
+    const ex = e.x + e.w/2, ey = e.y + e.h/2;
+    const px = player.x + (player.facing>0 ? player.w : 0);
+    const py = player.y + player.h/2;
+    if (Math.abs(ex - px) < range && Math.abs(ey - py) < 60) {
+      hitEnemy(e, dmg, color);
+    }
+  });
 }
 
 /* ══════════ SKILL LOGIC ══════════ */
@@ -632,13 +658,11 @@ function useSkill(index) {
     return;
   }
   
-  // ใช้มานา & ตั้งคูลดาวน์
   player.mp -= sk.mp;
   player.skillCDs[index] = sk.cd;
   player.state = 'skill';
-  player.stateTimer = index === 2 ? 45 : 20; // สกิลอัลติจะใช้เวลาออกท่านานกว่า
-  updateHUD();
-  updateSkillBar();
+  player.stateTimer = 25; 
+  updateHUD(); updateSkillBar();
 
   const charId = player.char.id;
   const cx = player.x + player.w/2;
@@ -647,108 +671,148 @@ function useSkill(index) {
 
   hitTexts.push({x: cx, y: player.y-30, text: sk.name, color: sk.color, life: 1.5, vy: -1.5, size: 12, bold: true});
 
-  // รูปแบบสกิลพื้นฐาน
-  if (index === 0) {
-    // Skill 1: Dash / พุ่งโจมตี
-    player.vx = dir * 18; // พุ่งตัว
-    if(charId === 'aqua' || charId === 'solar') player.hp = Math.min(player.maxHp, player.hp + 20); // ฮีลนิดหน่อย
-    doMeleeHit(player.atk * 1.5, 90, sk.color);
-    spawnHitParticles(cx, cy, sk.color, 15);
-  } 
-  else if (index === 1) {
-    // Skill 2: Projectile / ยิงเวทย์
-    if(charId === 'terra') {
-        // บัฟเกราะให้ Terra
-        player.invincible = 120; // อมตะ 2 วิ
-        hitTexts.push({x: cx, y: player.y-45, text: '🛡️ GUARD!', color: '#fff', life: 1.5, vy: -1, size: 12});
-    } else {
-        projectiles.push({
-            x: cx + dir*10, y: cy - 10, vx: dir*8, vy: 0,
-            w: 24, h: 24, color: sk.color, dmg: player.atk * 2.5,
-            fromPlayer: true, life: 3, pierce: charId==='aqua' || charId==='shadow',
-            emoji: sk.ico
-        });
+  if (charId === 'pyro') {
+    if (index === 0) { // Flamethrower
+      for(let i=0; i<5; i++) {
+        setTimeout(() => {
+          projectiles.push({ x: cx + dir*20, y: cy + (Math.random()*20-10), vx: dir*8, vy: 0, w: 18, h: 18, color: sk.color, dmg: player.atk*0.8, fromPlayer: true, life: 1, pierce: true });
+        }, i*100);
+      }
+    } else if (index === 1) { // Rolling Fireball
+      projectiles.push({ x: cx + dir*10, y: cy, vx: dir*6, vy: -4, w: 24, h: 24, color: sk.color, dmg: player.atk*2, fromPlayer: true, life: 3, bounce: true, emoji: '☄️' });
+    } else { // Transform Ranged
+      player.rangedTimer = 600; // 10 วินาที
+      createBigExplosion(cx, cy, sk.color);
     }
   } 
-  else if (index === 2) {
-    // Skill 3: Ultimate / ระเบิดวงกว้าง
-    if(charId === 'solar') {
-        player.hp = Math.min(player.maxHp, player.hp + 150); // ฮีลหมู่
+  else if (charId === 'aqua') {
+    if (index === 0) { // Splash
+      doMeleeHit(player.atk * 1.5, 90, sk.color);
+      spawnHitParticles(cx, cy, sk.color, 20);
+    } else if (index === 1) { // Slow Wave
+      projectiles.push({ x: cx + dir*10, y: cy, vx: dir*5, vy: 0, w: 30, h: 30, color: sk.color, dmg: player.atk, fromPlayer: true, life: 3, pierce: true, emoji: '🌊', onHit: e => e.slowTimer = 300 });
+    } else { // Shield
+      player.invincible = 300; player.shieldTimer = 300;
+      hitTexts.push({x: cx, y: player.y-45, text: '🛡️ GUARD!', color: '#fff', life: 1.5, vy: -1, size: 12});
     }
-    createBigExplosion(W/2, GROUND - 50, sk.color); // ระเบิดกลางจอ
-    enemies.forEach(e => {
-        if(!e.dead) {
-            hitEnemy(e, player.atk * 4.5, sk.color);
-            e.vx = dir * 12; // กระเด็นแรงมาก
-            e.vy = -5;
-        }
-    });
+  }
+  else if (charId === 'terra') {
+    if (index === 0) { // Shuriken
+      projectiles.push({ x: cx + dir*10, y: cy, vx: dir*12, vy: 0, w: 16, h: 16, color: sk.color, dmg: player.atk*1.8, fromPlayer: true, life: 2, emoji: '🌀' });
+    } else if (index === 1) { // Stealth
+      player.invisTimer = 300;
+      hitTexts.push({x: cx, y: player.y-45, text: '👻 STEALTH!', color: '#fff', life: 1.5, vy: -1, size: 12});
+    } else { // Tornado
+      projectiles.push({ x: cx + dir*20, y: cy-20, vx: dir*3, vy: 0, w: 50, h: 60, color: sk.color, dmg: player.atk*3, fromPlayer: true, life: 4, pierce: true, emoji: '🌪️' });
+    }
+  }
+  else if (charId === 'storm') {
+    if (index === 0) { // Lightning
+      projectiles.push({ x: cx + dir*10, y: cy, vx: dir*15, vy: 0, w: 20, h: 10, color: sk.color, dmg: player.atk*2, fromPlayer: true, life: 1.5 });
+    } else if (index === 1) { // Paralyze
+      projectiles.push({ x: cx + dir*10, y: cy, vx: dir*8, vy: 0, w: 24, h: 24, color: sk.color, dmg: player.atk, fromPlayer: true, life: 2, emoji: '🌩️', onHit: e => e.stunTimer = 180 });
+    } else { // Lightning Form
+      player.fastTimer = 600;
+      createBigExplosion(cx, cy, sk.color);
+    }
+  }
+  else if (charId === 'shadow') {
+    if (index === 0) { // Dark Ball
+      projectiles.push({ x: cx + dir*10, y: cy, vx: dir*7, vy: 0, w: 22, h: 22, color: sk.color, dmg: player.atk*2.2, fromPlayer: true, life: 2.5, emoji: '🌑' });
+    } else if (index === 1) { // Blackhole
+      blackholes.push({ x: cx + dir*150, y: GROUND - 40, life: 240, color: sk.color });
+    } else { // Silence
+      enemies.forEach(e => { if(!e.dead){ e.silenceTimer = 300; hitEnemy(e, player.atk, sk.color); } });
+      createBigExplosion(W/2, cy, sk.color);
+    }
+  }
+  else if (charId === 'solar') {
+    if (index === 0) { // Light AOE
+      createBigExplosion(cx, cy, sk.color);
+      doMeleeHit(player.atk * 2.5, 120, sk.color);
+    } else if (index === 1) { // Holy Sword
+      player.stateTimer = 40; // ง้างดาบนานนิดนึง
+      setTimeout(() => {
+        doMeleeHit(player.atk * 4, 200, sk.color);
+        spawnHitParticles(cx + dir*100, cy, sk.color, 30);
+      }, 300);
+    } else { // Radiance (Invincibility)
+      player.invincible = 300; player.shieldTimer = 300;
+      hitTexts.push({x: cx, y: player.y-45, text: '🌟 IMMORTAL!', color: '#fff', life: 1.5, vy: -1, size: 12});
+    }
   }
 }
 
 /* ══════════════════════════════════════
-   UPDATE — ENEMIES (With Boss Patterns & Telegraph)
+   UPDATE — ENEMIES 
 ══════════════════════════════════════ */
 function updateEnemies() {
-  // --- ระบบ SPAWN ---
   if (wave < 5 && !waveCleared) {
     if (enemiesSpawned < enemiesThisWave) {
       const living = enemies.filter(e => !e.dead).length;
       if (living < Math.min(3 + Math.floor(wave/2), 5) && ++spawnTimer > (90 - stage)) {
-        spawnTimer = 0;
-        spawnEnemy(false);
-        enemiesSpawned++;
+        spawnTimer = 0; spawnEnemy(false); enemiesSpawned++;
       }
     }
   } else if (wave === 5 && !bossSpawned) {
-    if (++spawnTimer > 90) { 
-        spawnEnemy(true); // เกิดบอส
-        bossSpawned = true; 
-    }
+    if (++spawnTimer > 90) { spawnEnemy(true); bossSpawned = true; }
   }
 
-  // --- ระบบ AI & Movement ---
   enemies = enemies.filter(e => {
     if (e.dead) return false;
     e.animFrame++;
     if (e.invincible > 0) e.invincible--;
+    
+    // Status Effects Countdown
+    if (e.slowTimer > 0) e.slowTimer--;
+    if (e.stunTimer > 0) e.stunTimer--;
+    if (e.silenceTimer > 0) e.silenceTimer--;
 
-    // Gravity & Ground
     e.vy += GRAVITY * 0.8;
     e.y += e.vy;
     if (e.y >= GROUND - e.h) { e.y = GROUND - e.h; e.vy = 0; e.onGround = true; }
 
-    const dx = (player.x + player.w/2) - (e.x + e.w/2);
+    // Logic Tracking
+    let targetX = player.x + player.w/2;
+    // หากผู้เล่นล่องหน ศัตรูจะไม่เดินตาม
+    if (player.invisTimer > 0) { targetX = e.x + e.w/2; } 
+    
+    const dx = targetX - (e.x + e.w/2);
     const dist = Math.abs(dx);
-    e.facing = dx > 0 ? 1 : -1;
+    if (dx !== 0) e.facing = dx > 0 ? 1 : -1;
 
-    // --- ENEMY STATE MACHINE ---
+    // ติดสตั้นขยับไม่ได้ ทำอะไรไม่ได้
+    if (e.stunTimer > 0) {
+      e.vx = 0;
+      e.state = 'idle';
+      e.x += e.vx;
+      return true;
+    }
+
+    let currentSpeed = e.speed;
+    if (e.slowTimer > 0) currentSpeed *= 0.5;
+
     if (e.state === 'telegraph') {
-        // จังหวะง้าง (ศัตรูหยุดนิ่งและชาร์จพลัง)
         e.vx = 0;
         e.stateTimer--;
         if (e.stateTimer <= 0) {
-            e.state = 'attack';
-            e.stateTimer = 20;
-            executeEnemyAttack(e); // ปล่อยการโจมตี
+            e.state = 'attack'; e.stateTimer = 20;
+            executeEnemyAttack(e);
         }
     } else if (e.state === 'attack') {
         e.stateTimer--;
         if (e.stateTimer <= 0) e.state = 'walk';
     } else {
-        // โหมดเดินปกติ
         const meleeRange = e.isBoss ? 80 : 45;
         const stopDist = e.type === 'archer' ? 180 : meleeRange;
 
-        if (dist > stopDist) {
-            e.vx = e.facing * e.speed;
+        if (dist > stopDist || player.invisTimer > 0) {
+            e.vx = e.facing * currentSpeed;
             e.state = 'walk';
         } else {
             e.vx = 0;
-            // เมื่อถึงระยะโจมตี จะสุ่มคูลดาวน์โจมตี
-            if (--e.attackCd <= 0) {
+            if (--e.attackCd <= 0 && e.silenceTimer <= 0) {
                 e.state = 'telegraph';
-                // บอสง้างนานกว่าเพื่อให้หลบทัน แต่ท่าจะใหญ่กว่า
                 e.stateTimer = e.isBoss ? 50 : 30; 
                 e.attackCd = e.isBoss ? 90 : 120;
             }
@@ -760,51 +824,32 @@ function updateEnemies() {
   });
 }
 
-/* ══════════════════════════════════════
-   EXECUTE ENEMY ATTACK (Pattern Logic)
-══════════════════════════════════════ */
 function executeEnemyAttack(e) {
     const dx = (player.x + player.w/2) - (e.x + e.w/2);
     const dist = Math.abs(dx);
     
     if (e.isBoss) {
-        // --- BOSS ATTACK PATTERNS ---
         const bd = e.bossData;
-        
-        // 1. ท่าระเบิดพื้น (ถ้าผู้เล่นอยู่ใกล้)
         if (dist < 120) {
             createBigExplosion(e.x + (e.facing * 40), e.y + e.h/2, bd.color);
             if (dist < 100 && player.invincible <= 0) {
                 applyDamageToPlayer(bd.atk * 1.2, e.facing * 10);
             }
         }
-        
-        // 2. ยิงกระสุนกระจาย 3 ทิศทาง
         for (let i = -1; i <= 1; i++) {
             projectiles.push({
-                x: e.x + e.w/2, 
-                y: e.y + e.h/2,
-                vx: e.facing * 6, 
-                vy: i * 2, // กระจายบน-กลาง-ล่าง
-                w: 16, h: 16, 
-                color: bd.color, 
-                dmg: Math.round(bd.atk * 0.7), 
-                fromPlayer: false, 
-                emoji: '💢', 
-                life: 2.5,
-                trailColor: bd.color
+                x: e.x + e.w/2, y: e.y + e.h/2, vx: e.facing * 6, vy: i * 2,
+                w: 16, h: 16, color: bd.color, dmg: Math.round(bd.atk * 0.7), 
+                fromPlayer: false, emoji: '💢', life: 2.5, trailColor: bd.color
             });
         }
     } else {
-        // --- NORMAL ENEMY ATTACKS ---
         if (e.type === 'archer') {
             projectiles.push({
-                x: e.x + (e.facing * 10), y: e.y + 20,
-                vx: e.facing * 7, vy: -0.5,
+                x: e.x + (e.facing * 10), y: e.y + 20, vx: e.facing * 7, vy: -0.5,
                 w: 12, h: 8, color: e.color, dmg: e.atk, fromPlayer: false, life: 2
             });
         } else {
-            // โจมตีประชิดทั่วไป
             if (dist < 70 && player.invincible <= 0) {
                 applyDamageToPlayer(e.atk, e.facing * 6);
             }
@@ -812,65 +857,31 @@ function executeEnemyAttack(e) {
     }
 }
 
-// ฟังก์ชันเสริมสำหรับหักเลือดผู้เล่นและทำ Knockback
 function applyDamageToPlayer(damage, knockback) {
+    if (player.invincible > 0) return;
     const finalDmg = Math.round(damage * (0.8 + Math.random() * 0.4));
     player.hp = Math.max(0, player.hp - finalDmg);
-    player.invincible = 60; // อมตะ 1 วินาที
-    player.vx = knockback; // กระเด็นถอยหลัง
-    player.vy = -3; // กระดอนขึ้นเล็กน้อย
-    hitTexts.push({
-        x: player.x + player.w/2, 
-        y: player.y - 10, 
-        text: '-' + finalDmg, 
-        color: '#ff3c3c', 
-        life: 1, 
-        vy: -2, 
-        size: 14,
-        bold: true
-    });
+    player.invincible = 60; 
+    player.vx = knockback; 
+    player.vy = -3; 
+    hitTexts.push({ x: player.x + player.w/2, y: player.y - 10, text: '-' + finalDmg, color: '#ff3c3c', life: 1, vy: -2, size: 14, bold: true });
     updateHUD();
     if (player.hp <= 0) doGameOver();
 }
 
-/* ══════════════════════════════════════
-   ATTACK (basic) — manual only
-══════════════════════════════════════ */
-function doBasicAttack() {
-  if (player.state === 'skill') return;
-  player.state = 'attack'; player.stateTimer = 15;
-  doMeleeHit(player.atk, 55, player.char?.accentColor || '#ffe600');
-}
-
-function doMeleeHit(dmg, range, color) {
-  enemies.forEach(e => {
-    const ex = e.x + e.w/2, ey = e.y + e.h/2;
-    const px = player.x + (player.facing>0 ? player.w : 0);
-    const py = player.y + player.h/2;
-    if (Math.abs(ex - px) < range && Math.abs(ey - py) < 50) {
-      hitEnemy(e, dmg, color);
-    }
-  });
-}
-
 function hitEnemy(e, dmg, color) {
   if (e.invincible > 0) return;
-  e.hp -= dmg;
-  e.invincible = 12;
-  e.vx = player.facing * 3;
+  e.hp -= dmg; e.invincible = 12; e.vx = player.facing * 3;
   hitTexts.push({ x: e.x + e.w/2, y: e.y - 8, text: dmg, color, life: 1, vy: -1.8, size: 11 });
   spawnHitParticles(e.x + e.w/2, e.y + e.h/3, color, 5);
   if (e.hp <= 0) killEnemy(e);
 }
 
 function killEnemy(e) {
-  e.dead = true;
-  kills++;
+  e.dead = true; kills++;
   const pts = e.isBoss ? (stage * 500) : (stage * 10 + wave * 5);
-  score += pts;
-  hiScore = Math.max(score, hiScore);
+  score += pts; hiScore = Math.max(score, hiScore);
   createBigExplosion(e.x + e.w/2, e.y + e.h/2, e.color);
-  // MP regen on kill
   player.mp = Math.min(player.maxMp, player.mp + (e.isBoss ? 30 : 8));
   updateHUD();
 }
@@ -900,9 +911,9 @@ function createBigExplosion(x,y,color){
 function drawCharacter(cx2, x, y, charDef, facing, state, animF, scale=1, preview=false) {
   const c = charDef;
   const w = Math.round(28*scale), h = Math.round(48*scale);
-  const fw = Math.round(10*scale), fh = Math.round(12*scale); // face
-  const bw = Math.round(16*scale), bh = Math.round(18*scale); // body
-  const lw = Math.round(8*scale),  lh = Math.round(16*scale); // leg
+  const fw = Math.round(10*scale), fh = Math.round(12*scale); 
+  const bw = Math.round(16*scale), bh = Math.round(18*scale); 
+  const lw = Math.round(8*scale),  lh = Math.round(16*scale); 
   const armW = Math.round(7*scale), armH = Math.round(14*scale);
 
   const runBob = state==='walk' ? Math.sin(animF*0.25)*3*scale : 0;
@@ -912,12 +923,20 @@ function drawCharacter(cx2, x, y, charDef, facing, state, animF, scale=1, previe
   cx2.save();
   cx2.translate(x, y);
   if (facing < 0) { cx2.scale(-1, 1); }
-  cx2.shadowBlur = 12; cx2.shadowColor = c.color;
-
-  // glow effect for skills
-  if (state==='skill') {
-    cx2.shadowBlur = 24; cx2.shadowColor = c.accentColor;
+  
+  // Status Visuals (Player)
+  if (!preview) {
+    if (player.invisTimer > 0) cx2.globalAlpha = 0.3; // Stealth
+    if (player.shieldTimer > 0) { // Shield aura
+      cx2.shadowBlur = 20; cx2.shadowColor = c.accentColor;
+      cx2.fillStyle = c.accentColor; cx2.globalAlpha = 0.4;
+      cx2.beginPath(); cx2.arc(0, -h/2, h/1.5, 0, Math.PI*2); cx2.fill();
+      cx2.globalAlpha = 1;
+    }
   }
+
+  cx2.shadowBlur = 12; cx2.shadowColor = c.color;
+  if (state==='skill') { cx2.shadowBlur = 24; cx2.shadowColor = c.accentColor; }
 
   // LEGS
   cx2.fillStyle = c.bodyColor;
@@ -932,26 +951,20 @@ function drawCharacter(cx2, x, y, charDef, facing, state, animF, scale=1, previe
   const bodyY = runBob - Math.round(lh*jumpSq) - bh;
   cx2.fillStyle = c.color;
   cx2.fillRect(-Math.round(bw/2), bodyY, bw, bh);
-  // belt
   cx2.fillStyle = '#111';
   cx2.fillRect(-Math.round(bw/2), bodyY + Math.round(bh*0.65), bw, 3);
 
   // ARMS
   const attackSwing = (state==='attack'||state==='skill') ? Math.round(8*scale) : 0;
   cx2.fillStyle = c.color;
-  // right arm (weapon hand) — swings forward on attack
   cx2.fillRect(Math.round(bw/2)-1, bodyY + 2 - attackSwing, armW, armH);
-  // left arm
   cx2.fillRect(-Math.round(bw/2)-armW+1, bodyY + 2, armW, armH);
 
-  // WEAPON in hand
+  // WEAPON
   if (state==='attack'||state==='skill') {
-    cx2.fillStyle = c.accentColor;
-    cx2.shadowColor = c.accentColor;
+    cx2.fillStyle = c.accentColor; cx2.shadowColor = c.accentColor;
     cx2.fillRect(Math.round(bw/2)+armW-2, bodyY - 4 - attackSwing, 4, Math.round(22*scale));
-    // weapon glow trail
-    cx2.globalAlpha = 0.4;
-    cx2.fillStyle = c.accentColor;
+    cx2.globalAlpha = 0.4; cx2.fillStyle = c.accentColor;
     cx2.fillRect(Math.round(bw/2)+armW+2, bodyY - 8 - attackSwing, 3, Math.round(18*scale));
     cx2.globalAlpha = 1;
   } else {
@@ -963,21 +976,16 @@ function drawCharacter(cx2, x, y, charDef, facing, state, animF, scale=1, previe
   const headY = bodyY - fh - Math.round(4*scale);
   cx2.fillStyle = c.helmColor;
   cx2.fillRect(-Math.round(fw/2)-2, headY, fw+4, fh+2);
-  // visor
   cx2.fillStyle = 'rgba(0,0,0,0.5)';
   cx2.fillRect(-Math.round(fw/2), headY + Math.round(3*scale), fw, Math.round(4*scale));
-  // eyes glow
-  cx2.fillStyle = c.accentColor;
-  cx2.shadowBlur = 6; cx2.shadowColor = c.accentColor;
+  cx2.fillStyle = c.accentColor; cx2.shadowBlur = 6; cx2.shadowColor = c.accentColor;
   cx2.fillRect(-Math.round(fw/2)+2, headY + Math.round(3*scale)+1, Math.round(3*scale), Math.round(2*scale));
   cx2.fillRect(Math.round(fw/4)-1,  headY + Math.round(3*scale)+1, Math.round(3*scale), Math.round(2*scale));
 
-  // element aura
   if (state==='skill' || state==='idle') {
     cx2.globalAlpha = state==='skill' ? 0.6 : 0.15;
     const grad = cx2.createRadialGradient(0, bodyY+bh/2, 5, 0, bodyY+bh/2, Math.round(30*scale));
-    grad.addColorStop(0, c.accentColor);
-    grad.addColorStop(1, 'transparent');
+    grad.addColorStop(0, c.accentColor); grad.addColorStop(1, 'transparent');
     cx2.fillStyle = grad;
     cx2.beginPath(); cx2.arc(0, bodyY+bh/2, Math.round(30*scale), 0, Math.PI*2); cx2.fill();
     cx2.globalAlpha = 1;
@@ -987,7 +995,7 @@ function drawCharacter(cx2, x, y, charDef, facing, state, animF, scale=1, previe
 }
 
 /* ══════════════════════════════════════
-   DRAW — ENEMY (With Telegraphing)
+   DRAW — ENEMY 
 ══════════════════════════════════════ */
 function drawEnemy(e) {
   if (e.dead) return;
@@ -998,11 +1006,14 @@ function drawEnemy(e) {
   if (e.isBoss) {
     drawBossChar(e, x, y);
   } else {
-    // Normal enemy — procedural
     ctx.save();
     ctx.translate(x, y);
     if (e.facing > 0) ctx.scale(-1,1);
-    ctx.shadowBlur = 8; ctx.shadowColor = e.color;
+    
+    // Status visual
+    if (e.stunTimer > 0) { ctx.shadowBlur = 10; ctx.shadowColor = '#ffff00'; }
+    else if (e.slowTimer > 0) { ctx.shadowBlur = 10; ctx.shadowColor = '#00ffff'; }
+    else { ctx.shadowBlur = 8; ctx.shadowColor = e.color; }
 
     const run = Math.sin(e.animFrame*0.2)*5;
     const bh = e.h;
@@ -1043,14 +1054,14 @@ function drawEnemy(e) {
     ctx.restore();
   }
 
-  // --- TELEGRAPHING INDICATOR (❗) ---
+  // Effect Icons Above head
+  if (e.silenceTimer > 0) { ctx.font = '16px serif'; ctx.fillText('🔇', x, e.y - 15); }
+  if (e.stunTimer > 0) { ctx.font = '16px serif'; ctx.fillText('⚡', x, e.y - 15); }
+
+  // TELEGRAPHING INDICATOR (❗)
   if (e.state === 'telegraph') {
-    ctx.fillStyle = '#ff3c3c';
-    ctx.font = 'bold 20px "Press Start 2P"';
-    ctx.textAlign = 'center';
+    ctx.fillStyle = '#ff3c3c'; ctx.font = 'bold 20px "Press Start 2P"'; ctx.textAlign = 'center';
     ctx.fillText('❗', x, e.y - (e.isBoss?40:15));
-    
-    // แถบแดงที่พื้นบอกระยะโจมตี
     ctx.fillStyle = 'rgba(255, 60, 60, 0.25)';
     const range = e.isBoss ? 120 : (e.type==='archer'?200:60);
     const startX = e.facing > 0 ? e.x + e.w : e.x - range;
@@ -1070,7 +1081,10 @@ function drawBossChar(e, x, y) {
   ctx.save();
   ctx.translate(x, y);
   if (e.facing > 0) ctx.scale(-1, 1);
-  ctx.shadowBlur = 20; ctx.shadowColor = bd.color;
+  
+  if (e.stunTimer > 0) { ctx.shadowBlur = 20; ctx.shadowColor = '#ffff00'; }
+  else if (e.slowTimer > 0) { ctx.shadowBlur = 20; ctx.shadowColor = '#00ffff'; }
+  else { ctx.shadowBlur = 20; ctx.shadowColor = bd.color; }
 
   const pulse = 1 + Math.sin(frameCount*0.08)*0.04;
   ctx.scale(pulse, pulse);
@@ -1078,46 +1092,35 @@ function drawBossChar(e, x, y) {
   const h = e.h/s;
   const bob = Math.sin(e.animFrame*0.1)*3;
 
-  // BOSS BODY — multi-layered imposing frame
-  // Legs (thick)
   ctx.fillStyle = bd.color;
   const ls = Math.round(14*s);
   ctx.fillRect(-ls, bob - Math.round(h*0.35*s), ls-1, Math.round(h*0.35*s));
   ctx.fillRect(2,   bob - Math.round(h*0.35*s), ls-1, Math.round(h*0.35*s));
 
-  // Body
   const bws = Math.round(22*s), bhs = Math.round(h*0.38*s);
   ctx.fillStyle = bd.color;
   ctx.fillRect(-bws/2, bob - Math.round(h*0.75*s), bws, bhs);
-  // body detail
   ctx.fillStyle = 'rgba(0,0,0,0.35)';
   ctx.fillRect(-bws/2+2, bob - Math.round(h*0.75*s)+2, bws-4, 4);
   ctx.fillRect(-bws/2+2, bob - Math.round(h*0.55*s), bws-4, 3);
 
-  // Shoulders / pauldrons
   ctx.fillStyle = bd.color;
   ctx.fillRect(-bws/2-Math.round(8*s), bob - Math.round(h*0.75*s), Math.round(10*s), Math.round(8*s));
   ctx.fillRect(bws/2-2,                bob - Math.round(h*0.75*s), Math.round(10*s), Math.round(8*s));
 
-  // Arms
   const swing = (e.state==='attack') ? -12 : bob;
   ctx.fillRect(-bws/2-Math.round(10*s), bob - Math.round(h*0.7*s)+swing, Math.round(9*s), Math.round(20*s));
   ctx.fillRect(bws/2+1,                 bob - Math.round(h*0.7*s),       Math.round(9*s), Math.round(20*s));
 
-  // BOSS WEAPON — huge
   ctx.fillStyle = '#cc4444';
   ctx.fillRect(-bws/2-Math.round(22*s), bob - Math.round(h*0.9*s)+swing, Math.round(5*s), Math.round(32*s));
-  // weapon glow
-  ctx.shadowColor = '#ff4444'; ctx.shadowBlur = 14;
-  ctx.fillStyle = 'rgba(255,80,80,0.5)';
+  ctx.shadowColor = '#ff4444'; ctx.shadowBlur = 14; ctx.fillStyle = 'rgba(255,80,80,0.5)';
   ctx.fillRect(-bws/2-Math.round(24*s), bob - Math.round(h*0.95*s)+swing, Math.round(3*s), Math.round(28*s));
   ctx.shadowBlur = 20; ctx.shadowColor = bd.color;
 
-  // HEAD — menacing
   const hw = Math.round(20*s), hh = Math.round(h*0.3*s);
   ctx.fillStyle = bd.color;
   ctx.fillRect(-hw/2, bob - Math.round(h*s) - 2, hw, hh);
-  // helmet spikes
   ctx.fillStyle = '#cc1111';
   for(let sp=-1;sp<=1;sp++){
     ctx.beginPath();
@@ -1126,21 +1129,16 @@ function drawBossChar(e, x, y) {
     ctx.lineTo(sp*Math.round(6*s)+Math.round(3*s), bob - Math.round(h*s)-Math.round(12*s));
     ctx.closePath(); ctx.fill();
   }
-  // glowing eyes (BOSS)
   ctx.fillStyle = '#ff0000'; ctx.shadowColor='#ff0000'; ctx.shadowBlur=12;
   ctx.fillRect(-hw/2+Math.round(3*s), bob - Math.round(h*s)+Math.round(4*s), Math.round(5*s), Math.round(4*s));
   ctx.fillRect(hw/2-Math.round(8*s),  bob - Math.round(h*s)+Math.round(4*s), Math.round(5*s), Math.round(4*s));
-  // emoji icon above
-  ctx.shadowBlur = 0; ctx.font = `${Math.round(18*s)}px serif`;
-  ctx.textAlign = 'center'; ctx.globalAlpha = 0.8;
+  ctx.shadowBlur = 0; ctx.font = `${Math.round(18*s)}px serif`; ctx.textAlign = 'center'; ctx.globalAlpha = 0.8;
   ctx.fillText(bd.emoji, 0, bob - Math.round(h*s) - Math.round(20*s));
   ctx.globalAlpha = 1;
 
   ctx.restore();
 
-  // BOSS HP bar (wide, above)
-  const barW = e.w + 40;
-  const barX = e.x - 20;
+  const barW = e.w + 40; const barX = e.x - 20;
   ctx.fillStyle = '#220000'; ctx.fillRect(barX, e.y - 16, barW, 8);
   const fill = Math.max(0, barW * (e.hp/e.maxHp));
   const grad = ctx.createLinearGradient(barX,0,barX+barW,0);
@@ -1152,24 +1150,16 @@ function drawBossChar(e, x, y) {
 }
 
 /* ══════════════════════════════════════
-   DRAW — BACKGROUND (parallax)
+   DRAW — BACKGROUND
 ══════════════════════════════════════ */
 function drawBackground() {
-  // Sky
   const tier = Math.floor((stage-1)/20);
-  const skyColors = [
-    ['#060614','#0d0d28'],
-    ['#140614','#1a0a1a'],
-    ['#060e0a','#0a1c10'],
-    ['#141000','#1c1600'],
-    ['#0a0000','#1a0505'],
-  ];
+  const skyColors = [ ['#060614','#0d0d28'], ['#140614','#1a0a1a'], ['#060e0a','#0a1c10'], ['#141000','#1c1600'], ['#0a0000','#1a0505'] ];
   const [s1,s2] = skyColors[tier % 5];
   const sky = ctx.createLinearGradient(0,0,0,H);
   sky.addColorStop(0,s1); sky.addColorStop(1,s2);
   ctx.fillStyle=sky; ctx.fillRect(0,0,W,H);
 
-  // Stars / BG elements
   ctx.save();
   for(let i=0;i<20;i++){
     const sx = ((i*137+frameCount*0.1)%W);
@@ -1180,12 +1170,10 @@ function drawBackground() {
   }
   ctx.restore();
 
-  // Ground
   const gg = ctx.createLinearGradient(0,GROUND,0,H);
   gg.addColorStop(0,'#1a1020'); gg.addColorStop(1,'#08080f');
   ctx.fillStyle=gg; ctx.fillRect(0,GROUND,W,H-GROUND);
 
-  // Ground glow line
   ctx.save();
   const glowColors = ['#4444ff','#9922ff','#22aa44','#ffaa00','#ff2222'];
   ctx.shadowBlur=8; ctx.shadowColor=glowColors[tier % 5];
@@ -1195,7 +1183,7 @@ function drawBackground() {
 }
 
 /* ══════════════════════════════════════
-   DRAW & UPDATE — PROJECTILES
+   UPDATE & DRAW — PROJECTILES / BLACKHOLES
 ══════════════════════════════════════ */
 function drawProjectile(p) {
   ctx.save();
@@ -1210,12 +1198,9 @@ function drawProjectile(p) {
   }
   ctx.globalAlpha = p.life;
   if (p.emoji) {
-    ctx.font = `${p.w+6}px serif`;
-    ctx.textAlign='center'; ctx.textBaseline='middle';
-    ctx.fillText(p.emoji, p.x, p.y);
+    ctx.font = `${p.w+6}px serif`; ctx.textAlign='center'; ctx.textBaseline='middle'; ctx.fillText(p.emoji, p.x, p.y);
   } else {
-    ctx.fillStyle = p.color;
-    ctx.beginPath(); ctx.arc(p.x, p.y, p.w/2, 0, Math.PI*2); ctx.fill();
+    ctx.fillStyle = p.color; ctx.beginPath(); ctx.arc(p.x, p.y, p.w/2, 0, Math.PI*2); ctx.fill();
   }
   ctx.restore();
 }
@@ -1223,7 +1208,11 @@ function drawProjectile(p) {
 function updateProjectiles() {
   projectiles = projectiles.filter(p => {
     p.x += p.vx; p.y += p.vy;
-    p.vy += 0.1;
+    if(!p.bounce) p.vy += 0.1;
+    else {
+      p.vy += GRAVITY;
+      if (p.y >= GROUND) { p.y = GROUND; p.vy = -6; } // เด้งพื้น
+    }
     p.life -= 0.015;
     if (p.x < -20 || p.x > W+20 || p.y > GROUND+20 || p.life <= 0) return false;
 
@@ -1232,6 +1221,7 @@ function updateProjectiles() {
       enemies.forEach(e => {
         if (!hit && !e.dead && p.x>e.x && p.x<e.x+e.w && p.y>e.y && p.y<e.y+e.h) {
           hitEnemy(e, p.dmg, p.color);
+          if (p.onHit) p.onHit(e); // เรียกใช้ Effect เสริมถ้ามี (Slow/Stun)
           if (!p.pierce) hit = true;
         }
       });
@@ -1245,6 +1235,23 @@ function updateProjectiles() {
     }
     return true;
   });
+
+  // Blackhole Logic (Shadow Skill)
+  blackholes.forEach(b => {
+    b.life--;
+    // วาดหลุมดำ
+    ctx.save(); ctx.fillStyle = '#000'; ctx.shadowBlur = 20; ctx.shadowColor = b.color;
+    ctx.beginPath(); ctx.arc(b.x, b.y, 25 + Math.sin(frameCount*0.2)*5, 0, Math.PI*2); ctx.fill();
+    ctx.restore();
+    // ดูดศัตรู
+    enemies.forEach(e => {
+      const dx = b.x - (e.x + e.w/2);
+      if (Math.abs(dx) < 200 && !e.dead) {
+        e.x += dx * 0.03; // ดูดเข้าหาจุดศูนย์กลาง
+      }
+    });
+  });
+  blackholes = blackholes.filter(b => b.life > 0);
 }
 
 /* ══════════════════════════════════════
@@ -1259,44 +1266,34 @@ function updatePlayer() {
   else if (keys['ArrowRight'] || keys['KeyE']) { player.vx = spd; player.facing = 1; moving = true; }
   else { player.vx *= 0.7; if(Math.abs(player.vx)<0.1) player.vx=0; }
 
-  if (player.state === 'skill' && player.stateTimer > 20) {
-    // Keep momentum from dash
-  } else {
-    player.vx = moving ? player.vx : player.vx * 0.7;
-  }
+  if (player.state === 'skill' && player.stateTimer > 20) { /* Momentum */ } 
+  else { player.vx = moving ? player.vx : player.vx * 0.7; }
 
   player.x += player.vx;
   player.x = Math.max(10, Math.min(W - player.w - 10, player.x));
 
-  if ((keys['ArrowUp']||keys['Space']||keys['KeyW']) && player.onGround) {
+  if ((keys['ArrowUp']||keys['Space']||keys['KeyW']) && player.onGround && player.state!=='skill') {
     player.vy = JUMP_POWER; player.onGround = false;
     spawnHitParticles(player.x+player.w/2, player.y+player.h, player.char.accentColor, 4);
   }
-  player.vy += GRAVITY;
-  player.y += player.vy;
-  if (player.y >= GROUND - player.h) {
-    player.y = GROUND - player.h; player.vy = 0; player.onGround = true;
-  }
-
-  if ((keys['KeyA']||keys['KeyZ']) && player.stateTimer <= 0 && player.state !== 'skill') {
-    useSkill(0); // Map A to Skill 1 instead of basic attack
-  }
+  player.vy += GRAVITY; player.y += player.vy;
+  if (player.y >= GROUND - player.h) { player.y = GROUND - player.h; player.vy = 0; player.onGround = true; }
 
   if (player.stateTimer > 0) player.stateTimer--;
-  else if (player.state !== 'idle' && player.state !== 'walk') {
-    player.state = moving ? 'walk' : 'idle';
-  } else {
-    player.state = moving ? 'walk' : 'idle';
-  }
+  else if (player.state !== 'idle' && player.state !== 'walk') player.state = moving ? 'walk' : 'idle';
+  else player.state = moving ? 'walk' : 'idle';
 
-  if (player.onGround && moving) player.animFrame++;
-  else if (!player.onGround) player.animFrame++;
+  if (player.onGround && moving) player.animFrame++; else if (!player.onGround) player.animFrame++;
 
+  // Timers countdown
   if (player.invincible > 0) player.invincible--;
+  if (player.attackCd > 0) player.attackCd--;
+  if (player.rangedTimer > 0) player.rangedTimer--;
+  if (player.fastTimer > 0) player.fastTimer--;
+  if (player.invisTimer > 0) player.invisTimer--;
+  if (player.shieldTimer > 0) player.shieldTimer--;
 
-  if (frameCount % 30 === 0) {
-    player.mp = Math.min(player.maxMp, player.mp + 2);
-  }
+  if (frameCount % 30 === 0) player.mp = Math.min(player.maxMp, player.mp + 2);
 
   player.skillCDs = player.skillCDs.map(cd => Math.max(0, cd-1));
   updateSkillBar();
@@ -1308,29 +1305,23 @@ function updatePlayer() {
 function checkWaveClear() {
   if (waveCleared) return;
   const allDead = enemies.filter(e=>!e.dead).length === 0;
-  const spawnDone = (wave < 5 && enemiesSpawned >= enemiesThisWave) ||
-                    (wave === 5 && bossSpawned);
+  const spawnDone = (wave < 5 && enemiesSpawned >= enemiesThisWave) || (wave === 5 && bossSpawned);
   if (!allDead || !spawnDone) return;
 
   waveCleared = true;
   score += wave === 5 ? stage * 200 : stage * 30 + wave * 20;
-  hiScore = Math.max(score, hiScore);
-  updateHUD();
+  hiScore = Math.max(score, hiScore); updateHUD();
 
   if (wave === 5) {
     hitTexts.push({x:W/2, y:H/2-30, text:'STAGE CLEAR! 🎉', color:'#ffe600', life:2.5, vy:-0.3, size:18, bold:true});
     player.hp = Math.min(player.maxHp, player.hp + Math.round(player.maxHp*0.3));
     player.mp = Math.min(player.maxMp, player.mp + 40);
     updateHUD();
-    if (stage >= 100) {
-      setTimeout(()=>doClear(), 2500);
-    } else {
-      setTimeout(()=>{ stage++; wave=1; enemies=[]; projectiles=[]; waveCleared=false; bossSpawned=false; beginWave(); }, 2500);
-    }
+    if (stage >= 100) setTimeout(()=>doClear(), 2500);
+    else setTimeout(()=>{ stage++; wave=1; enemies=[]; projectiles=[]; waveCleared=false; bossSpawned=false; beginWave(); }, 2500);
   } else {
     hitTexts.push({x:W/2, y:H/2-20, text:`WAVE ${wave} CLEAR!`, color:'#39ff14', life:1.5, vy:-0.3, size:14, bold:true});
-    player.mp = Math.min(player.maxMp, player.mp + 20);
-    updateHUD();
+    player.mp = Math.min(player.maxMp, player.mp + 20); updateHUD();
     setTimeout(()=>{ wave++; enemies=[]; projectiles=[]; waveCleared=false; beginWave(); }, 1500);
   }
 }
@@ -1342,15 +1333,13 @@ async function doGameOver() {
   gs = 'gameover';
   createBigExplosion(player.x+player.w/2, player.y+player.h/2, '#ff3c3c');
   showOverlay('gameover','💀 GAME OVER',`STAGE ${stage}-${wave}\nSCORE: ${score}\nHI: ${hiScore}`,'PLAY AGAIN');
-  const u = getCurrentUser();
-  await saveScore(u.name, u.role, score);
+  const u = getCurrentUser(); await saveScore(u.name, u.role, score);
 }
 
 function doClear() {
   gs='gameover';
   showOverlay('win','🏆 CHAMPION!',`ALL 100 STAGES CLEARED!\nFINAL SCORE: ${score}`,'PLAY AGAIN');
-  const u = getCurrentUser();
-  saveScore(u.name, u.role, score);
+  const u = getCurrentUser(); saveScore(u.name, u.role, score);
 }
 
 /* ══════════════════════════════════════
@@ -1363,8 +1352,7 @@ function updateHUD() {
   document.getElementById('tjcf-mp-fill').style.width = mpPct+'%';
   document.getElementById('tjcf-hp-fill').style.background =
     hpPct < 25 ? 'linear-gradient(90deg,#ff0000,#ff3300)' :
-    hpPct < 50 ? 'linear-gradient(90deg,#ff6600,#ff9900)' :
-    'linear-gradient(90deg,#ff3c3c,#ff6b35)';
+    hpPct < 50 ? 'linear-gradient(90deg,#ff6600,#ff9900)' : 'linear-gradient(90deg,#ff3c3c,#ff6b35)';
   document.getElementById('tjcf-stage-val').textContent = `${stage}-${wave}`;
   document.getElementById('tjcf-score-val').textContent = score;
   document.getElementById('tjcf-kills-val').textContent = kills;
@@ -1372,23 +1360,22 @@ function updateHUD() {
 
 function updateSkillBar() {
   if (!player.char) return;
+  
+  const atkBtn = document.getElementById('btn-atk');
+  if (player.attackCd === 0) atkBtn.style.opacity = '1';
+  else atkBtn.style.opacity = '0.5';
+
   player.char.skills.forEach((sk,i)=>{
-    const cd = player.skillCDs[i];
-    const maxCd = sk.cd;
+    const cd = player.skillCDs[i]; const maxCd = sk.cd;
     const cdBar = document.getElementById(`sk${i}-cd`);
     if (cdBar) cdBar.style.width = (cd/maxCd*100)+'%';
     const slot = document.getElementById(`sk${i}`);
-    if (slot) {
-      slot.className = 'tjcf-skill-icon' + (cd===0 && player.mp>=sk.mp ? ' ready' : '');
-    }
+    if (slot) slot.className = 'tjcf-skill-icon' + (cd===0 && player.mp>=sk.mp ? ' ready' : '');
     const ico = document.getElementById(`sk${i}-ico`);
     if (ico) ico.textContent = sk.ico;
   });
 }
 
-/* ══════════════════════════════════════
-   OVERLAY
-══════════════════════════════════════ */
 function showOverlay(type, title, sub, btn) {
   document.getElementById('tjcf-ov-title').textContent = title;
   document.getElementById('tjcf-ov-title').className   = type;
@@ -1396,73 +1383,48 @@ function showOverlay(type, title, sub, btn) {
   document.getElementById('tjcf-ov-btn').textContent   = btn||'OK';
   document.getElementById('tjcf-overlay').classList.remove('hidden');
 }
-function hideOverlay() {
-  document.getElementById('tjcf-overlay').classList.add('hidden');
-}
+function hideOverlay() { document.getElementById('tjcf-overlay').classList.add('hidden'); }
 
 /* ══════════════════════════════════════
    MAIN LOOP
 ══════════════════════════════════════ */
 function loop() {
   if (gs !== 'playing') return;
-  ctx.clearRect(0,0,W,H);
-  frameCount++;
+  ctx.clearRect(0,0,W,H); frameCount++;
 
-  updatePlayer();
-  updateEnemies();
-  updateProjectiles();
-  checkWaveClear();
+  updatePlayer(); updateEnemies(); updateProjectiles(); checkWaveClear();
 
-  particles.forEach(p=>{p.x+=p.vx;p.y+=p.vy;p.vy+=0.1;p.life-=p.decay;});
-  particles=particles.filter(p=>p.life>0);
-  hitTexts.forEach(t=>{t.y+=t.vy;t.life-=0.02;});
-  hitTexts=hitTexts.filter(t=>t.life>0);
+  particles.forEach(p=>{p.x+=p.vx;p.y+=p.vy;p.vy+=0.1;p.life-=p.decay;}); particles=particles.filter(p=>p.life>0);
+  hitTexts.forEach(t=>{t.y+=t.vy;t.life-=0.02;}); hitTexts=hitTexts.filter(t=>t.life>0);
 
-  // DRAW
   drawBackground();
   projectiles.forEach(drawProjectile);
 
   if (gs==='playing') {
     const show = player.invincible<=0 || Math.floor(player.invincible/5)%2===0;
     if (show && player.char) {
-      drawCharacter(ctx, player.x+player.w/2, player.y+player.h,
-        player.char, player.facing, player.state, player.animFrame, 1.0);
-      ctx.save(); ctx.globalAlpha=0.2; ctx.fillStyle='#000';
-      ctx.ellipse(player.x+player.w/2, GROUND+2, player.w*0.6, 4, 0, 0, Math.PI*2);
-      ctx.fill(); ctx.restore();
+      drawCharacter(ctx, player.x+player.w/2, player.y+player.h, player.char, player.facing, player.state, player.animFrame, 1.0);
+      ctx.save(); ctx.globalAlpha=0.2; ctx.fillStyle='#000'; ctx.ellipse(player.x+player.w/2, GROUND+2, player.w*0.6, 4, 0, 0, Math.PI*2); ctx.fill(); ctx.restore();
     }
   }
 
   enemies.forEach(drawEnemy);
 
   particles.forEach(p=>{
-    ctx.save();ctx.globalAlpha=p.life;ctx.fillStyle=p.color;
-    ctx.shadowBlur=6;ctx.shadowColor=p.color;
-    ctx.beginPath();ctx.arc(p.x,p.y,p.r*p.life,0,Math.PI*2);ctx.fill();
-    ctx.restore();
+    ctx.save();ctx.globalAlpha=p.life;ctx.fillStyle=p.color; ctx.shadowBlur=6;ctx.shadowColor=p.color;
+    ctx.beginPath();ctx.arc(p.x,p.y,p.r*p.life,0,Math.PI*2);ctx.fill(); ctx.restore();
   });
 
   hitTexts.forEach(t=>{
-    ctx.save();
-    ctx.globalAlpha=t.life;
-    ctx.fillStyle=t.color;
-    ctx.shadowBlur=8;ctx.shadowColor=t.color;
-    if(t.isEmoji){
-      ctx.font=`${t.size}px serif`;ctx.textAlign='center';ctx.textBaseline='middle';
-      ctx.fillText(t.text,t.x,t.y);
-    } else {
-      ctx.font=`${t.bold?'bold ':''}${t.size||11}px "Press Start 2P",monospace`;
-      ctx.textAlign='center';ctx.textBaseline='middle';
-      ctx.fillText(t.text,t.x,t.y);
-    }
+    ctx.save(); ctx.globalAlpha=t.life; ctx.fillStyle=t.color; ctx.shadowBlur=8;ctx.shadowColor=t.color;
+    if(t.isEmoji){ ctx.font=`${t.size}px serif`;ctx.textAlign='center';ctx.textBaseline='middle'; ctx.fillText(t.text,t.x,t.y);
+    } else { ctx.font=`${t.bold?'bold ':''}${t.size||11}px "Press Start 2P",monospace`; ctx.textAlign='center';ctx.textBaseline='middle'; ctx.fillText(t.text,t.x,t.y); }
     ctx.restore();
   });
 
-  // HP danger vignette
   if (player.hp / player.maxHp < 0.3) {
     const vig=ctx.createRadialGradient(W/2,H/2,H*0.2,W/2,H/2,H*0.8);
-    vig.addColorStop(0,'transparent');
-    vig.addColorStop(1,`rgba(255,0,0,${0.12+0.08*Math.sin(frameCount*0.2)})`);
+    vig.addColorStop(0,'transparent'); vig.addColorStop(1,`rgba(255,0,0,${0.12+0.08*Math.sin(frameCount*0.2)})`);
     ctx.fillStyle=vig;ctx.fillRect(0,0,W,H);
   }
 
@@ -1476,10 +1438,8 @@ function getCurrentUser() {
   if (window.tdCurrentUser) return window.tdCurrentUser;
   const txt=(document.getElementById('whoami')?.textContent||'').trim();
   if(txt&&txt!=='กำลังโหลด...'){
-    const name=txt.split('•')[0].trim();
-    let role='user';
-    if(/super_admin|super admin/i.test(txt)) role='super_admin';
-    else if(/admin/i.test(txt)) role='admin';
+    const name=txt.split('•')[0].trim(); let role='user';
+    if(/super_admin|super admin/i.test(txt)) role='super_admin'; else if(/admin/i.test(txt)) role='admin';
     return {name,role};
   }
   return {name:localStorage.getItem('tdGuestName')||'Guest',role:'user'};
@@ -1488,14 +1448,11 @@ function getCurrentUser() {
 let currentUserName = getCurrentUser().name;
 subscribeLeaderboard(entries => {
   const list=document.getElementById('tjcf-lb-list');
-  if(!entries||entries.length===0){
-    list.innerHTML='<div class="tjcf-lb-empty">NO SCORES YET</div>';return;
-  }
+  if(!entries||entries.length===0){ list.innerHTML='<div class="tjcf-lb-empty">NO SCORES YET</div>';return; }
   list.innerHTML=entries.map((e,i)=>{
     const rc=i===0?'r1':i===1?'r2':i===2?'r3':'rx';
     const ri=i===0?'🥇':i===1?'🥈':i===2?'🥉':`#${i+1}`;
-    const rk=(e.role||'user').replace(/[^a-z_]/gi,'');
-    const me=e.name===currentUserName;
+    const rk=(e.role||'user').replace(/[^a-z_]/gi,''); const me=e.name===currentUserName;
     return `<div class="tjcf-lb-row${me?' me':''}">
       <div class="tjcf-lb-rank ${rc}">${ri}</div>
       <span class="tjcf-lb-role role-${rk}">${(e.role||'user').replace('_',' ')}</span>
@@ -1505,17 +1462,10 @@ subscribeLeaderboard(entries => {
   }).join('');
 });
 
-/* ══════════════════════════════════════
-   BOOT — static frame
-══════════════════════════════════════ */
 (function boot(){
-  const sky=ctx.createLinearGradient(0,0,0,H);
-  sky.addColorStop(0,'#060614');sky.addColorStop(1,'#0d0d28');
-  ctx.fillStyle=sky;ctx.fillRect(0,0,W,H);
-  ctx.fillStyle='#1a1020';ctx.fillRect(0,GROUND,W,H-GROUND);
-  ctx.fillStyle='#4444ff';ctx.fillRect(0,GROUND,W,3);
-  ctx.font='12px "Press Start 2P",monospace';
-  ctx.fillStyle='rgba(255,153,0,0.4)';ctx.textAlign='center';
+  const sky=ctx.createLinearGradient(0,0,0,H); sky.addColorStop(0,'#060614');sky.addColorStop(1,'#0d0d28'); ctx.fillStyle=sky;ctx.fillRect(0,0,W,H);
+  ctx.fillStyle='#1a1020';ctx.fillRect(0,GROUND,W,H-GROUND); ctx.fillStyle='#4444ff';ctx.fillRect(0,GROUND,W,3);
+  ctx.font='12px "Press Start 2P",monospace'; ctx.fillStyle='rgba(255,153,0,0.4)';ctx.textAlign='center';
   ctx.fillText('SELECT YOUR FIGHTER ABOVE',W/2,H/2+10);
 })();
 </script>
@@ -1523,8 +1473,7 @@ subscribeLeaderboard(entries => {
 
 <script>
 (function(){
-  const root=document.documentElement;
-  const saved=localStorage.getItem('theme');
+  const root=document.documentElement; const saved=localStorage.getItem('theme');
   const sys=window.matchMedia&&window.matchMedia('(prefers-color-scheme: dark)').matches;
   const init=saved||(sys?'dark':'light');
   function moon(){return`<svg viewBox="0 0 24 24"><path d="M21 12.6A8.5 8.5 0 0 1 11.4 3a7 7 0 1 0 9.6 9.6Z"/></svg>`;}
@@ -1534,10 +1483,7 @@ subscribeLeaderboard(entries => {
     const tl=document.getElementById('themeLabel');if(tl)tl.textContent=t==='dark'?'Light':'Dark';
     const ti=document.getElementById('themeIcon');if(ti)ti.innerHTML=t==='dark'?sun():moon();
   }
-  apply(init);
-  document.getElementById('themeToggle')?.addEventListener('click',()=>{
-    apply(root.getAttribute('data-theme')==='dark'?'light':'dark');
-  });
+  apply(init); document.getElementById('themeToggle')?.addEventListener('click',()=>{ apply(root.getAttribute('data-theme')==='dark'?'light':'dark'); });
 })();
 </script>
 </body>
