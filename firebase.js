@@ -51,28 +51,24 @@ export const saveScore = async (name, role, score) => {
 };
 
 /* ─── subscribeLeaderboard ───────────────────────────────────── */
-export const subscribeLeaderboard = (callback) => {
-  const lbQuery = query(
-    ref(rtdb, 'Leaderboard/leaderboard'),
-    orderByChild('score'),
-    limitToLast(5)
-  );
-
-  console.log('[TD] subscribeLeaderboard start');
-
-  return onValue(lbQuery, (snapshot) => {
-    console.log('[TD] onValue fired, exists:', snapshot.exists());
-    const entries = [];
-    snapshot.forEach((child) => {
-      entries.push({ id: child.key, ...child.val() });
+// ในไฟล์ firebase.js
+export async function saveScore(name, role, score, stage) { // <--- เพิ่มตัวแปร stage
+  try {
+    // โค้ดเดิมของคุณ (อาจจะเป็นการอ้างอิง User ID)
+    const userId = name; // หรือ UID ของระบบคุณ
+    
+    // อัปเดตการบันทึกลง Realtime Database
+    // ค้นหาคำสั่ง set() หรือ update() แล้วเติม stage: stage เข้าไป
+    await set(ref(db, 'leaderboard/' + userId), {
+      name: name,
+      role: role,
+      score: score,
+      stage: stage, // <--- บรรทัดที่ต้องเพิ่มเข้าไปใน Database
+      timestamp: serverTimestamp()
     });
-    entries.reverse();
-    console.log('[TD] Leaderboard entries:', entries.length, entries);
-    callback(entries);
-  }, (err) => {
-    console.error('[TD] subscribeLeaderboard error:', err.code, err.message);
-    callback([]);
-  });
-};
+  } catch (error) {
+    console.error("Error saving score: ", error);
+  }
+}
 
 export { auth, db, rtdb };
