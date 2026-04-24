@@ -566,12 +566,12 @@ const keys = {};
 document.addEventListener('keydown', e => {
   keys[e.code] = true;
   if (e.code==='ArrowLeft'||e.code==='ArrowRight'||e.code==='ArrowUp'||e.code==='ArrowDown'||e.code==='Space') e.preventDefault();
-  if (e.code==='KeyP') togglePause();
+  if (e.code==='Space') togglePause();
   if (gs==='gameover') return;
-  if (e.code==='KeyA') doBasicAttack();
-  if (e.code==='KeyS') useSkill(0);
-  if (e.code==='KeyD') useSkill(1);
-  if (e.code==='KeyF') useSkill(2);
+  if (e.code==='KeyF') doBasicAttack();
+  if (e.code==='KeyA') useSkill(0);
+  if (e.code==='KeyS') useSkill(1);
+  if (e.code==='KeyD') useSkill(2);
   if (e.code==='ShiftLeft' || e.code==='ShiftRight' || e.code==='Space') doDash();
 });
 document.addEventListener('keyup', e => { keys[e.code] = false; });
