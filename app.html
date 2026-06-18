@@ -1,57 +1,341 @@
 <!doctype html>
 <html lang="th">
 <head>
-<meta charset="utf-8"/>
-<meta name="viewport" content="width=device-width,initial-scale=1"/>
-<title>TJC ทีมประมูล | Menu</title>
-<link rel="stylesheet" href="./styles.css?v=42"/>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Nunito:wght@400;700;900&display=swap"/>
-<style>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>TJC ทีมประมูล | Menu</title>
 
-<header class="topbar">
-  <div class="brand">
-    <a href="team-members.html" class="brand-logo" rel="noopener">
-      <img src="TJC_320x320.png" alt="TJC Group Logo"/>
-    </a>
-    <div class="brand-text">
-      <div class="title">TJC ทีมประมูล</div>
-      <div class="subtitle" id="whoami">กำลังโหลด...</div>
-    </div>
-  </div>
-  <div class="company-mini">
-    <div class="company-name">บริษัท ทีเจซี คอร์ปอเรชั่น จำกัด</div>
-    <div class="company-sub">311/1 หมู่ 4 ต.คำน้ำแซบ อ.วารินชำราบ จ.อุบลราชธานี 34190</div>
-    <div class="company-sub">เลขผู้เสียภาษี: 0325563000203</div>
-  </div>
-  <div class="actions">
-    <button class="btn ghost" id="themeToggle" type="button">
-      <span class="icon" id="themeIcon"><svg viewBox="0 0 24 24"><path d="M21 12.6A8.5 8.5 0 0 1 11.4 3a7 7 0 1 0 9.6 9.6Z"/></svg></span>
-      <span id="themeLabel">Dark</span>
-    </button>
-    <a class="btn ghost" href="profile.html">Profile</a>
-    <button class="btn danger" id="btnLogout" type="button">Logout</button>
-  </div>
-</header>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Nunito:wght@400;700;900&display=swap" />
+  <link rel="stylesheet" href="./styles.css?v=42" />
 
-<main class="container">
-  <section class="card">
-    <h1 class="h1">TJC Marketing Assistant</h1>
-    <p class="muted">กดปุ่มเพื่อไปยังหน้าที่ต้องการ</p>
-    <div class="menuGrid">
-      <a class="btn primary wide" href="https://tjcgroup.tjc.co.th/login.php" target="_blank" rel="noopener">TJC ONE</a>
-      <a class="btn secondary wide" href="https://thegood-918.sg4.quickconnect.to/" target="_blank" rel="noopener">ลิ้งค์ NAS นอกสถานที่</a>
-      <a class="btn wide" href="https://docs.google.com/forms/d/e/1FAIpQLSdKiak_1-ZHw3l1OcOfRp107MMOTna5DWzM95jr4KWAoD-khA/viewform" target="_blank" rel="noopener">ลิ้งค์ เบิกสินค้า IT</a>
-      <a class="btn wide" href="https://docs.google.com/forms/d/e/1FAIpQLSdrUtYurzsDa6wYFRStj9ms_zwqpQTFg1juDKotIbFCTGU2Ig/viewform" target="_blank" rel="noopener">ลิ้งค์ เบิกสต๊อก PD</a>
-      <a class="btn wide" href="https://drive.google.com/drive/folders/1epvdX538AReQgI7m6Kn9xgMKRRtPs1TT?usp=sharing" target="_blank" rel="noopener">Brands Pricelist</a>
-      <a class="btn wide" href="https://drive.google.com/drive/folders/1eyvXrI_grxBX6UoC8zWSOezskrHs_zF8?usp=drive_link" target="_blank" rel="noopener">TOR Stock</a>
-      <a class="btn wide" href="https://THEGOOD-918.quickconnect.to/d/s/17zYYGnAj0ogVmo8RdG4VNuNOSUeahvm/fupBjNIUoRa9eHvz9OFaBebmcShcnotH-Db0AL5NnJw0" target="_blank" rel="noopener">ข้อมูลรวมตารางราคา</a>
-      <a class="btn wide" href="https://calendar.google.com/calendar/u/4?cid=Y19lODY2ZmI5ODA3ZDlkOTdkYWI0NzU3ZGU5NDk4OWQ0Y2ZlZWE5ZTNjMzU4ZThjY2E0NThhY2JjYzRiYTRkMDgzQGdyb3VwLmNhbGVuZGFyLmdvb2dsZS5jb20" target="_blank" rel="noopener">ปฏิทินงานทีมประมูล TJC</a>
-      <a class="btn wide" href="Ot-portal-page.html" target="_blank" rel="noopener">OT Management Portal</a>
-      <a class="btn wide canva-btn" href="https://www.canva.com/" target="_blank" rel="noopener">Canva</a>
-      <a class="btn wide" href="https://chatgpt.com/" target="_blank" rel="noopener">ChatGPT</a>
-      <a class="btn wide" href="https://gemini.google.com/" target="_blank" rel="noopener">Gemini</a>
+  <style>
+    body {
+      margin: 0;
+      font-family: "Nunito", sans-serif;
+      background: #f4f8ff;
+      color: #172033;
+    }
+
+    .topbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 20px;
+      padding: 14px 24px;
+      background: #ffffff;
+      border-bottom: 1px solid #dce8f7;
+      box-shadow: 0 6px 18px rgba(30, 80, 150, 0.08);
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      min-width: 240px;
+    }
+
+    .brand-logo img {
+      width: 48px;
+      height: 48px;
+      border-radius: 12px;
+      object-fit: cover;
+    }
+
+    .title {
+      font-weight: 900;
+      font-size: 18px;
+      color: #0f4c81;
+    }
+
+    .subtitle,
+    .muted,
+    .company-sub {
+      color: #64748b;
+    }
+
+    .subtitle {
+      font-size: 13px;
+    }
+
+    .company-mini {
+      text-align: center;
+      flex: 1;
+      font-size: 13px;
+      line-height: 1.4;
+    }
+
+    .company-name {
+      font-weight: 900;
+      color: #0f4c81;
+    }
+
+    .actions {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+      justify-content: flex-end;
+    }
+
+    .container {
+      max-width: 1100px;
+      margin: 32px auto;
+      padding: 0 20px;
+    }
+
+    .card {
+      background: #ffffff;
+      border: 1px solid #dce8f7;
+      border-radius: 24px;
+      padding: 28px;
+      box-shadow: 0 14px 35px rgba(30, 80, 150, 0.08);
+    }
+
+    .h1 {
+      margin: 0 0 8px;
+      font-size: 28px;
+      color: #0f4c81;
+    }
+
+    .menuGrid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 14px;
+      margin-top: 24px;
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 44px;
+      padding: 10px 16px;
+      border-radius: 14px;
+      border: 1px solid #bfdbfe;
+      background: #ffffff;
+      color: #0f4c81;
+      font-weight: 800;
+      text-decoration: none;
+      cursor: pointer;
+      transition: 0.2s ease;
+      box-sizing: border-box;
+    }
+
+    .btn:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 8px 20px rgba(30, 80, 150, 0.14);
+      background: #eff6ff;
+    }
+
+    .btn.primary {
+      background: #2563eb;
+      color: #ffffff;
+      border-color: #2563eb;
+    }
+
+    .btn.secondary {
+      background: #0ea5e9;
+      color: #ffffff;
+      border-color: #0ea5e9;
+    }
+
+    .btn.ghost {
+      background: #f8fbff;
+    }
+
+    .btn.danger {
+      background: #fee2e2;
+      border-color: #fecaca;
+      color: #b91c1c;
+    }
+
+    .btn.wide {
+      width: 100%;
+      text-align: center;
+    }
+
+    .canva-btn {
+      background: #e0f2fe;
+    }
+
+    .icon svg {
+      width: 18px;
+      height: 18px;
+      fill: currentColor;
+      margin-right: 6px;
+    }
+
+    body.dark {
+      background: #0f172a;
+      color: #e5e7eb;
+    }
+
+    body.dark .topbar,
+    body.dark .card {
+      background: #111827;
+      border-color: #1f2937;
+    }
+
+    body.dark .title,
+    body.dark .company-name,
+    body.dark .h1 {
+      color: #93c5fd;
+    }
+
+    body.dark .subtitle,
+    body.dark .muted,
+    body.dark .company-sub {
+      color: #94a3b8;
+    }
+
+    body.dark .btn {
+      background: #1e293b;
+      color: #dbeafe;
+      border-color: #334155;
+    }
+
+    body.dark .btn.primary {
+      background: #2563eb;
+      color: #ffffff;
+    }
+
+    body.dark .btn.secondary {
+      background: #0284c7;
+      color: #ffffff;
+    }
+
+    body.dark .btn.danger {
+      background: #7f1d1d;
+      color: #fecaca;
+      border-color: #991b1b;
+    }
+
+    @media (max-width: 900px) {
+      .topbar {
+        align-items: flex-start;
+        flex-direction: column;
+      }
+
+      .company-mini {
+        text-align: left;
+      }
+
+      .menuGrid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+    }
+
+    @media (max-width: 560px) {
+      .menuGrid {
+        grid-template-columns: 1fr;
+      }
+
+      .card {
+        padding: 20px;
+      }
+
+      .h1 {
+        font-size: 22px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <header class="topbar">
+    <div class="brand">
+      <a href="team-members.html" class="brand-logo" rel="noopener">
+        <img src="TJC_320x320.png" alt="TJC Group Logo" />
+      </a>
+
+      <div class="brand-text">
+        <div class="title">TJC ทีมประมูล</div>
+        <div class="subtitle" id="whoami">พร้อมใช้งาน</div>
+      </div>
     </div>
-  </section>
-</main>
+
+    <div class="company-mini">
+      <div class="company-name">บริษัท ทีเจซี คอร์ปอเรชั่น จำกัด</div>
+      <div class="company-sub">311/1 หมู่ 4 ต.คำน้ำแซบ อ.วารินชำราบ จ.อุบลราชธานี 34190</div>
+      <div class="company-sub">เลขผู้เสียภาษี: 0325563000203</div>
+    </div>
+
+    <div class="actions">
+      <button class="btn ghost" id="themeToggle" type="button">
+        <span class="icon" id="themeIcon">
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M21 12.6A8.5 8.5 0 0 1 11.4 3a7 7 0 1 0 9.6 9.6Z"></path>
+          </svg>
+        </span>
+        <span id="themeLabel">Dark</span>
+      </button>
+
+      <a class="btn ghost" href="profile.html">Profile</a>
+      <button class="btn danger" id="btnLogout" type="button">Logout</button>
+    </div>
+  </header>
+
+  <main class="container">
+    <section class="card">
+      <h1 class="h1">TJC Marketing Assistant</h1>
+      <p class="muted">กดปุ่มเพื่อไปยังหน้าที่ต้องการ</p>
+
+      <div class="menuGrid">
+        <a class="btn primary wide" href="https://tjcgroup.tjc.co.th/login.php" target="_blank" rel="noopener">TJC ONE</a>
+        <a class="btn secondary wide" href="https://thegood-918.sg4.quickconnect.to/" target="_blank" rel="noopener">ลิ้งค์ NAS นอกสถานที่</a>
+        <a class="btn wide" href="https://docs.google.com/forms/d/e/1FAIpQLSdKiak_1-ZHw3l1OcOfRp107MMOTna5DWzM95jr4KWAoD-khA/viewform" target="_blank" rel="noopener">ลิ้งค์ เบิกสินค้า IT</a>
+        <a class="btn wide" href="https://docs.google.com/forms/d/e/1FAIpQLSdrUtYurzsDa6wYFRStj9ms_zwqpQTFg1juDKotIbFCTGU2Ig/viewform" target="_blank" rel="noopener">ลิ้งค์ เบิกสต๊อก PD</a>
+        <a class="btn wide" href="https://drive.google.com/drive/folders/1epvdX538AReQgI7m6Kn9xgMKRRtPs1TT?usp=sharing" target="_blank" rel="noopener">Brands Pricelist</a>
+        <a class="btn wide" href="https://drive.google.com/drive/folders/1eyvXrI_grxBX6UoC8zWSOezskrHs_zF8?usp=drive_link" target="_blank" rel="noopener">TOR Stock</a>
+        <a class="btn wide" href="https://THEGOOD-918.quickconnect.to/d/s/17zYYGnAj0ogVmo8RdG4VNuNOSUeahvm/fupBjNIUoRa9eHvz9OFaBebmcShcnotH-Db0AL5NnJw0" target="_blank" rel="noopener">ข้อมูลรวมตารางราคา</a>
+        <a class="btn wide" href="https://calendar.google.com/calendar/u/4?cid=Y19lODY2ZmI5ODA3ZDlkOTdkYWI0NzU3ZGU5NDk4OWQ0Y2ZlZWE5ZTNjMzU4ZThjY2E0NThhY2JjYzRiYTRkMDgzQGdyb3VwLmNhbGVuZGFyLmdvb2dsZS5jb20" target="_blank" rel="noopener">ปฏิทินงานทีมประมูล TJC</a>
+        <a class="btn wide" href="Ot-portal-page.html" target="_blank" rel="noopener">OT Management Portal</a>
+        <a class="btn wide canva-btn" href="https://www.canva.com/" target="_blank" rel="noopener">Canva</a>
+        <a class="btn wide" href="https://chatgpt.com/" target="_blank" rel="noopener">ChatGPT</a>
+        <a class="btn wide" href="https://gemini.google.com/" target="_blank" rel="noopener">Gemini</a>
+      </div>
+    </section>
+  </main>
+
+  <script>
+    const themeToggle = document.getElementById("themeToggle");
+    const themeLabel = document.getElementById("themeLabel");
+    const btnLogout = document.getElementById("btnLogout");
+    const whoami = document.getElementById("whoami");
+
+    const savedTheme = localStorage.getItem("theme");
+    if (savedTheme === "dark") {
+      document.body.classList.add("dark");
+      themeLabel.textContent = "Light";
+    }
+
+    const currentUser =
+      localStorage.getItem("username") ||
+      localStorage.getItem("userName") ||
+      localStorage.getItem("displayName");
+
+    if (currentUser) {
+      whoami.textContent = "ผู้ใช้งาน: " + currentUser;
+    }
+
+    themeToggle.addEventListener("click", function () {
+      document.body.classList.toggle("dark");
+
+      const isDark = document.body.classList.contains("dark");
+      localStorage.setItem("theme", isDark ? "dark" : "light");
+      themeLabel.textContent = isDark ? "Light" : "Dark";
+    });
+
+    btnLogout.addEventListener("click", function () {
+      localStorage.removeItem("username");
+      localStorage.removeItem("userName");
+      localStorage.removeItem("displayName");
+      localStorage.removeItem("token");
+
+      window.location.href = "login.html";
+    });
+  </script>
 </body>
 </html>
