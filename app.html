@@ -5,220 +5,426 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>TJC ทีมประมูล | Menu</title>
 
+  <script>
+    try {
+      if (localStorage.getItem("theme") === "dark") {
+        document.documentElement.classList.add("dark");
+      }
+    } catch (e) {}
+  </script>
+
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Nunito:wght@400;700;900&display=swap" />
   <link rel="stylesheet" href="./styles.css?v=42" />
 
   <style>
-/* =========================
-   Better Animated Background
-   Light / Dark Contrast
-========================= */
+    :root {
+      --page-bg-1: #eaf6ff;
+      --page-bg-2: #ffffff;
+      --page-bg-3: #d9efff;
 
-:root {
-  --page-bg-1: #eaf6ff;
-  --page-bg-2: #ffffff;
-  --page-bg-3: #d9efff;
+      --glass-bg: rgba(255, 255, 255, 0.80);
+      --glass-border: rgba(148, 197, 253, 0.58);
 
-  --glass-bg: rgba(255, 255, 255, 0.78);
-  --glass-border: rgba(148, 197, 253, 0.55);
-  --text-main: #0f172a;
-  --text-soft: #64748b;
-  --heading: #075985;
+      --text-main: #0f172a;
+      --text-soft: #64748b;
+      --heading: #075985;
 
-  --glow-blue: rgba(56, 189, 248, 0.42);
-  --glow-deep: rgba(37, 99, 235, 0.26);
-  --glow-cyan: rgba(14, 165, 233, 0.30);
-  --grid-color: rgba(37, 99, 235, 0.10);
-}
+      --glow-blue: rgba(56, 189, 248, 0.42);
+      --glow-deep: rgba(37, 99, 235, 0.24);
+      --glow-cyan: rgba(14, 165, 233, 0.28);
 
-body.dark {
-  --page-bg-1: #020617;
-  --page-bg-2: #0f172a;
-  --page-bg-3: #172554;
+      --star-opacity: 0.34;
+    }
 
-  --glass-bg: rgba(15, 23, 42, 0.78);
-  --glass-border: rgba(96, 165, 250, 0.26);
-  --text-main: #e5e7eb;
-  --text-soft: #94a3b8;
-  --heading: #93c5fd;
+    html.dark {
+      --page-bg-1: #020617;
+      --page-bg-2: #0f172a;
+      --page-bg-3: #172554;
 
-  --glow-blue: rgba(59, 130, 246, 0.30);
-  --glow-deep: rgba(14, 165, 233, 0.18);
-  --glow-cyan: rgba(125, 211, 252, 0.16);
-  --grid-color: rgba(147, 197, 253, 0.065);
-}
+      --glass-bg: rgba(15, 23, 42, 0.82);
+      --glass-border: rgba(96, 165, 250, 0.30);
 
-html {
-  min-height: 100%;
-}
+      --text-main: #e5e7eb;
+      --text-soft: #94a3b8;
+      --heading: #93c5fd;
 
-body {
-  position: relative;
-  min-height: 100vh;
-  overflow-x: hidden;
-  color: var(--text-main);
-  background:
-    linear-gradient(135deg, var(--page-bg-1), var(--page-bg-2), var(--page-bg-3));
-  background-size: 220% 220%;
-  animation: pageGradientMove 18s ease-in-out infinite;
-}
+      --glow-blue: rgba(59, 130, 246, 0.32);
+      --glow-deep: rgba(14, 165, 233, 0.20);
+      --glow-cyan: rgba(125, 211, 252, 0.16);
 
-/* วงแสงใหญ่ เคลื่อนไหวช้า ๆ เห็นชัดแต่ไม่ลายตา */
-body::before {
-  content: "";
-  position: fixed;
-  inset: -20%;
-  z-index: -3;
-  pointer-events: none;
-  background:
-    radial-gradient(circle at 12% 20%, var(--glow-blue), transparent 28%),
-    radial-gradient(circle at 88% 18%, var(--glow-deep), transparent 30%),
-    radial-gradient(circle at 52% 92%, var(--glow-cyan), transparent 34%);
-  filter: blur(2px);
-  animation: softBlobMove 24s ease-in-out infinite alternate;
-}
+      --star-opacity: 0.26;
+    }
 
-/* ลายตารางจาง ๆ ให้ดูมีมิติ */
-body::after {
-  content: "";
-  position: fixed;
-  inset: 0;
-  z-index: -2;
-  pointer-events: none;
-  background-image:
-    linear-gradient(var(--grid-color) 1px, transparent 1px),
-    linear-gradient(90deg, var(--grid-color) 1px, transparent 1px);
-  background-size: 54px 54px;
-  mask-image: linear-gradient(to bottom, rgba(0,0,0,0.8), rgba(0,0,0,0.25));
-  animation: gridSlowMove 30s linear infinite;
-}
+    html {
+      min-height: 100%;
+    }
 
-/* เพิ่ม Contrast ให้ Header/Card อ่านง่ายทั้ง Light และ Dark */
-.topbar,
-.card {
-  background: var(--glass-bg) !important;
-  border: 1px solid var(--glass-border) !important;
-  backdrop-filter: blur(18px);
-  -webkit-backdrop-filter: blur(18px);
-}
+    body {
+      position: relative;
+      min-height: 100vh;
+      margin: 0;
+      overflow-x: hidden;
+      font-family: "Nunito", sans-serif;
+      color: var(--text-main);
+      background: linear-gradient(135deg, var(--page-bg-1), var(--page-bg-2), var(--page-bg-3));
+      background-size: 220% 220%;
+      animation: pageGradientMove 18s ease-in-out infinite;
+    }
 
-.topbar {
-  box-shadow: 0 12px 34px rgba(15, 23, 42, 0.10);
-}
+    body::before {
+      content: "";
+      position: fixed;
+      inset: -20%;
+      z-index: -3;
+      pointer-events: none;
+      background:
+        radial-gradient(circle at 12% 20%, var(--glow-blue), transparent 28%),
+        radial-gradient(circle at 88% 18%, var(--glow-deep), transparent 30%),
+        radial-gradient(circle at 52% 92%, var(--glow-cyan), transparent 34%);
+      filter: blur(2px);
+      animation: softBlobMove 24s ease-in-out infinite alternate;
+    }
 
-.card {
-  box-shadow:
-    0 24px 60px rgba(15, 23, 42, 0.12),
-    inset 0 1px 0 rgba(255, 255, 255, 0.38);
-}
+    body::after {
+      content: "";
+      position: fixed;
+      inset: 0;
+      z-index: -2;
+      pointer-events: none;
+      opacity: var(--star-opacity);
 
-.title,
-.company-name,
-.h1 {
-  color: var(--heading) !important;
-}
+      background-image:
+        url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Cdefs%3E%3ClinearGradient id='g' x1='0' y1='0' x2='1' y2='1'%3E%3Cstop offset='0%25' stop-color='%23ffffff'/%3E%3Cstop offset='18%25' stop-color='%23f1f5f9'/%3E%3Cstop offset='40%25' stop-color='%23bfc9d6'/%3E%3Cstop offset='56%25' stop-color='%23ffffff'/%3E%3Cstop offset='74%25' stop-color='%2394a3b8'/%3E%3Cstop offset='100%25' stop-color='%23ffffff'/%3E%3C/linearGradient%3E%3C/defs%3E%3Cpolygon points='50,6 61,36 94,36 67,55 77,88 50,68 23,88 33,55 6,36 39,36' fill='url(%23g)' stroke='%23e2e8f0' stroke-width='2.5'/%3E%3C/svg%3E"),
+        url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Cdefs%3E%3ClinearGradient id='g2' x1='0' y1='0' x2='1' y2='1'%3E%3Cstop offset='0%25' stop-color='%23ffffff'/%3E%3Cstop offset='25%25' stop-color='%23e2e8f0'/%3E%3Cstop offset='50%25' stop-color='%23ffffff'/%3E%3Cstop offset='75%25' stop-color='%23cbd5e1'/%3E%3Cstop offset='100%25' stop-color='%23ffffff'/%3E%3C/linearGradient%3E%3C/defs%3E%3Cpolygon points='50,10 58,34 84,34 63,49 70,74 50,60 30,74 37,49 16,34 42,34' fill='url(%23g2)' stroke='%23f8fafc' stroke-width='2'/%3E%3C/svg%3E");
 
-.subtitle,
-.muted,
-.company-sub {
-  color: var(--text-soft) !important;
-}
+      background-size:
+        230px 230px,
+        125px 125px;
 
-/* ปรับปุ่มให้ชัดขึ้น */
-.btn {
-  border-color: rgba(59, 130, 246, 0.28);
-  box-shadow: 0 6px 18px rgba(15, 23, 42, 0.06);
-}
+      background-position:
+        0 0,
+        95px 115px;
 
-.btn:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 14px 30px rgba(37, 99, 235, 0.18);
-}
+      background-repeat:
+        repeat,
+        repeat;
 
-body.dark .btn {
-  background: rgba(30, 41, 59, 0.86);
-  color: #dbeafe;
-  border-color: rgba(96, 165, 250, 0.25);
-}
+      filter: drop-shadow(0 8px 18px rgba(148, 163, 184, 0.18));
+      animation: chromeStarsFloat 38s linear infinite;
+    }
 
-body.dark .btn:hover {
-  background: rgba(51, 65, 85, 0.95);
-  box-shadow: 0 14px 30px rgba(14, 165, 233, 0.14);
-}
+    html.dark body::after {
+      filter:
+        drop-shadow(0 10px 22px rgba(125, 211, 252, 0.14))
+        brightness(1.08);
+    }
 
-body.dark .btn.primary {
-  background: linear-gradient(135deg, #2563eb, #0284c7);
-  color: #ffffff;
-  border-color: rgba(147, 197, 253, 0.45);
-}
+    .topbar {
+      position: relative;
+      z-index: 1;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 20px;
+      padding: 14px 24px;
+      background: var(--glass-bg);
+      border-bottom: 1px solid var(--glass-border);
+      backdrop-filter: blur(18px);
+      -webkit-backdrop-filter: blur(18px);
+      box-shadow: 0 12px 34px rgba(15, 23, 42, 0.10);
+    }
 
-body.dark .btn.secondary {
-  background: linear-gradient(135deg, #0891b2, #0369a1);
-  color: #ffffff;
-}
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      min-width: 240px;
+    }
 
-body.dark .btn.danger {
-  background: rgba(127, 29, 29, 0.88);
-  color: #fecaca;
-  border-color: rgba(248, 113, 113, 0.35);
-}
+    .brand-logo img {
+      width: 48px;
+      height: 48px;
+      border-radius: 14px;
+      object-fit: cover;
+      box-shadow: 0 8px 22px rgba(15, 23, 42, 0.12);
+    }
 
-/* Animation */
-@keyframes pageGradientMove {
-  0% {
-    background-position: 0% 45%;
-  }
+    .title {
+      font-weight: 900;
+      font-size: 18px;
+      color: var(--heading);
+    }
 
-  50% {
-    background-position: 100% 55%;
-  }
+    .subtitle {
+      margin-top: 2px;
+      font-size: 13px;
+      color: var(--text-soft);
+    }
 
-  100% {
-    background-position: 0% 45%;
-  }
-}
+    .company-mini {
+      flex: 1;
+      text-align: center;
+      font-size: 13px;
+      line-height: 1.45;
+    }
 
-@keyframes softBlobMove {
-  0% {
-    transform: translate3d(-20px, -10px, 0) scale(1);
-  }
+    .company-name {
+      font-weight: 900;
+      color: var(--heading);
+    }
 
-  50% {
-    transform: translate3d(25px, 20px, 0) scale(1.06);
-  }
+    .company-sub {
+      color: var(--text-soft);
+    }
 
-  100% {
-    transform: translate3d(45px, -25px, 0) scale(1.1);
-  }
-}
+    .actions {
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
 
-@keyframes gridSlowMove {
-  0% {
-    background-position: 0 0;
-  }
+    .container {
+      position: relative;
+      z-index: 1;
+      max-width: 1100px;
+      margin: 34px auto;
+      padding: 0 20px;
+    }
 
-  100% {
-    background-position: 54px 54px;
-  }
-}
+    .card {
+      background: var(--glass-bg);
+      border: 1px solid var(--glass-border);
+      border-radius: 28px;
+      padding: 30px;
+      backdrop-filter: blur(18px);
+      -webkit-backdrop-filter: blur(18px);
+      box-shadow:
+        0 24px 60px rgba(15, 23, 42, 0.14),
+        inset 0 1px 0 rgba(255, 255, 255, 0.38);
+    }
 
-/* คนที่ตั้งค่าเครื่องให้ลด Animation จะไม่เวียนหัว */
-@media (prefers-reduced-motion: reduce) {
-  body,
-  body::before,
-  body::after {
-    animation: none !important;
-  }
-}
+    .h1 {
+      margin: 0 0 8px;
+      font-size: 30px;
+      color: var(--heading);
+    }
+
+    .muted {
+      margin: 0;
+      color: var(--text-soft);
+    }
+
+    .menuGrid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 14px;
+      margin-top: 26px;
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 46px;
+      padding: 11px 16px;
+      border-radius: 16px;
+      border: 1px solid rgba(59, 130, 246, 0.28);
+      background: rgba(255, 255, 255, 0.86);
+      color: #075985;
+      font-weight: 900;
+      text-decoration: none;
+      cursor: pointer;
+      box-sizing: border-box;
+      box-shadow: 0 7px 20px rgba(15, 23, 42, 0.07);
+      transition: transform 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
+    }
+
+    .btn:hover {
+      transform: translateY(-2px);
+      background: #eff6ff;
+      box-shadow: 0 14px 30px rgba(37, 99, 235, 0.18);
+    }
+
+    .btn.primary {
+      background: linear-gradient(135deg, #2563eb, #0284c7);
+      color: #ffffff;
+      border-color: rgba(147, 197, 253, 0.50);
+    }
+
+    .btn.secondary {
+      background: linear-gradient(135deg, #0ea5e9, #0284c7);
+      color: #ffffff;
+      border-color: rgba(186, 230, 253, 0.55);
+    }
+
+    .btn.ghost {
+      background: rgba(248, 251, 255, 0.84);
+    }
+
+    .btn.danger {
+      background: rgba(254, 226, 226, 0.92);
+      border-color: rgba(252, 165, 165, 0.65);
+      color: #b91c1c;
+    }
+
+    .btn.wide {
+      width: 100%;
+      text-align: center;
+    }
+
+    .canva-btn {
+      background: linear-gradient(135deg, #e0f2fe, #f0f9ff);
+    }
+
+    .icon svg {
+      width: 18px;
+      height: 18px;
+      fill: currentColor;
+      margin-right: 6px;
+    }
+
+    html.dark .topbar,
+    html.dark .card {
+      box-shadow:
+        0 24px 65px rgba(0, 0, 0, 0.34),
+        inset 0 1px 0 rgba(255, 255, 255, 0.07);
+    }
+
+    html.dark .btn {
+      background: rgba(30, 41, 59, 0.88);
+      color: #dbeafe;
+      border-color: rgba(96, 165, 250, 0.28);
+      box-shadow: 0 8px 22px rgba(0, 0, 0, 0.22);
+    }
+
+    html.dark .btn:hover {
+      background: rgba(51, 65, 85, 0.96);
+      box-shadow: 0 14px 30px rgba(14, 165, 233, 0.16);
+    }
+
+    html.dark .btn.primary {
+      background: linear-gradient(135deg, #2563eb, #0284c7);
+      color: #ffffff;
+    }
+
+    html.dark .btn.secondary {
+      background: linear-gradient(135deg, #0891b2, #0369a1);
+      color: #ffffff;
+    }
+
+    html.dark .btn.danger {
+      background: rgba(127, 29, 29, 0.90);
+      color: #fecaca;
+      border-color: rgba(248, 113, 113, 0.38);
+    }
+
+    @keyframes pageGradientMove {
+      0% {
+        background-position: 0% 45%;
+      }
+
+      50% {
+        background-position: 100% 55%;
+      }
+
+      100% {
+        background-position: 0% 45%;
+      }
+    }
+
+    @keyframes softBlobMove {
+      0% {
+        transform: translate3d(-20px, -10px, 0) scale(1);
+      }
+
+      50% {
+        transform: translate3d(25px, 20px, 0) scale(1.06);
+      }
+
+      100% {
+        transform: translate3d(45px, -25px, 0) scale(1.1);
+      }
+    }
+
+    @keyframes chromeStarsFloat {
+      0% {
+        background-position:
+          0 0,
+          95px 115px;
+      }
+
+      50% {
+        background-position:
+          65px 45px,
+          145px 155px;
+      }
+
+      100% {
+        background-position:
+          130px 90px,
+          195px 220px;
+      }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      body,
+      body::before,
+      body::after {
+        animation: none !important;
+      }
+
+      .btn {
+        transition: none !important;
+      }
+    }
+
+    @media (max-width: 900px) {
+      .topbar {
+        align-items: flex-start;
+        flex-direction: column;
+      }
+
+      .company-mini {
+        text-align: left;
+      }
+
+      .menuGrid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+    }
+
+    @media (max-width: 560px) {
+      .menuGrid {
+        grid-template-columns: 1fr;
+      }
+
+      .card {
+        padding: 22px;
+      }
+
+      .h1 {
+        font-size: 23px;
+      }
+
+      .actions {
+        width: 100%;
+      }
+
+      .actions .btn {
+        flex: 1;
+      }
+    }
   </style>
 </head>
 
 <body>
   <header class="topbar">
     <div class="brand">
-      <a href="team-members.html" class="brand-logo" rel="noopener">
+      <a href="team-members.html" class="brand-logo">
         <img src="TJC_320x320.png" alt="TJC Group Logo" />
       </a>
 
@@ -241,7 +447,7 @@ body.dark .btn.danger {
             <path d="M21 12.6A8.5 8.5 0 0 1 11.4 3a7 7 0 1 0 9.6 9.6Z"></path>
           </svg>
         </span>
-        <span id="themeLabel">Dark</span>
+        <span id="themeLabel">Dark Mode</span>
       </button>
 
       <a class="btn ghost" href="profile.html">Profile</a>
@@ -272,32 +478,35 @@ body.dark .btn.danger {
   </main>
 
   <script>
-const themeToggle = document.getElementById("themeToggle");
-const themeLabel = document.getElementById("themeLabel");
+    const themeToggle = document.getElementById("themeToggle");
+    const themeLabel = document.getElementById("themeLabel");
+    const btnLogout = document.getElementById("btnLogout");
+    const whoami = document.getElementById("whoami");
 
-function updateThemeLabel() {
-  const isDark = document.body.classList.contains("dark");
-  themeLabel.textContent = isDark ? "Light Mode" : "Dark Mode";
-}
+    function updateThemeLabel() {
+      const isDark = document.documentElement.classList.contains("dark");
+      themeLabel.textContent = isDark ? "Light Mode" : "Dark Mode";
+    }
 
-const savedTheme = localStorage.getItem("theme");
+    updateThemeLabel();
 
-if (savedTheme === "dark") {
-  document.body.classList.add("dark");
-} else {
-  document.body.classList.remove("dark");
-}
+    const currentUser =
+      localStorage.getItem("username") ||
+      localStorage.getItem("userName") ||
+      localStorage.getItem("displayName");
 
-updateThemeLabel();
+    if (currentUser) {
+      whoami.textContent = "ผู้ใช้งาน: " + currentUser;
+    }
 
-themeToggle.addEventListener("click", function () {
-  document.body.classList.toggle("dark");
+    themeToggle.addEventListener("click", function () {
+      document.documentElement.classList.toggle("dark");
 
-  const isDark = document.body.classList.contains("dark");
-  localStorage.setItem("theme", isDark ? "dark" : "light");
+      const isDark = document.documentElement.classList.contains("dark");
+      localStorage.setItem("theme", isDark ? "dark" : "light");
 
-  updateThemeLabel();
-});
+      updateThemeLabel();
+    });
 
     btnLogout.addEventListener("click", function () {
       localStorage.removeItem("username");
