@@ -11,104 +11,206 @@
   <link rel="stylesheet" href="./styles.css?v=42" />
 
   <style>
-  /* Animated Background */
+/* =========================
+   Better Animated Background
+   Light / Dark Contrast
+========================= */
+
+:root {
+  --page-bg-1: #eaf6ff;
+  --page-bg-2: #ffffff;
+  --page-bg-3: #d9efff;
+
+  --glass-bg: rgba(255, 255, 255, 0.78);
+  --glass-border: rgba(148, 197, 253, 0.55);
+  --text-main: #0f172a;
+  --text-soft: #64748b;
+  --heading: #075985;
+
+  --glow-blue: rgba(56, 189, 248, 0.42);
+  --glow-deep: rgba(37, 99, 235, 0.26);
+  --glow-cyan: rgba(14, 165, 233, 0.30);
+  --grid-color: rgba(37, 99, 235, 0.10);
+}
+
+body.dark {
+  --page-bg-1: #020617;
+  --page-bg-2: #0f172a;
+  --page-bg-3: #172554;
+
+  --glass-bg: rgba(15, 23, 42, 0.78);
+  --glass-border: rgba(96, 165, 250, 0.26);
+  --text-main: #e5e7eb;
+  --text-soft: #94a3b8;
+  --heading: #93c5fd;
+
+  --glow-blue: rgba(59, 130, 246, 0.30);
+  --glow-deep: rgba(14, 165, 233, 0.18);
+  --glow-cyan: rgba(125, 211, 252, 0.16);
+  --grid-color: rgba(147, 197, 253, 0.065);
+}
+
+html {
+  min-height: 100%;
+}
+
 body {
   position: relative;
   min-height: 100vh;
   overflow-x: hidden;
-  background: linear-gradient(135deg, #eef7ff, #ffffff, #dff1ff);
-  background-size: 300% 300%;
-  animation: bgGradientMove 14s ease infinite;
+  color: var(--text-main);
+  background:
+    linear-gradient(135deg, var(--page-bg-1), var(--page-bg-2), var(--page-bg-3));
+  background-size: 220% 220%;
+  animation: pageGradientMove 18s ease-in-out infinite;
 }
 
-/* ชั้นแสงวงกลมเคลื่อนไหว */
+/* วงแสงใหญ่ เคลื่อนไหวช้า ๆ เห็นชัดแต่ไม่ลายตา */
 body::before {
   content: "";
   position: fixed;
-  inset: 0;
-  z-index: -2;
+  inset: -20%;
+  z-index: -3;
+  pointer-events: none;
   background:
-    radial-gradient(circle at 15% 20%, rgba(56, 189, 248, 0.28), transparent 28%),
-    radial-gradient(circle at 85% 25%, rgba(37, 99, 235, 0.20), transparent 30%),
-    radial-gradient(circle at 50% 85%, rgba(14, 165, 233, 0.22), transparent 34%);
-  animation: floatingLight 18s ease-in-out infinite alternate;
+    radial-gradient(circle at 12% 20%, var(--glow-blue), transparent 28%),
+    radial-gradient(circle at 88% 18%, var(--glow-deep), transparent 30%),
+    radial-gradient(circle at 52% 92%, var(--glow-cyan), transparent 34%);
+  filter: blur(2px);
+  animation: softBlobMove 24s ease-in-out infinite alternate;
 }
 
-/* ลายจุด/เส้นบาง ๆ เคลื่อนไหว */
+/* ลายตารางจาง ๆ ให้ดูมีมิติ */
 body::after {
   content: "";
   position: fixed;
   inset: 0;
-  z-index: -1;
-  background-image:
-    linear-gradient(rgba(37, 99, 235, 0.055) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(37, 99, 235, 0.055) 1px, transparent 1px);
-  background-size: 42px 42px;
-  animation: gridMove 22s linear infinite;
+  z-index: -2;
   pointer-events: none;
+  background-image:
+    linear-gradient(var(--grid-color) 1px, transparent 1px),
+    linear-gradient(90deg, var(--grid-color) 1px, transparent 1px);
+  background-size: 54px 54px;
+  mask-image: linear-gradient(to bottom, rgba(0,0,0,0.8), rgba(0,0,0,0.25));
+  animation: gridSlowMove 30s linear infinite;
 }
 
-/* ทำให้เนื้อหาอยู่บนพื้นหลัง */
+/* เพิ่ม Contrast ให้ Header/Card อ่านง่ายทั้ง Light และ Dark */
 .topbar,
-.container {
-  position: relative;
-  z-index: 1;
+.card {
+  background: var(--glass-bg) !important;
+  border: 1px solid var(--glass-border) !important;
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
 }
 
-@keyframes bgGradientMove {
+.topbar {
+  box-shadow: 0 12px 34px rgba(15, 23, 42, 0.10);
+}
+
+.card {
+  box-shadow:
+    0 24px 60px rgba(15, 23, 42, 0.12),
+    inset 0 1px 0 rgba(255, 255, 255, 0.38);
+}
+
+.title,
+.company-name,
+.h1 {
+  color: var(--heading) !important;
+}
+
+.subtitle,
+.muted,
+.company-sub {
+  color: var(--text-soft) !important;
+}
+
+/* ปรับปุ่มให้ชัดขึ้น */
+.btn {
+  border-color: rgba(59, 130, 246, 0.28);
+  box-shadow: 0 6px 18px rgba(15, 23, 42, 0.06);
+}
+
+.btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 14px 30px rgba(37, 99, 235, 0.18);
+}
+
+body.dark .btn {
+  background: rgba(30, 41, 59, 0.86);
+  color: #dbeafe;
+  border-color: rgba(96, 165, 250, 0.25);
+}
+
+body.dark .btn:hover {
+  background: rgba(51, 65, 85, 0.95);
+  box-shadow: 0 14px 30px rgba(14, 165, 233, 0.14);
+}
+
+body.dark .btn.primary {
+  background: linear-gradient(135deg, #2563eb, #0284c7);
+  color: #ffffff;
+  border-color: rgba(147, 197, 253, 0.45);
+}
+
+body.dark .btn.secondary {
+  background: linear-gradient(135deg, #0891b2, #0369a1);
+  color: #ffffff;
+}
+
+body.dark .btn.danger {
+  background: rgba(127, 29, 29, 0.88);
+  color: #fecaca;
+  border-color: rgba(248, 113, 113, 0.35);
+}
+
+/* Animation */
+@keyframes pageGradientMove {
   0% {
-    background-position: 0% 50%;
+    background-position: 0% 45%;
   }
 
   50% {
-    background-position: 100% 50%;
+    background-position: 100% 55%;
   }
 
   100% {
-    background-position: 0% 50%;
+    background-position: 0% 45%;
   }
 }
 
-@keyframes floatingLight {
+@keyframes softBlobMove {
   0% {
-    transform: translate3d(0, 0, 0) scale(1);
-    opacity: 0.9;
+    transform: translate3d(-20px, -10px, 0) scale(1);
+  }
+
+  50% {
+    transform: translate3d(25px, 20px, 0) scale(1.06);
   }
 
   100% {
-    transform: translate3d(30px, -25px, 0) scale(1.08);
-    opacity: 1;
+    transform: translate3d(45px, -25px, 0) scale(1.1);
   }
 }
 
-@keyframes gridMove {
+@keyframes gridSlowMove {
   0% {
     background-position: 0 0;
   }
 
   100% {
-    background-position: 42px 42px;
+    background-position: 54px 54px;
   }
 }
 
-/* พื้นหลังตอน Dark Mode */
-body.dark {
-  background: linear-gradient(135deg, #020617, #0f172a, #1e293b);
-  background-size: 300% 300%;
-  animation: bgGradientMove 14s ease infinite;
-}
-
-body.dark::before {
-  background:
-    radial-gradient(circle at 15% 20%, rgba(59, 130, 246, 0.18), transparent 30%),
-    radial-gradient(circle at 85% 25%, rgba(14, 165, 233, 0.14), transparent 32%),
-    radial-gradient(circle at 50% 85%, rgba(96, 165, 250, 0.12), transparent 35%);
-}
-
-body.dark::after {
-  background-image:
-    linear-gradient(rgba(147, 197, 253, 0.045) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(147, 197, 253, 0.045) 1px, transparent 1px);
+/* คนที่ตั้งค่าเครื่องให้ลด Animation จะไม่เวียนหัว */
+@media (prefers-reduced-motion: reduce) {
+  body,
+  body::before,
+  body::after {
+    animation: none !important;
+  }
 }
   </style>
 </head>
@@ -170,33 +272,32 @@ body.dark::after {
   </main>
 
   <script>
-    const themeToggle = document.getElementById("themeToggle");
-    const themeLabel = document.getElementById("themeLabel");
-    const btnLogout = document.getElementById("btnLogout");
-    const whoami = document.getElementById("whoami");
+const themeToggle = document.getElementById("themeToggle");
+const themeLabel = document.getElementById("themeLabel");
 
-    const savedTheme = localStorage.getItem("theme");
-    if (savedTheme === "dark") {
-      document.body.classList.add("dark");
-      themeLabel.textContent = "Light";
-    }
+function updateThemeLabel() {
+  const isDark = document.body.classList.contains("dark");
+  themeLabel.textContent = isDark ? "Light Mode" : "Dark Mode";
+}
 
-    const currentUser =
-      localStorage.getItem("username") ||
-      localStorage.getItem("userName") ||
-      localStorage.getItem("displayName");
+const savedTheme = localStorage.getItem("theme");
 
-    if (currentUser) {
-      whoami.textContent = "ผู้ใช้งาน: " + currentUser;
-    }
+if (savedTheme === "dark") {
+  document.body.classList.add("dark");
+} else {
+  document.body.classList.remove("dark");
+}
 
-    themeToggle.addEventListener("click", function () {
-      document.body.classList.toggle("dark");
+updateThemeLabel();
 
-      const isDark = document.body.classList.contains("dark");
-      localStorage.setItem("theme", isDark ? "dark" : "light");
-      themeLabel.textContent = isDark ? "Light" : "Dark";
-    });
+themeToggle.addEventListener("click", function () {
+  document.body.classList.toggle("dark");
+
+  const isDark = document.body.classList.contains("dark");
+  localStorage.setItem("theme", isDark ? "dark" : "light");
+
+  updateThemeLabel();
+});
 
     btnLogout.addEventListener("click", function () {
       localStorage.removeItem("username");
