@@ -11,235 +11,105 @@
   <link rel="stylesheet" href="./styles.css?v=42" />
 
   <style>
-    body {
-      margin: 0;
-      font-family: "Nunito", sans-serif;
-      background: #f4f8ff;
-      color: #172033;
-    }
+  /* Animated Background */
+body {
+  position: relative;
+  min-height: 100vh;
+  overflow-x: hidden;
+  background: linear-gradient(135deg, #eef7ff, #ffffff, #dff1ff);
+  background-size: 300% 300%;
+  animation: bgGradientMove 14s ease infinite;
+}
 
-    .topbar {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 20px;
-      padding: 14px 24px;
-      background: #ffffff;
-      border-bottom: 1px solid #dce8f7;
-      box-shadow: 0 6px 18px rgba(30, 80, 150, 0.08);
-    }
+/* ชั้นแสงวงกลมเคลื่อนไหว */
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: -2;
+  background:
+    radial-gradient(circle at 15% 20%, rgba(56, 189, 248, 0.28), transparent 28%),
+    radial-gradient(circle at 85% 25%, rgba(37, 99, 235, 0.20), transparent 30%),
+    radial-gradient(circle at 50% 85%, rgba(14, 165, 233, 0.22), transparent 34%);
+  animation: floatingLight 18s ease-in-out infinite alternate;
+}
 
-    .brand {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      min-width: 240px;
-    }
+/* ลายจุด/เส้นบาง ๆ เคลื่อนไหว */
+body::after {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  background-image:
+    linear-gradient(rgba(37, 99, 235, 0.055) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(37, 99, 235, 0.055) 1px, transparent 1px);
+  background-size: 42px 42px;
+  animation: gridMove 22s linear infinite;
+  pointer-events: none;
+}
 
-    .brand-logo img {
-      width: 48px;
-      height: 48px;
-      border-radius: 12px;
-      object-fit: cover;
-    }
+/* ทำให้เนื้อหาอยู่บนพื้นหลัง */
+.topbar,
+.container {
+  position: relative;
+  z-index: 1;
+}
 
-    .title {
-      font-weight: 900;
-      font-size: 18px;
-      color: #0f4c81;
-    }
+@keyframes bgGradientMove {
+  0% {
+    background-position: 0% 50%;
+  }
 
-    .subtitle,
-    .muted,
-    .company-sub {
-      color: #64748b;
-    }
+  50% {
+    background-position: 100% 50%;
+  }
 
-    .subtitle {
-      font-size: 13px;
-    }
+  100% {
+    background-position: 0% 50%;
+  }
+}
 
-    .company-mini {
-      text-align: center;
-      flex: 1;
-      font-size: 13px;
-      line-height: 1.4;
-    }
+@keyframes floatingLight {
+  0% {
+    transform: translate3d(0, 0, 0) scale(1);
+    opacity: 0.9;
+  }
 
-    .company-name {
-      font-weight: 900;
-      color: #0f4c81;
-    }
+  100% {
+    transform: translate3d(30px, -25px, 0) scale(1.08);
+    opacity: 1;
+  }
+}
 
-    .actions {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      flex-wrap: wrap;
-      justify-content: flex-end;
-    }
+@keyframes gridMove {
+  0% {
+    background-position: 0 0;
+  }
 
-    .container {
-      max-width: 1100px;
-      margin: 32px auto;
-      padding: 0 20px;
-    }
+  100% {
+    background-position: 42px 42px;
+  }
+}
 
-    .card {
-      background: #ffffff;
-      border: 1px solid #dce8f7;
-      border-radius: 24px;
-      padding: 28px;
-      box-shadow: 0 14px 35px rgba(30, 80, 150, 0.08);
-    }
+/* พื้นหลังตอน Dark Mode */
+body.dark {
+  background: linear-gradient(135deg, #020617, #0f172a, #1e293b);
+  background-size: 300% 300%;
+  animation: bgGradientMove 14s ease infinite;
+}
 
-    .h1 {
-      margin: 0 0 8px;
-      font-size: 28px;
-      color: #0f4c81;
-    }
+body.dark::before {
+  background:
+    radial-gradient(circle at 15% 20%, rgba(59, 130, 246, 0.18), transparent 30%),
+    radial-gradient(circle at 85% 25%, rgba(14, 165, 233, 0.14), transparent 32%),
+    radial-gradient(circle at 50% 85%, rgba(96, 165, 250, 0.12), transparent 35%);
+}
 
-    .menuGrid {
-      display: grid;
-      grid-template-columns: repeat(3, minmax(0, 1fr));
-      gap: 14px;
-      margin-top: 24px;
-    }
-
-    .btn {
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      min-height: 44px;
-      padding: 10px 16px;
-      border-radius: 14px;
-      border: 1px solid #bfdbfe;
-      background: #ffffff;
-      color: #0f4c81;
-      font-weight: 800;
-      text-decoration: none;
-      cursor: pointer;
-      transition: 0.2s ease;
-      box-sizing: border-box;
-    }
-
-    .btn:hover {
-      transform: translateY(-1px);
-      box-shadow: 0 8px 20px rgba(30, 80, 150, 0.14);
-      background: #eff6ff;
-    }
-
-    .btn.primary {
-      background: #2563eb;
-      color: #ffffff;
-      border-color: #2563eb;
-    }
-
-    .btn.secondary {
-      background: #0ea5e9;
-      color: #ffffff;
-      border-color: #0ea5e9;
-    }
-
-    .btn.ghost {
-      background: #f8fbff;
-    }
-
-    .btn.danger {
-      background: #fee2e2;
-      border-color: #fecaca;
-      color: #b91c1c;
-    }
-
-    .btn.wide {
-      width: 100%;
-      text-align: center;
-    }
-
-    .canva-btn {
-      background: #e0f2fe;
-    }
-
-    .icon svg {
-      width: 18px;
-      height: 18px;
-      fill: currentColor;
-      margin-right: 6px;
-    }
-
-    body.dark {
-      background: #0f172a;
-      color: #e5e7eb;
-    }
-
-    body.dark .topbar,
-    body.dark .card {
-      background: #111827;
-      border-color: #1f2937;
-    }
-
-    body.dark .title,
-    body.dark .company-name,
-    body.dark .h1 {
-      color: #93c5fd;
-    }
-
-    body.dark .subtitle,
-    body.dark .muted,
-    body.dark .company-sub {
-      color: #94a3b8;
-    }
-
-    body.dark .btn {
-      background: #1e293b;
-      color: #dbeafe;
-      border-color: #334155;
-    }
-
-    body.dark .btn.primary {
-      background: #2563eb;
-      color: #ffffff;
-    }
-
-    body.dark .btn.secondary {
-      background: #0284c7;
-      color: #ffffff;
-    }
-
-    body.dark .btn.danger {
-      background: #7f1d1d;
-      color: #fecaca;
-      border-color: #991b1b;
-    }
-
-    @media (max-width: 900px) {
-      .topbar {
-        align-items: flex-start;
-        flex-direction: column;
-      }
-
-      .company-mini {
-        text-align: left;
-      }
-
-      .menuGrid {
-        grid-template-columns: repeat(2, minmax(0, 1fr));
-      }
-    }
-
-    @media (max-width: 560px) {
-      .menuGrid {
-        grid-template-columns: 1fr;
-      }
-
-      .card {
-        padding: 20px;
-      }
-
-      .h1 {
-        font-size: 22px;
-      }
-    }
+body.dark::after {
+  background-image:
+    linear-gradient(rgba(147, 197, 253, 0.045) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(147, 197, 253, 0.045) 1px, transparent 1px);
+}
   </style>
 </head>
 
