@@ -564,7 +564,7 @@
       background:linear-gradient(135deg,rgba(255,255,255,.10),transparent 22%,transparent 78%,rgba(96,239,255,.08));
     }
     #petGameApp .panel > *{position:relative}
-    #petGameApp .col-4{grid-column:span 4}#petGameApp .col-5{grid-column:span 5}#petGameApp .col-7{grid-column:span 7}#petGameApp .col-8{grid-column:span 8}#petGameApp .col-6{grid-column:span 6}#petGameApp .col-12{grid-column:span 12}
+    #petGameApp .col-4{grid-column:span 4}#petGameApp .col-5{grid-column:span 5}#petGameApp .col-7{grid-column:span 7}#petGameApp .col-8{grid-column:span 8}#petGameApp .col-6{grid-column:span 6}
     #petGameApp .title-row{display:flex;justify-content:space-between;gap:12px;align-items:center;margin-bottom:12px}
     #petGameApp h2{margin:0;font-size:22px;font-weight:900}
     #petGameApp h3{margin:0 0 10px;font-size:17px;font-weight:900}
@@ -604,18 +604,13 @@
     #petGameApp .spark{position:absolute;right:13px;top:17px;font-size:24px;animation:petTwinkle 1.4s infinite alternate;z-index:3}#petGameApp .spark.two{left:9px;right:auto;top:80px;font-size:18px;animation-delay:.4s}
     @keyframes petTwinkle{from{opacity:.45;transform:scale(.8) rotate(0)}to{opacity:1;transform:scale(1.15) rotate(15deg)}}
     #petGameApp .egg-shop{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px}
-    #petGameApp .egg-card, #petGameApp .inc-card, #petGameApp .pet-card, #petGameApp .collection-card, #petGameApp .quest-card{
+    #petGameApp .egg-card, #petGameApp .inc-card, #petGameApp .pet-card, #petGameApp .collection-card, #petGameApp .quest-card, #petGameApp .work-card{
       border:2px solid rgba(255,255,255,.16);
       background:rgba(255,255,255,.08);
       border-radius:20px;
       padding:14px;
       box-shadow:inset 0 -6px 0 rgba(0,0,0,.08);
     }
-    #petGameApp .level-quest-head{display:flex;justify-content:space-between;gap:10px;align-items:center;margin-bottom:12px;flex-wrap:wrap}
-    #petGameApp .level-quest-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
-    #petGameApp .quest-card.quest-ready{border-color:rgba(135,255,154,.58);box-shadow:0 0 0 1px rgba(135,255,154,.20), inset 0 -6px 0 rgba(0,0,0,.08)}
-    #petGameApp .quest-meta{display:flex;gap:6px;flex-wrap:wrap;margin:8px 0}
-    #petGameApp .quest-card h3{line-height:1.25}
     #petGameApp .egg-visual{width:78px;height:96px;margin:4px auto 12px;border-radius:52% 52% 45% 45%;border:5px solid rgba(255,255,255,.28);box-shadow:inset -10px -16px 0 rgba(0,0,0,.18),0 10px 0 rgba(0,0,0,.14);position:relative;animation:petBob 2.8s ease-in-out infinite}
     #petGameApp .egg-visual:before{content:"";position:absolute;left:18px;top:16px;width:16px;height:22px;border-radius:50%;background:rgba(255,255,255,.45)}
     #petGameApp .egg-common{background:linear-gradient(135deg,#fff1c4,#ffae45)}
@@ -651,7 +646,7 @@
     #petGameApp .footer-note{margin:14px 2px;color:var(--muted);font-weight:800;font-size:13px;text-align:center}
     #petGameApp .view{scroll-margin-top:96px}
     #petGameApp.pet-light .nav{background:linear-gradient(180deg,rgba(255,255,255,.72),rgba(255,255,255,.18))}
-    @media (max-width:960px){#petGameApp .col-4, #petGameApp .col-5, #petGameApp .col-7, #petGameApp .col-8, #petGameApp .col-6, #petGameApp .col-12{grid-column:span 12}#petGameApp .hero{grid-template-columns:1fr}#petGameApp .egg-shop{grid-template-columns:repeat(2,1fr)}#petGameApp .level-quest-grid{grid-template-columns:1fr}#petGameApp .inc-grid, #petGameApp .pet-grid{grid-template-columns:repeat(2,1fr)}#petGameApp .collection-grid{grid-template-columns:repeat(4,1fr)}#petGameApp .topbar{grid-template-columns:1fr}#petGameApp .stats{justify-content:flex-start}#petGameApp .modal-grid{grid-template-columns:1fr}}
+    @media (max-width:960px){#petGameApp .col-4, #petGameApp .col-5, #petGameApp .col-7, #petGameApp .col-8, #petGameApp .col-6{grid-column:span 12}#petGameApp .hero{grid-template-columns:1fr}#petGameApp .egg-shop{grid-template-columns:repeat(2,1fr)}#petGameApp .inc-grid, #petGameApp .pet-grid{grid-template-columns:repeat(2,1fr)}#petGameApp .collection-grid{grid-template-columns:repeat(4,1fr)}#petGameApp .topbar{grid-template-columns:1fr}#petGameApp .stats{justify-content:flex-start}#petGameApp .modal-grid{grid-template-columns:1fr}}
     @media (max-width:560px){#petGameApp .screen{width:min(100% - 16px,1280px);padding-top:8px}#petGameApp .topbar{border-radius:22px}#petGameApp .logo{width:52px;height:52px}#petGameApp .egg-shop, #petGameApp .inc-grid, #petGameApp .pet-grid{grid-template-columns:1fr}#petGameApp .collection-grid{grid-template-columns:repeat(2,1fr)}#petGameApp .panel{padding:14px}#petGameApp .hero-copy h2{font-size:30px}#petGameApp .chip{font-size:13px;padding:8px 10px}}
   
     #petGameApp {
@@ -781,7 +776,7 @@
     });
   </script>
 
-  <!-- Pet Collection Game: Live Release v1.2.0 -->
+  <!-- Pet Collection Game: Live Release v1.1.2 -->
   <section id="petGameApp" aria-label="Pet Collection Game">
     <div class="screen">
         <section class="topbar">
@@ -812,7 +807,7 @@
         <div class="grid view" id="homeView">
           <section class="panel hero">
             <div class="hero-copy">
-              <div class="badge">Live Release v1.2.0 • เล่นจริงแล้ว</div>
+              <div class="badge">Live Release v1.3.0 • Scroll Return Fixed</div>
               <h2>ซื้อไข่ ฟักไข่ สุ่มสัตว์เลี้ยง และสะสมให้ครบ 150 ตัว</h2>
               <p>เปิดให้เล่นจริงบนหน้าเว็บนี้: เก็บเกล็ดดาวจากการเปิดเว็บ, ซื้อไข่ 4 ระดับ, ฟักแบบ Active/Offline, สุ่มตาม Tier, เลี้ยง Lv.1-50 และสะสม Collection ให้ครบ 150 ตัว</p>
               <div class="hero-actions">
@@ -820,7 +815,7 @@
                 <button class="btn blue" onclick="showTab('incubator')">ดูไข่ที่กำลังฟัก</button>
                 <button class="btn green" id="dailyBtn">รับ Login รายวัน</button>
               </div>
-              <p class="tiny">Active earning: +1 เกล็ดดาว / 1 นาที สูงสุด 300 ต่อวัน • ซ่อนแท็บ/เปิดแท็บอื่นยังฟัก 100% • ปิดเว็บแล้วฟักต่อ 30%</p>
+              <p class="tiny">เปิดหน้าเว็บอยู่ / ซ่อนแท็บ / เปิดแท็บอื่น = ทุกระบบเดิน 100% • ปิดหน้าเว็บ / ไม่ได้เปิดเว็บ = ทุกระบบเดินต่อ 30%</p>
             </div>
             <div class="pet-stage">
               <div class="creature" id="heroCreature"></div>
@@ -868,7 +863,7 @@
             <div class="title-row">
               <div>
                 <h2>ตู้ฟักไข่</h2>
-                <div class="muted">เปิดหน้าเว็บอยู่/ซ่อนแท็บ/เปิดแท็บอื่น/เปิดแอปอื่น = ฟักเต็มสปีด 100% • ปิดเว็บ/ไม่ได้เปิดเว็บ = ฟักต่อ 30% จากเวลาโลก</div>
+                <div class="muted">เปิดหน้าเว็บอยู่ / ซ่อนแท็บ / เปิดแท็บอื่น = ฟัก 100% • ปิดเว็บ / ไม่ได้เปิดเว็บ = ฟัก 30%</div>
               </div>
             </div>
             <div class="inc-grid" id="incubatorGrid"></div>
@@ -884,6 +879,16 @@
               </div>
             </div>
             <div class="pet-grid" id="petGrid"></div>
+          </section>
+          <section class="panel col-12">
+            <div class="title-row">
+              <div>
+                <h2>Pet Work / ส่งสัตว์ไปทำงาน</h2>
+                <div class="muted">ส่งสัตว์ไปสำรวจเพื่อรับเกล็ดดาว ใช้ Logic เวลาเดียวกับฟักไข่: เปิดเว็บอยู่ 100% / ปิดเว็บ 30%</div>
+              </div>
+            </div>
+            <div class="work-actions" id="petWorkActions"></div>
+            <div class="level-quest-grid" id="petWorkList"></div>
           </section>
         </div>
 
@@ -910,15 +915,15 @@
         </div>
 
         <div class="grid view" id="questsView" hidden>
-          <section class="panel col-12">
-            <div class="level-quest-head">
-              <div>
-                <h2>เควสเลเวลอัป</h2>
-                <div class="muted">ทุกครั้งที่สัตว์เลี้ยงอัปเลเวล ระบบจะสร้างเควสใหม่ จนกว่า Collection จะครบ 150 ตัว</div>
-              </div>
-              <div class="badge" id="levelQuestMeter">Collection 0%</div>
-            </div>
-            <div id="levelQuestList" class="level-quest-grid"></div>
+          <section class="panel col-6">
+            <h2>เควสซ้ำหาเกล็ดดาว</h2>
+            <div class="muted" style="margin-bottom:10px">ทำซ้ำได้เรื่อยๆ เพื่อให้ยังมีทางหาเกล็ดดาวหลังรับ Achievement ครบแล้ว</div>
+            <div id="repeatQuestList"></div>
+          </section>
+          <section class="panel col-6">
+            <h2>Collection Milestone</h2>
+            <div class="muted" style="margin-bottom:10px">รับรางวัลตามจำนวน Collection ที่ปลดล็อก</div>
+            <div id="milestoneList"></div>
           </section>
           <section class="panel col-6">
             <h2>ภารกิจรายวัน</h2>
@@ -930,7 +935,7 @@
           </section>
         </div>
 
-        <div class="footer-note">Live Release v1.2.0 • ข้อมูลเกมบันทึกไว้ในเบราว์เซอร์ของเครื่องนี้ หากเปลี่ยนเครื่อง/ล้างแคช ควรกด “สำรองเซฟ” ก่อน</div>
+        <div class="footer-note">Live Release v1.3.0 • ระบบเกล็ดดาวต่อเนื่อง + Pet Work + เควสซ้ำ + เวลาเปิดเว็บ 100% / ปิดเว็บ 30%</div>
       </div>
 
       <dialog id="petDialog">
@@ -948,10 +953,32 @@
 const $ = (q)=>document.querySelector(q);
 const $$ = (q)=>document.querySelectorAll(q);
 const SAVE_KEY = 'pet_collection_app_v1';
-const RELEASE_VERSION = '1.2.0';
+const RELEASE_VERSION = '1.3.0';
 const NOW = ()=>Date.now();
-const HATCH_ACTIVE_SPEED = 1;      // หน้าเว็บยังเปิดอยู่: ฟักเต็มสปีด แม้ซ่อนแท็บ/เปิดแท็บอื่น/เปิดแอปอื่น
-const HATCH_OFFLINE_SPEED = 0.3;   // ปิดหน้าเว็บ/ไม่ได้เปิดเว็บ: ฟักช้าลงแต่ยังนับต่อ
+const TIME_ACTIVE_SPEED = 1;
+const TIME_OFFLINE_SPEED = 0.3;
+const MAX_DAILY_PASSIVE_SHARDS = 300;
+function makeId(prefix='id'){
+  return ((window.crypto && crypto.randomUUID) ? crypto.randomUUID() : prefix + '_' + NOW() + '_' + Math.random().toString(16).slice(2));
+}
+
+const petWorkTypes = {
+  short:{key:'short', name:'สำรวจสั้น', seconds:1800, reward:40, icon:'🧭', desc:'เหมาะสำหรับเก็บเกล็ดดาวเร็ว'},
+  normal:{key:'normal', name:'สำรวจทั่วไป', seconds:7200, reward:130, icon:'🎒', desc:'ใช้เวลาปานกลาง รางวัลคุ้มขึ้น'},
+  long:{key:'long', name:'สำรวจใหญ่', seconds:21600, reward:420, icon:'🏕️', desc:'ใช้เวลานาน เหมาะกับปล่อยทิ้งไว้'}
+};
+const duplicateShardReward = {Common:20, Rare:45, Epic:110, Legendary:320, Secret:900};
+const collectionMilestones = [
+  {target:10, reward:120}, {target:25, reward:300}, {target:50, reward:700},
+  {target:75, reward:1100}, {target:100, reward:1700}, {target:125, reward:2600}, {target:150, reward:5000}
+];
+const repeatQuestDefs = [
+  {key:'buy3', type:'eggsBought', name:'ซื้อไข่ซ้ำ 3 ฟอง', target:3, reward:90},
+  {key:'hatch3', type:'eggsHatched', name:'ฟักไข่ซ้ำ 3 ฟอง', target:3, reward:150},
+  {key:'feed10', type:'feeds', name:'ป้อนอาหารซ้ำ 10 ครั้ง', target:10, reward:120},
+  {key:'work2', type:'workCompleted', name:'รับรางวัล Pet Work 2 ครั้ง', target:2, reward:220},
+  {key:'dupe1', type:'duplicateConverted', name:'แปลงตัวซ้ำ 1 ตัว', target:1, reward:160}
+];
 
 const elements = [
   {id:'FI', th:'ไฟ', suffix:'เพลิง', colors:['#ff5b35','#ffd45a'], icon:'🔥'},
@@ -1033,7 +1060,7 @@ const speciesById = Object.fromEntries(species.map(s=>[s.id,s]));
 
 function defaultState(){
   const today = dayKey();
-  return {version:RELEASE_VERSION,currency:120,earnedToday:0,earningDay:today,activeSeconds:0,loginStreak:0,lastLoginDay:null,lastSeenAt:NOW(),lastHatchSyncAt:NOW(),eggs:[],pets:[],collectionLog:{},pity:{legendary:0,secret:0},stats:{eggsBought:0,eggsHatched:0,feeds:0},claimedAchievements:{},questsDay:today,theme:'dark'};
+  return {version:RELEASE_VERSION,currency:120,earnedToday:0,earningDay:today,activeSeconds:0,loginStreak:0,lastLoginDay:null,lastSeenAt:NOW(),eggs:[],pets:[],collectionLog:{},pity:{legendary:0,secret:0},stats:{eggsBought:0,eggsHatched:0,feeds:0},claimedAchievements:{},questsDay:today,theme:'dark'};
 }
 let state = loadState();
 let currentTab='home';
@@ -1054,9 +1081,7 @@ function sanitizeState(s){
   s.earnedToday = Number.isFinite(+s.earnedToday) ? Math.min(300, Math.max(0, Math.floor(+s.earnedToday))) : 0;
   s.activeSeconds = Number.isFinite(+s.activeSeconds) ? Math.max(0, +s.activeSeconds) : 0;
   s.loginStreak = Number.isFinite(+s.loginStreak) ? Math.min(7, Math.max(0, Math.floor(+s.loginStreak))) : 0;
-  const nowForSanitize = NOW();
-  s.lastSeenAt = Number.isFinite(+s.lastSeenAt) ? Math.min(+s.lastSeenAt, nowForSanitize) : nowForSanitize;
-  s.lastHatchSyncAt = Number.isFinite(+s.lastHatchSyncAt) ? Math.min(+s.lastHatchSyncAt, nowForSanitize) : s.lastSeenAt;
+  s.lastSystemSyncAt = Number.isFinite(+s.lastSystemSyncAt) ? +s.lastSystemSyncAt : (Number.isFinite(+s.lastSeenAt) ? +s.lastSeenAt : NOW());
   s.eggs = Array.isArray(s.eggs) ? s.eggs.filter(e=>e && eggTypes[e.type]).map(e=>({
     id:String(e.id||('egg_'+NOW()+'_'+Math.random().toString(16).slice(2))),
     type:e.type,
@@ -1074,10 +1099,22 @@ function sanitizeState(s){
     obtainedAt:Number.isFinite(+p.obtainedAt) ? +p.obtainedAt : NOW(),
     favorite:!!p.favorite
   })) : [];
+  const petIds = new Set(s.pets.map(p=>p.id));
+  s.petJobs = Array.isArray(s.petJobs) ? s.petJobs.filter(j=>j && petWorkTypes[j.type] && petIds.has(String(j.petId))).map(j=>({
+    id:String(j.id||makeId('job')),
+    type:j.type,
+    petId:String(j.petId),
+    required:Number.isFinite(+j.required) ? Math.max(1,+j.required) : petWorkTypes[j.type].seconds,
+    progress:Number.isFinite(+j.progress) ? Math.max(0,+j.progress) : 0,
+    status:['working','ready'].includes(j.status) ? j.status : 'working',
+    startedAt:Number.isFinite(+j.startedAt) ? +j.startedAt : NOW()
+  })) : [];
   s.collectionLog = (s.collectionLog && typeof s.collectionLog==='object') ? s.collectionLog : {};
   for(const pet of s.pets){ s.collectionLog[pet.speciesId]=true; }
   s.pity = {...{legendary:0,secret:0}, ...(s.pity||{})};
-  s.stats = {...{eggsBought:0,eggsHatched:0,feeds:0}, ...(s.stats||{})};
+  s.stats = {...{eggsBought:0,eggsHatched:0,feeds:0,workCompleted:0}, ...(s.stats||{})};
+  s.repeatQuestBase = (s.repeatQuestBase && typeof s.repeatQuestBase==='object') ? s.repeatQuestBase : {};
+  s.collectionMilestonesClaimed = (s.collectionMilestonesClaimed && typeof s.collectionMilestonesClaimed==='object') ? s.collectionMilestonesClaimed : {};
   s.claimedAchievements = (s.claimedAchievements && typeof s.claimedAchievements==='object') ? s.claimedAchievements : {};
   s.theme = s.theme === 'light' ? 'light' : 'dark';
   return s;
@@ -1099,33 +1136,65 @@ function resetDailyIfNeeded(){
   if(state.earningDay!==today){state.earningDay=today;state.earnedToday=0;state.activeSeconds=0;}
   if(state.questsDay!==today){state.questsDay=today;state.stats.eggsBought=0;state.stats.eggsHatched=0;state.stats.feeds=0;}
 }
-function syncHatchProgress(speed=HATCH_ACTIVE_SPEED, options={}){
-  const now = NOW();
-  const last = Number.isFinite(+state.lastHatchSyncAt)
-    ? +state.lastHatchSyncAt
-    : (Number.isFinite(+state.lastSeenAt) ? +state.lastSeenAt : now);
-  const elapsed = Math.max(0, (now - last) / 1000);
-  state.lastHatchSyncAt = now;
-  if(elapsed <= 0 || !state.eggs || !state.eggs.length) return 0;
-
-  const progressToAdd = elapsed * speed;
-  let readyCount = 0;
+function addPassiveShardProgress(effectiveSeconds){
+  if(effectiveSeconds <= 0) return;
+  state.activeSeconds += effectiveSeconds;
+  while(state.activeSeconds>=60 && state.earnedToday<MAX_DAILY_PASSIVE_SHARDS){
+    state.activeSeconds-=60;
+    state.earnedToday++;
+    state.currency++;
+  }
+}
+function advanceEggProgress(effectiveSeconds, showToast=false){
   for(const egg of state.eggs.filter(e=>e.status==='incubating')){
-    const wasReady = egg.progress >= egg.required || egg.status === 'ready';
-    egg.progress = Math.min(egg.required, egg.progress + progressToAdd);
-    if(egg.progress >= egg.required){
-      egg.status = 'ready';
-      if(!wasReady) readyCount++;
+    const before = egg.status;
+    egg.progress = Math.min(egg.required, egg.progress + effectiveSeconds);
+    if(egg.progress>=egg.required){
+      egg.status='ready';
+      if(showToast && before!=='ready') toast('มีไข่พร้อมฟักแล้ว!');
     }
   }
-  if(readyCount > 0 && options.toastReady !== false){
-    toast(readyCount === 1 ? 'มีไข่พร้อมฟักแล้ว!' : `มีไข่พร้อมฟักแล้ว ${readyCount} ฟอง!`);
+}
+function advancePetWorkProgress(effectiveSeconds, showToast=false){
+  for(const job of state.petJobs.filter(j=>j.status==='working')){
+    const before = job.status;
+    job.progress = Math.min(job.required, job.progress + effectiveSeconds);
+    if(job.progress>=job.required){
+      job.status='ready';
+      const pet = state.pets.find(p=>p.id===job.petId);
+      const sp = pet ? speciesById[pet.speciesId] : null;
+      if(showToast && before!=='ready') toast(`${sp ? sp.name : 'Pet Work'} สำรวจเสร็จแล้ว!`);
+    }
   }
-  return progressToAdd;
+}
+function advanceTimedSystems(realSeconds, speed=TIME_ACTIVE_SPEED, options={}){
+  const elapsed = Math.max(0, realSeconds || 0);
+  const effectiveSeconds = elapsed * speed;
+  if(effectiveSeconds <= 0) return;
+  resetDailyIfNeeded();
+  addPassiveShardProgress(effectiveSeconds);
+  advanceEggProgress(effectiveSeconds, !!options.toastReady);
+  advancePetWorkProgress(effectiveSeconds, !!options.toastReady);
+}
+function syncOpenPageProgress(showToast=false){
+  const now = NOW();
+  const last = Number.isFinite(+state.lastSystemSyncAt) ? +state.lastSystemSyncAt : now;
+  const elapsed = Math.max(0,(now-last)/1000);
+  if(elapsed>0){
+    advanceTimedSystems(elapsed, TIME_ACTIVE_SPEED, {toastReady:showToast});
+  }
+  state.lastSystemSyncAt = now;
+  lastTick = now;
 }
 function applyOfflineProgress(){
-  // เปิดเว็บใหม่: ช่วงที่เว็บถูกปิด/ไม่ได้เปิด จะคำนวณย้อนหลังแบบ Offline 30%
-  syncHatchProgress(HATCH_OFFLINE_SPEED, {toastReady:false});
+  const now = NOW();
+  const last = Number.isFinite(+state.lastSystemSyncAt) ? +state.lastSystemSyncAt : (state.lastSeenAt || now);
+  const elapsed = Math.max(0,(now-last)/1000);
+  if(elapsed>2){
+    advanceTimedSystems(elapsed, TIME_OFFLINE_SPEED, {toastReady:false});
+  }
+  state.lastSystemSyncAt = now;
+  lastTick = now;
 }
 function fmtTime(sec){
   sec=Math.max(0,Math.ceil(sec)); const h=Math.floor(sec/3600), m=Math.floor((sec%3600)/60), s=sec%60;
@@ -1175,7 +1244,7 @@ function render(){
   $('#pitySecText').textContent = state.pity.secret||0;
   const showcase = state.pets[0] ? speciesById[state.pets[0].speciesId] : speciesById['FI-C1'];
   $('#heroCreature').outerHTML = renderCreature(showcase,false).replace('class="creature"','class="creature" id="heroCreature"');
-  renderShop(); renderIncubator(); renderPets(); renderCollection(); renderQuests();
+  renderShop(); renderIncubator(); renderPets(); renderPetWork(); renderCollection(); renderQuests();
   save();
 }
 
@@ -1193,7 +1262,7 @@ function renderShop(){
 function buyEgg(key){
   const egg=eggTypes[key]; if(state.currency<egg.price) return toast('เกล็ดดาวไม่พอ');
   state.currency-=egg.price;
-  state.eggs.unshift({id:crypto.randomUUID(),type:key,required:egg.seconds,progress:0,status:'incubating',createdAt:NOW()});
+  state.eggs.unshift({id:makeId('egg'),type:key,required:egg.seconds,progress:0,status:'incubating',createdAt:NOW()});
   state.stats.eggsBought++;
   toast(`ซื้อ ${egg.name} แล้ว`);
   showTab('incubator');
@@ -1227,11 +1296,12 @@ function hatchEgg(id){
   const egg=eggTypes[eg.type]; const tier=chooseTier(egg);
   const pool=species.filter(s=>s.tier===tier); const sp=pool[Math.floor(Math.random()*pool.length)];
   state.eggs.splice(idx,1);
-  state.pets.unshift({id:((window.crypto && crypto.randomUUID) ? crypto.randomUUID() : 'pet_'+NOW()+'_'+Math.random().toString(16).slice(2)),speciesId:sp.id,level:1,exp:0,nickname:'',obtainedAt:NOW(),favorite:false});
+  const wasOwned = !!state.collectionLog[sp.id];
+  state.pets.unshift({id:makeId('pet'),speciesId:sp.id,level:1,exp:0,nickname:'',obtainedAt:NOW(),favorite:false});
   state.collectionLog[sp.id]=true;
   if(tier==='Secret'){state.pity.secret=0;state.pity.legendary=0;} else if(tier==='Legendary'){state.pity.legendary=0;state.pity.secret++;} else {state.pity.legendary++;state.pity.secret++;}
   state.stats.eggsHatched++;
-  toast(`ฟักได้ ${sp.name} (${tier})!`);
+  toast(wasOwned ? `ฟักได้ตัวซ้ำ ${sp.name} (${tier}) — แปลงเป็นเกล็ดดาวได้` : `ฟักได้ ${sp.name} (${tier})!`);
   if(Notification.permission==='granted') new Notification('ไข่ฟักแล้ว!',{body:`คุณได้รับ ${sp.name} (${tier})`});
   showTab('pets');
   openPet(sp, state.pets[0]);
@@ -1251,14 +1321,16 @@ function renderPets(){
       <div class="progress"><div class="bar" style="width:${Math.min(100,pct)}%"></div></div>
       <p class="tiny">EXP ${Math.floor(p.exp)} / ${need||'MAX'}</p>
       <div style="display:flex;gap:8px;flex-wrap:wrap">
-        <button class="btn primary" onclick="feedPet('${p.id}')" ${p.level>=50||state.currency<10?'disabled':''}>ป้อนอาหาร ⭐10</button>
+        <button class="btn primary" onclick="feedPet('${p.id}')" ${p.level>=50||state.currency<10||isPetOnWork(p.id)?'disabled':''}>ป้อนอาหาร ⭐10</button>
         <button class="btn ghost" onclick="openPetById('${p.id}')">ดูรายละเอียด</button>
+        <button class="btn blue" onclick="startPetWork('short','${p.id}')" ${isPetOnWork(p.id)?'disabled':''}>ส่งสำรวจ</button>
+        <button class="btn red" onclick="convertDuplicatePet('${p.id}')" ${duplicateCount(p.speciesId)<=1||isPetOnWork(p.id)?'disabled':''}>แปลงตัวซ้ำ</button>
       </div>
     </div>`;
   }).join('');
 }
 function feedPet(id){
-  const p=state.pets.find(x=>x.id===id); if(!p || p.level>=50)return; if(state.currency<10)return toast('เกล็ดดาวไม่พอ');
+  const p=state.pets.find(x=>x.id===id); if(!p || p.level>=50)return; if(isPetOnWork(id)) return toast('สัตว์ตัวนี้กำลังทำงานอยู่'); if(state.currency<10)return toast('เกล็ดดาวไม่พอ');
   state.currency-=10; p.exp+=100; state.stats.feeds++;
   while(p.level<50 && p.exp>=expNeed(p.level)){p.exp-=expNeed(p.level); p.level++; toast(`${speciesById[p.speciesId].name} เลเวลอัปเป็น Lv.${p.level}`);}
   render();
@@ -1266,6 +1338,100 @@ function feedPet(id){
 window.feedPet=feedPet;
 function openPetById(id){ const p=state.pets.find(x=>x.id===id); if(p) openPet(speciesById[p.speciesId],p); }
 window.openPetById=openPetById;
+function isPetOnWork(petId){
+  return state.petJobs.some(j=>j.petId===petId);
+}
+function duplicateCount(speciesId){
+  return state.pets.filter(p=>p.speciesId===speciesId).length;
+}
+function duplicateRewardForPet(p){
+  const sp = speciesById[p.speciesId];
+  const base = duplicateShardReward[sp.tier] || 20;
+  return base + Math.max(0, (p.level||1)-1) * 2;
+}
+function convertDuplicatePet(id){
+  const idx = state.pets.findIndex(p=>p.id===id);
+  if(idx<0) return;
+  const p = state.pets[idx];
+  const sp = speciesById[p.speciesId];
+  if(duplicateCount(p.speciesId)<=1) return toast('ตัวนี้เป็นตัวสุดท้ายของสายพันธุ์นี้ แปลงไม่ได้');
+  if(isPetOnWork(id)) return toast('ตัวนี้กำลังทำงานอยู่ แปลงไม่ได้');
+  const reward = duplicateRewardForPet(p);
+  state.pets.splice(idx,1);
+  state.currency += reward;
+  state.lifetimeStats.duplicateConverted = (state.lifetimeStats.duplicateConverted||0)+1;
+  toast(`แปลงตัวซ้ำ ${sp.name} เป็น ⭐${reward}`);
+  render();
+}
+window.convertDuplicatePet = convertDuplicatePet;
+function availableWorkPets(){
+  return state.pets.filter(p=>!isPetOnWork(p.id)).sort((a,b)=>(b.level-a.level));
+}
+function workReward(job){
+  const type = petWorkTypes[job.type];
+  const pet = state.pets.find(p=>p.id===job.petId);
+  const sp = pet ? speciesById[pet.speciesId] : null;
+  const tierBonus = sp ? (tierRank[sp.tier]||0) * 20 : 0;
+  const levelBonus = pet ? Math.floor((pet.level||1) * 2) : 0;
+  return (type.reward || 0) + tierBonus + levelBonus;
+}
+function startPetWork(typeKey, petId=null){
+  const type = petWorkTypes[typeKey];
+  if(!type) return;
+  const pet = petId ? state.pets.find(p=>p.id===petId) : availableWorkPets()[0];
+  if(!pet) return toast('ยังไม่มีสัตว์ว่างสำหรับส่งไปทำงาน');
+  if(isPetOnWork(pet.id)) return toast('สัตว์ตัวนี้กำลังทำงานอยู่');
+  state.petJobs.unshift({id:makeId('job'), type:typeKey, petId:pet.id, required:type.seconds, progress:0, status:'working', startedAt:NOW()});
+  toast(`ส่ง ${speciesById[pet.speciesId].name} ไป${type.name}`);
+  showTab('pets');
+}
+window.startPetWork = startPetWork;
+function claimPetWork(id){
+  const idx = state.petJobs.findIndex(j=>j.id===id);
+  if(idx<0) return;
+  const job = state.petJobs[idx];
+  if(job.progress < job.required && job.status!=='ready') return toast('Pet Work ยังไม่เสร็จ');
+  const reward = workReward(job);
+  state.currency += reward;
+  state.stats.workCompleted = (state.stats.workCompleted||0)+1;
+  state.lifetimeStats.workCompleted = (state.lifetimeStats.workCompleted||0)+1;
+  state.petJobs.splice(idx,1);
+  toast(`รับรางวัล Pet Work ⭐${reward}`);
+  render();
+}
+window.claimPetWork = claimPetWork;
+function renderPetWork(){
+  const actions = $('#petWorkActions');
+  const list = $('#petWorkList');
+  if(!actions || !list) return;
+  const available = availableWorkPets();
+  actions.innerHTML = Object.values(petWorkTypes).map(type=>`
+    <div class="work-card">
+      <h3>${type.icon} ${type.name}</h3>
+      <p class="muted">${type.desc}</p>
+      <p>เวลา ${fmtTime(type.seconds)} • รางวัลพื้นฐาน ⭐${type.reward}</p>
+      <button class="btn blue" onclick="startPetWork('${type.key}')" ${available.length?'':'disabled'}>ส่งสัตว์ว่างไปทำงาน</button>
+    </div>`).join('');
+  if(!state.petJobs.length){
+    list.innerHTML = '<div class="empty" style="grid-column:1/-1">ยังไม่มี Pet Work กำลังทำงานอยู่</div>';
+    return;
+  }
+  list.innerHTML = state.petJobs.map(job=>{
+    const type = petWorkTypes[job.type];
+    const pet = state.pets.find(p=>p.id===job.petId);
+    const sp = pet ? speciesById[pet.speciesId] : null;
+    const pct = Math.min(100,(job.progress/job.required)*100);
+    const ready = job.status==='ready' || job.progress>=job.required;
+    return `<div class="quest-card ${ready?'quest-ready':''}">
+      <h3>${type.icon} ${type.name}</h3>
+      <p class="tiny">${sp ? sp.name : 'สัตว์เลี้ยง'} ${pet ? `Lv.${pet.level}` : ''} • รางวัลประมาณ ⭐${workReward(job)}</p>
+      <div class="progress"><div class="bar" style="width:${pct}%"></div></div>
+      <p><b>${Math.floor(pct)}%</b> • ${ready?'พร้อมรับรางวัล':`เหลือ ${fmtTime(job.required-job.progress)}`}</p>
+      <button class="btn green" onclick="claimPetWork('${job.id}')" ${ready?'':'disabled'}>รับรางวัล</button>
+    </div>`;
+  }).join('');
+}
+
 
 function renderCollection(){
   const tier=$('#tierFilter').value, ele=$('#elementFilter').value, q=($('#searchInput').value||'').toLowerCase().trim();
@@ -1312,11 +1478,75 @@ function openPet(sp, pet){
 }
 window.openPet=openPet;
 
+function repeatQuestValue(def){
+  const lt = state.lifetimeStats || defaultLifetimeStats();
+  return Math.max(0, +lt[def.type] || 0);
+}
+function renderRepeatQuests(){
+  const box = $('#repeatQuestList');
+  if(!box) return;
+  box.innerHTML = repeatQuestDefs.map(def=>{
+    const base = Math.max(0, +state.repeatQuestBase[def.key] || 0);
+    const now = repeatQuestValue(def);
+    const progress = Math.max(0, now - base);
+    const done = progress >= def.target;
+    return `<div class="quest-card ${done?'quest-ready':''}" style="margin-bottom:10px">
+      <h3>${def.name}</h3>
+      <div class="progress"><div class="bar" style="width:${Math.min(100,progress/def.target*100)}%"></div></div>
+      <p>${Math.min(progress,def.target)} / ${def.target} • รางวัล ⭐${def.reward}</p>
+      <button class="btn green" onclick="claimRepeatQuest('${def.key}')" ${done?'':'disabled'}>รับรางวัลแล้วเริ่มรอบใหม่</button>
+    </div>`;
+  }).join('');
+}
+function claimRepeatQuest(key){
+  const def = repeatQuestDefs.find(x=>x.key===key);
+  if(!def) return;
+  const base = Math.max(0, +state.repeatQuestBase[def.key] || 0);
+  const now = repeatQuestValue(def);
+  if(now - base < def.target) return toast('เควสซ้ำยังไม่ครบ');
+  state.repeatQuestBase[def.key] = now;
+  state.currency += def.reward;
+  state.lifetimeStats.repeatQuestClaims = (state.lifetimeStats.repeatQuestClaims||0)+1;
+  toast(`รับรางวัลเควสซ้ำ ⭐${def.reward}`);
+  render();
+}
+window.claimRepeatQuest = claimRepeatQuest;
+function renderCollectionMilestones(){
+  const box = $('#milestoneList');
+  if(!box) return;
+  const count = collectionCount();
+  box.innerHTML = collectionMilestones.map(m=>{
+    const claimed = !!state.collectionMilestonesClaimed[m.target];
+    const done = count >= m.target;
+    return `<div class="quest-card ${done&&!claimed?'quest-ready':''}" style="margin-bottom:10px">
+      <h3>สะสมครบ ${m.target} / ${species.length} ตัว</h3>
+      <div class="progress"><div class="bar" style="width:${Math.min(100,count/m.target*100)}%"></div></div>
+      <p>${Math.min(count,m.target)} / ${m.target} • รางวัล ⭐${m.reward}</p>
+      <button class="btn primary" onclick="claimCollectionMilestone(${m.target})" ${done&&!claimed?'':'disabled'}>${claimed?'รับแล้ว':'รับรางวัล'}</button>
+    </div>`;
+  }).join('');
+}
+function claimCollectionMilestone(target){
+  const m = collectionMilestones.find(x=>x.target===target);
+  if(!m) return;
+  if(state.collectionMilestonesClaimed[target]) return;
+  if(collectionCount() < target) return toast('Collection ยังไม่ครบ milestone นี้');
+  state.collectionMilestonesClaimed[target] = true;
+  state.currency += m.reward;
+  toast(`รับรางวัล Collection ${target} ตัว ⭐${m.reward}`);
+  render();
+}
+window.claimCollectionMilestone = claimCollectionMilestone;
+
 function renderQuests(){
+  renderRepeatQuests();
+  renderCollectionMilestones();
+
   const daily=[
     {name:'ซื้อไข่ 1 ฟอง', now:state.stats.eggsBought||0, target:1, reward:30},
     {name:'ฟักไข่ 1 ฟอง', now:state.stats.eggsHatched||0, target:1, reward:50},
     {name:'ป้อนอาหาร 3 ครั้ง', now:state.stats.feeds||0, target:3, reward:40},
+    {name:'รับรางวัล Pet Work 1 ครั้ง', now:state.stats.workCompleted||0, target:1, reward:70},
   ];
   $('#dailyQuestList').innerHTML=daily.map((q,i)=>{
     const done=q.now>=q.target; const key=`daily-${state.questsDay}-${i}`; const claimed=state.claimedAchievements[key];
@@ -1345,27 +1575,13 @@ function claimDailyLogin(){
 $('#dailyBtn').addEventListener('click',claimDailyLogin);
 
 function activeTick(){
-  const now=NOW(); const delta=(now-lastTick)/1000; lastTick=now; resetDailyIfNeeded();
-
-  // ตราบใดที่หน้าเว็บยังเปิดอยู่ จะฟักเร็ว 100% แม้ซ่อนแท็บ/เปิดแท็บอื่น/เปิดแอปอื่น
-  syncHatchProgress(HATCH_ACTIVE_SPEED);
-
-  if(!document.hidden){
-    state.activeSeconds += delta;
-    while(state.activeSeconds>=60 && state.earnedToday<300){ state.activeSeconds-=60; state.earnedToday++; state.currency++; }
-  }
+  syncOpenPageProgress(true);
   save();
-  if(currentTab==='incubator'||currentTab==='home') render(); else updateTopOnly();
+  if(['incubator','home','pets','quests'].includes(currentTab)) render(); else updateTopOnly();
 }
 function updateTopOnly(){ $('#currencyText').textContent=Math.floor(state.currency).toLocaleString(); $('#collectionText').textContent=`${Object.keys(state.collectionLog||{}).length}/150`; }
 setInterval(activeTick,1000);
-document.addEventListener('visibilitychange',()=>{
-  // ซ่อนแท็บ/เปิดแท็บอื่นยังถือว่าหน้าเว็บเปิดอยู่ จึงคิดเวลาฟักย้อนหลังที่ 100%
-  syncHatchProgress(HATCH_ACTIVE_SPEED, {toastReady:!document.hidden});
-  lastTick=NOW();
-  save();
-  if(currentTab==='incubator'||currentTab==='home') render(); else updateTopOnly();
-});
+document.addEventListener('visibilitychange',()=>{ syncOpenPageProgress(false); save(); });
 
 function exportSave(){
   save();
@@ -1432,15 +1648,7 @@ function init(){
   resetDailyIfNeeded(); applyOfflineProgress(); render();
   handleGameHash();
 }
-window.addEventListener('beforeunload', ()=>{
-  // ก่อนปิดเว็บ บันทึก progress ถึงวินาทีสุดท้ายแบบ 100%; หลังปิดแล้วจึงนับ Offline 30% ตอนเปิดกลับมา
-  syncHatchProgress(HATCH_ACTIVE_SPEED, {toastReady:false});
-  save();
-});
-window.addEventListener('pagehide', ()=>{
-  syncHatchProgress(HATCH_ACTIVE_SPEED, {toastReady:false});
-  save();
-});
+window.addEventListener('beforeunload', ()=>{ syncOpenPageProgress(false); save(); });
 init();
   </script>
 </body>
