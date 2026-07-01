@@ -691,6 +691,113 @@
     #petGameApp .work-status-title{display:flex;justify-content:space-between;align-items:center;gap:10px;margin:14px 0 10px}
     @media (max-width:960px){#petGameApp .work-actions,#petGameApp .level-quest-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
     @media (max-width:560px){#petGameApp .work-actions,#petGameApp .level-quest-grid{grid-template-columns:1fr}}
+
+    /* Evolution Form System v1.1.0: pets change silhouette by level and archetype */
+    #petGameApp .creature,
+    #petGameApp .mini-creature{
+      --stageScale:1;
+      --stageGlow:.18;
+      --detailOpacity:.35;
+      --bodyRound:42% 45% 46% 40%;
+      transform-origin:50% 72%;
+    }
+    #petGameApp .creature.evo-1{--stageScale:.86;--stageGlow:.12;--detailOpacity:.18}
+    #petGameApp .creature.evo-2{--stageScale:.94;--stageGlow:.18;--detailOpacity:.34}
+    #petGameApp .creature.evo-3{--stageScale:1.02;--stageGlow:.24;--detailOpacity:.52}
+    #petGameApp .creature.evo-4{--stageScale:1.10;--stageGlow:.32;--detailOpacity:.72}
+    #petGameApp .creature.evo-5{--stageScale:1.18;--stageGlow:.42;--detailOpacity:.88}
+    #petGameApp .creature.evo-6{--stageScale:1.28;--stageGlow:.62;--detailOpacity:1}
+    #petGameApp .mini-creature.evo-1{--stageScale:.86;--detailOpacity:.18}
+    #petGameApp .mini-creature.evo-2{--stageScale:.92;--detailOpacity:.34}
+    #petGameApp .mini-creature.evo-3{--stageScale:1;--detailOpacity:.52}
+    #petGameApp .mini-creature.evo-4{--stageScale:1.06;--detailOpacity:.72}
+    #petGameApp .mini-creature.evo-5{--stageScale:1.12;--detailOpacity:.88}
+    #petGameApp .mini-creature.evo-6{--stageScale:1.18;--detailOpacity:1}
+    #petGameApp .creature{transform:scale(var(--stageScale));}
+    #petGameApp .mini-creature{transform:scale(var(--stageScale));}
+    #petGameApp .creature .evo-aura,
+    #petGameApp .mini-creature .evo-aura{
+      position:absolute;inset:-12px;border-radius:50%;
+      background:radial-gradient(circle, color-mix(in srgb, var(--c2) 60%, transparent), transparent 58%);
+      opacity:var(--stageGlow);filter:blur(7px);display:block;z-index:-1;
+      animation:petAuraPulse 2.8s ease-in-out infinite alternate;
+    }
+    @keyframes petAuraPulse{from{transform:scale(.92);opacity:calc(var(--stageGlow)*.65)}to{transform:scale(1.08);opacity:var(--stageGlow)}}
+    #petGameApp .creature .body,
+    #petGameApp .mini-creature .body{
+      border-radius:var(--bodyRound);
+      transition:.25s border-radius,.25s inset,.25s transform,.25s filter;
+    }
+    #petGameApp .creature.variant-0{--bodyRound:44% 56% 46% 54%}
+    #petGameApp .creature.variant-1{--bodyRound:58% 42% 52% 48%}
+    #petGameApp .creature.variant-2{--bodyRound:38% 62% 42% 58%}
+    #petGameApp .creature.variant-3{--bodyRound:48% 48% 58% 40%}
+    #petGameApp .creature.variant-4{--bodyRound:62% 38% 44% 56%}
+    #petGameApp .creature .ear,
+    #petGameApp .creature .wing,
+    #petGameApp .mini-creature .ear,
+    #petGameApp .mini-creature .wing{display:none;opacity:var(--detailOpacity)}
+    #petGameApp .tail,#petGameApp .horn,#petGameApp .crest,#petGameApp .shell,#petGameApp .leaf,#petGameApp .armor,#petGameApp .snout,#petGameApp .belly,#petGameApp .paw,#petGameApp .mouth{
+      position:absolute;display:none;opacity:var(--detailOpacity);z-index:1;
+    }
+    #petGameApp .belly{display:block;left:45px;top:66px;width:36px;height:34px;border-radius:50%;background:rgba(255,255,255,.20);box-shadow:inset -5px -7px 0 rgba(0,0,0,.08);z-index:2}
+    #petGameApp .mouth{display:block;left:57px;top:73px;width:14px;height:7px;border-bottom:3px solid rgba(16,21,51,.75);border-radius:0 0 999px 999px;z-index:3;opacity:.72}
+    #petGameApp .paw{display:block;bottom:12px;width:24px;height:18px;border-radius:45% 45% 35% 35%;background:var(--c2);border:4px solid rgba(255,255,255,.22);box-shadow:inset -5px -6px 0 rgba(0,0,0,.14);z-index:0;opacity:calc(var(--detailOpacity)*.85)}
+    #petGameApp .paw.l{left:36px}#petGameApp .paw.r{right:36px}
+    #petGameApp .tail{display:block;right:8px;top:66px;width:44px;height:24px;border-radius:50% 80% 80% 50%;background:linear-gradient(135deg,var(--c1),var(--c2));border:5px solid rgba(255,255,255,.22);transform:rotate(28deg);box-shadow:inset -8px -6px 0 rgba(0,0,0,.16);z-index:0}
+    #petGameApp .horn{width:18px;height:34px;background:linear-gradient(180deg,#fff8c9,var(--c2));clip-path:polygon(50% 0,100% 100%,0 100%);filter:drop-shadow(0 2px 0 rgba(0,0,0,.18));z-index:4}
+    #petGameApp .horn.l{left:35px;top:4px;transform:rotate(-18deg)}#petGameApp .horn.r{right:35px;top:4px;transform:rotate(18deg)}
+    #petGameApp .crest{left:51px;top:-2px;width:28px;height:38px;border-radius:50% 50% 16% 16%;background:linear-gradient(180deg,var(--c2),var(--c1));clip-path:polygon(50% 0,70% 30%,100% 45%,72% 62%,78% 100%,50% 78%,22% 100%,28% 62%,0 45%,30% 30%);z-index:5}
+    #petGameApp .shell{left:28px;top:33px;width:72px;height:52px;border-radius:55% 55% 44% 44%;background:linear-gradient(135deg,var(--c2),var(--c1));border:5px solid rgba(255,255,255,.24);box-shadow:inset -12px -12px 0 rgba(0,0,0,.18);z-index:3}
+    #petGameApp .shell:after{content:"";position:absolute;inset:12px;border:3px solid rgba(255,255,255,.25);border-radius:50%;}
+    #petGameApp .leaf{left:47px;top:-8px;width:36px;height:48px;background:linear-gradient(135deg,#a8ff9c,var(--c2));border:4px solid rgba(255,255,255,.18);border-radius:80% 20% 80% 20%;transform:rotate(24deg);box-shadow:inset -6px -8px 0 rgba(0,0,0,.14);z-index:5}
+    #petGameApp .armor{left:26px;top:37px;width:76px;height:62px;border-radius:24px;background:linear-gradient(135deg,rgba(255,255,255,.28),rgba(0,0,0,.10));border:5px solid rgba(255,255,255,.25);box-shadow:inset -10px -10px 0 rgba(0,0,0,.18);z-index:3}
+    #petGameApp .armor:after{content:"";position:absolute;left:14px;right:14px;top:21px;height:5px;background:rgba(255,255,255,.24);box-shadow:0 13px 0 rgba(255,255,255,.18)}
+    #petGameApp .snout{left:50px;top:61px;width:28px;height:20px;border-radius:50%;background:rgba(255,255,255,.22);border:3px solid rgba(255,255,255,.16);z-index:3}
+    #petGameApp .snout:after{content:"";position:absolute;left:10px;top:5px;width:8px;height:6px;border-radius:50%;background:#101533}
+    #petGameApp .shape-fox .ear,#petGameApp .shape-rabbit .ear,#petGameApp .shape-dragon .wing,#petGameApp .shape-moth .wing,#petGameApp .shape-griffin .wing,#petGameApp .shape-legend .wing,#petGameApp .shape-secret .wing{display:block}
+    #petGameApp .shape-fox .tail,#petGameApp .shape-rabbit .tail,#petGameApp .shape-dragon .tail,#petGameApp .shape-naga .tail,#petGameApp .shape-legend .tail,#petGameApp .shape-secret .tail{display:block}
+    #petGameApp .shape-fox .snout,#petGameApp .shape-dragon .snout,#petGameApp .shape-griffin .snout,#petGameApp .shape-turtle .snout,#petGameApp .shape-beetle .snout{display:block}
+    #petGameApp .shape-dragon .horn,#petGameApp .shape-naga .horn,#petGameApp .shape-griffin .crest,#petGameApp .shape-guardian .horn,#petGameApp .shape-legend .horn,#petGameApp .shape-secret .horn{display:block}
+    #petGameApp .shape-turtle .shell,#petGameApp .shape-beetle .shell{display:block}
+    #petGameApp .shape-flora .leaf{display:block}
+    #petGameApp .shape-golem .armor,#petGameApp .shape-guardian .armor{display:block}
+    #petGameApp .shape-wisp .body{border-radius:50%;filter:blur(.1px);animation:petWispFloat 2.4s ease-in-out infinite alternate}
+    #petGameApp .shape-wisp .paw,#petGameApp .shape-wisp .ear,#petGameApp .shape-wisp .tail{display:none}
+    @keyframes petWispFloat{from{transform:translateY(0) scale(.94)}to{transform:translateY(-4px) scale(1.04)}}
+    #petGameApp .shape-golem .body,#petGameApp .shape-guardian .body{border-radius:26% 30% 22% 24%;filter:saturate(.92)}
+    #petGameApp .shape-naga .body{border-radius:54% 46% 70% 30%;transform:rotate(-5deg)}
+    #petGameApp .shape-naga .tail{right:2px;top:78px;width:68px;height:26px;border-radius:999px;transform:rotate(12deg)}
+    #petGameApp .shape-moth .wing.l,#petGameApp .shape-moth .wing.r{width:48px;height:62px;top:38px;opacity:calc(var(--detailOpacity)*1.05)}
+    #petGameApp .shape-moth .body{inset:20px 35px 12px;border-radius:45%}
+    #petGameApp .shape-rabbit .ear.l{height:62px;top:-2px}#petGameApp .shape-rabbit .ear.r{height:62px;top:-2px}
+    #petGameApp .shape-beetle .horn.l{display:block;left:55px;top:0;width:18px;height:28px;transform:rotate(0)}
+    #petGameApp .shape-beetle .horn.r{display:none}
+    #petGameApp .shape-flora .spark{font-size:20px}
+    #petGameApp .shape-secret .evo-aura,#petGameApp .shape-legend .evo-aura{opacity:calc(var(--stageGlow) + .18)}
+    #petGameApp .evo-1 .tail,#petGameApp .evo-1 .horn,#petGameApp .evo-1 .crest,#petGameApp .evo-1 .shell,#petGameApp .evo-1 .leaf,#petGameApp .evo-1 .armor,#petGameApp .evo-1 .snout{opacity:.10;transform:scale(.7)}
+    #petGameApp .evo-1 .wing{transform:scale(.62) rotate(var(--wingRot,0deg));opacity:.10}
+    #petGameApp .evo-2 .tail,#petGameApp .evo-2 .wing,#petGameApp .evo-2 .ear{opacity:.38}
+    #petGameApp .evo-3 .horn,#petGameApp .evo-3 .crest,#petGameApp .evo-3 .shell,#petGameApp .evo-3 .leaf,#petGameApp .evo-3 .armor{opacity:.58}
+    #petGameApp .evo-4 .body{inset:18px 18px 12px}
+    #petGameApp .evo-5 .body{box-shadow:inset -14px -18px 0 rgba(0,0,0,.18), inset 10px 10px 0 rgba(255,255,255,.20),0 0 22px color-mix(in srgb,var(--c2) 45%,transparent)}
+    #petGameApp .evo-6 .body{background:linear-gradient(135deg,var(--c2),#fff,var(--c1));box-shadow:inset -14px -18px 0 rgba(0,0,0,.13), inset 10px 10px 0 rgba(255,255,255,.28),0 0 30px color-mix(in srgb,var(--c2) 55%,transparent)}
+    #petGameApp .evo-6 .spark{font-size:30px;filter:drop-shadow(0 0 8px var(--c2))}
+    #petGameApp .mini-creature .belly{left:22px;top:33px;width:18px;height:17px}
+    #petGameApp .mini-creature .mouth{left:29px;top:37px;width:7px;height:4px;border-bottom-width:2px}
+    #petGameApp .mini-creature .paw{bottom:6px;width:12px;height:9px;border-width:2px}#petGameApp .mini-creature .paw.l{left:18px}#petGameApp .mini-creature .paw.r{right:18px}
+    #petGameApp .mini-creature .tail{right:3px;top:33px;width:23px;height:13px;border-width:3px}
+    #petGameApp .mini-creature .horn{width:9px;height:17px}#petGameApp .mini-creature .horn.l{left:18px;top:2px}#petGameApp .mini-creature .horn.r{right:18px;top:2px}
+    #petGameApp .mini-creature .crest{left:25px;top:-1px;width:14px;height:19px}
+    #petGameApp .mini-creature .shell{left:14px;top:17px;width:36px;height:26px;border-width:3px}
+    #petGameApp .mini-creature .leaf{left:24px;top:-4px;width:18px;height:24px;border-width:2px}
+    #petGameApp .mini-creature .armor{left:13px;top:19px;width:38px;height:31px;border-width:3px}
+    #petGameApp .mini-creature .snout{left:25px;top:31px;width:14px;height:10px;border-width:2px}#petGameApp .mini-creature .snout:after{left:5px;top:2px;width:4px;height:3px}
+    #petGameApp .mini-creature .evo-aura{inset:-6px;filter:blur(4px)}
+
+    @keyframes petBob{0%,100%{transform:translateY(0) scale(var(--stageScale,1))}50%{transform:translateY(-9px) scale(var(--stageScale,1))}}
+    #petGameApp .locked .mini-creature .evo-aura{display:none}
+
     #petGameApp h1,
     #petGameApp h2,
     #petGameApp h3,
@@ -798,7 +905,7 @@
     });
   </script>
 
-  <!-- Pet Collection Game: Live Release v1.1.2 -->
+  <!-- Pet Collection Game: Live Release v1.1.0 Evolution -->
   <section id="petGameApp" aria-label="Pet Collection Game">
     <div class="screen">
         <div class="game-sticky-head" id="petGameNav">
@@ -831,9 +938,9 @@
         <div class="grid view" id="homeView">
           <section class="panel hero">
             <div class="hero-copy">
-              <div class="badge">Live Release v1.3.3 • Sticky Game Header Fixed</div>
+              <div class="badge">Live Release v1.1.0 • Evolution Form System</div>
               <h2>ซื้อไข่ ฟักไข่ สุ่มสัตว์เลี้ยง และสะสมให้ครบ 150 ตัว</h2>
-              <p>เปิดให้เล่นจริงบนหน้าเว็บนี้: เก็บเกล็ดดาวจากการเปิดเว็บ, ซื้อไข่ 4 ระดับ, ฟักแบบ Active/Offline, สุ่มตาม Tier, เลี้ยง Lv.1-50 และสะสม Collection ให้ครบ 150 ตัว</p>
+              <p>เปิดให้เล่นจริงบนหน้าเว็บนี้: เก็บเกล็ดดาวจากการเปิดเว็บ, ซื้อไข่ 4 ระดับ, ฟักแบบ Active/Offline, สุ่มตาม Tier, เลี้ยง Lv.1-50 และสัตว์จะเปลี่ยนรูปร่างตามเลเวลก่อนสะสม Collection ให้ครบ 150 ตัว</p>
               <div class="hero-actions">
                 <button class="btn primary" onclick="showTab('shop')">ไปซื้อไข่</button>
                 <button class="btn blue" onclick="showTab('incubator')">ดูไข่ที่กำลังฟัก</button>
@@ -899,7 +1006,7 @@
             <div class="title-row">
               <div>
                 <h2>เลี้ยงสัตว์</h2>
-                <div class="muted">ป้อนอาหารเพื่อเพิ่ม EXP และพัฒนาร่างทุก 10 เลเวล สูงสุด Lv.50</div>
+                <div class="muted">ป้อนอาหารเพื่อเพิ่ม EXP และเปลี่ยนรูปร่างทุกช่วง Lv.10 / 20 / 30 / 40 / 50 สูงสุด Lv.50</div>
               </div>
             </div>
             <div class="pet-grid" id="petGrid"></div>
@@ -959,7 +1066,7 @@
           </section>
         </div>
 
-        <div class="footer-note">Live Release v1.3.3 • Header อยู่ในโซนเกม + Pet Work + เควสซ้ำ + เวลาเปิดเว็บ 100% / ปิดเว็บ 30%</div>
+        <div class="footer-note">Live Release v1.1.0 • Evolution Form + Pet Work + เควสซ้ำ + เวลาเปิดเว็บ 100% / ปิดเว็บ 30%</div>
       </div>
 
       <dialog id="petDialog">
@@ -977,7 +1084,7 @@
 const $ = (q)=>document.querySelector(q);
 const $$ = (q)=>document.querySelectorAll(q);
 const SAVE_KEY = 'pet_collection_app_v1';
-const RELEASE_VERSION = '1.3.3';
+const RELEASE_VERSION = '1.1.0';
 const NOW = ()=>Date.now();
 const TIME_ACTIVE_SPEED = 1;
 const TIME_OFFLINE_SPEED = 0.3;
@@ -1258,15 +1365,36 @@ function fmtTime(sec){
   if(h>0) return `${h}ชม. ${m}น.`; if(m>0) return `${m}น. ${s}วิ.`; return `${s}วิ.`;
 }
 function expNeed(lv){return 50*lv}
-function evoName(lv){ if(lv>=50)return 'Awakened'; if(lv>=40)return 'Elder'; if(lv>=30)return 'Adult'; if(lv>=20)return 'Adolescent'; if(lv>=10)return 'Juvenile'; return 'Hatchling'; }
+function evoStage(lv){ if(lv>=50)return 6; if(lv>=40)return 5; if(lv>=30)return 4; if(lv>=20)return 3; if(lv>=10)return 2; return 1; }
+function evoName(lv){ const names=['','Hatchling','Juvenile','Adolescent','Adult','Elder','Awakened']; return names[evoStage(lv)] || 'Hatchling'; }
+function speciesVisualVariant(sp){ return Array.from(sp.id).reduce((sum,ch)=>sum+ch.charCodeAt(0),0)%5; }
 function petStats(sp,lv){ const grow=1+0.08*(lv-1); return Object.fromEntries(Object.entries(sp.base).map(([k,v])=>[k,Math.round(v*grow)])); }
 
-function renderCreature(sp, mini=false){
+function renderCreature(sp, mini=false, lv=1){
   const e=elementById[sp.element] || elements[0];
   const cls=mini?'mini-creature':'creature';
-  const wing = ['dragon','moth','griffin','legend','secret'].includes(sp.shape) ? '<i class="wing l"></i><i class="wing r"></i>' : '';
-  const ears = ['fox','rabbit','wisp','flora','guardian','golem','turtle','beetle','naga'].includes(sp.shape) ? '<i class="ear l"></i><i class="ear r"></i>' : '';
-  return `<div class="${cls}" style="--c1:${e.colors[0]};--c2:${e.colors[1]}">${wing}${ears}<i class="body"></i><i class="eye l"></i><i class="eye r"></i><b class="spark">${e.icon}</b><b class="spark two">✦</b></div>`;
+  const stage=evoStage(lv||1);
+  const variant=speciesVisualVariant(sp);
+  const shapeClass=`shape-${sp.shape||'wisp'}`;
+  const tierClass=`tierform-${String(sp.tier||'Common').toLowerCase()}`;
+  return `<div class="${cls} ${shapeClass} ${tierClass} evo-${stage} variant-${variant}" data-evo="${stage}" style="--c1:${e.colors[0]};--c2:${e.colors[1]}">
+    <i class="evo-aura"></i>
+    <i class="tail"></i>
+    <i class="wing l"></i><i class="wing r"></i>
+    <i class="ear l"></i><i class="ear r"></i>
+    <i class="horn l"></i><i class="horn r"></i>
+    <i class="crest"></i>
+    <i class="shell"></i>
+    <i class="leaf"></i>
+    <i class="armor"></i>
+    <i class="body"></i>
+    <i class="belly"></i>
+    <i class="snout"></i>
+    <i class="eye l"></i><i class="eye r"></i>
+    <i class="mouth"></i>
+    <i class="paw l"></i><i class="paw r"></i>
+    <b class="spark">${e.icon}</b><b class="spark two">✦</b>
+  </div>`;
 }
 
 function scrollToGameView(tab){
@@ -1299,8 +1427,9 @@ function render(){
   $('#dailyEarnBar').style.width = `${Math.min(100,((state.earnedToday||0)/300)*100)}%`;
   $('#pityLegText').textContent = state.pity.legendary||0;
   $('#pitySecText').textContent = state.pity.secret||0;
-  const showcase = state.pets[0] ? speciesById[state.pets[0].speciesId] : speciesById['FI-C1'];
-  $('#heroCreature').outerHTML = renderCreature(showcase,false).replace('class="creature"','class="creature" id="heroCreature"');
+  const showcasePet = state.pets[0] || null;
+  const showcase = showcasePet ? speciesById[showcasePet.speciesId] : speciesById['FI-C1'];
+  $('#heroCreature').outerHTML = renderCreature(showcase,false,showcasePet ? showcasePet.level : 1).replace('class="creature', 'id="heroCreature" class="creature');
   renderShop(); renderIncubator(); renderPets(); renderPetWork(); renderCollection(); renderQuests();
   save();
 }
@@ -1371,7 +1500,7 @@ function renderPets(){
   box.innerHTML=state.pets.map(p=>{
     const sp=speciesById[p.speciesId]; const need=p.level>=50?0:expNeed(p.level); const pct=p.level>=50?100:(p.exp/need)*100;
     return `<div class="pet-card">
-      ${renderCreature(sp,true)}
+      ${renderCreature(sp,true,p.level)}
       <h3>${p.nickname||sp.name}</h3>
       <div><span class="badge tier-${sp.tier}">${sp.tier}</span> <span class="badge">${elementById[sp.element].th}</span></div>
       <p>Lv.${p.level} • ${evoName(p.level)}</p>
@@ -1387,9 +1516,30 @@ function renderPets(){
   }).join('');
 }
 function feedPet(id){
-  const p=state.pets.find(x=>x.id===id); if(!p || p.level>=50)return; if(isPetOnWork(id)) return toast('สัตว์ตัวนี้กำลังทำงานอยู่'); if(state.currency<10)return toast('เกล็ดดาวไม่พอ');
-  state.currency-=10; p.exp+=100; state.stats.feeds++; state.lifetimeStats.feeds = (state.lifetimeStats.feeds||0)+1;
-  while(p.level<50 && p.exp>=expNeed(p.level)){p.exp-=expNeed(p.level); p.level++; toast(`${speciesById[p.speciesId].name} เลเวลอัปเป็น Lv.${p.level}`);}
+  const p=state.pets.find(x=>x.id===id);
+  if(!p || p.level>=50)return;
+  if(isPetOnWork(id)) return toast('สัตว์ตัวนี้กำลังทำงานอยู่');
+  if(state.currency<10)return toast('เกล็ดดาวไม่พอ');
+  const sp = speciesById[p.speciesId];
+  const beforeLevel = p.level;
+  const beforeStage = evoStage(p.level);
+  state.currency-=10;
+  p.exp+=100;
+  state.stats.feeds++;
+  state.lifetimeStats.feeds = (state.lifetimeStats.feeds||0)+1;
+  let leveledUp = false;
+  while(p.level<50 && p.exp>=expNeed(p.level)){
+    p.exp-=expNeed(p.level);
+    p.level++;
+    leveledUp = true;
+    toast(`${sp.name} เลเวลอัปเป็น Lv.${p.level}`);
+  }
+  const afterStage = evoStage(p.level);
+  if(afterStage > beforeStage){
+    toast(`✨ วิวัฒนาการ! ${sp.name} เปลี่ยนร่างเป็น ${evoName(p.level)} แล้ว`);
+  } else if(leveledUp && p.level > beforeLevel){
+    toast(`อีก ${Math.max(0, (afterStage===1?10:afterStage===2?20:afterStage===3?30:afterStage===4?40:50)-p.level)} เลเวลจะเปลี่ยนร่างถัดไป`);
+  }
   render();
 }
 window.feedPet=feedPet;
@@ -1516,7 +1666,7 @@ function renderCollection(){
     const owned=!!state.collectionLog[sp.id];
     const best=state.pets.filter(p=>p.speciesId===sp.id).sort((a,b)=>b.level-a.level)[0];
     return `<div class="collection-card ${owned?'':'locked'}" onclick="openSpecies('${sp.id}')">
-      ${renderCreature(sp,true)}
+      ${renderCreature(sp,true,best?best.level:1)}
       <div class="badge tier-${sp.tier}">${sp.tier}</div>
       <b>${owned?sp.name:'???'}</b>
       <div class="tiny">${sp.id} • ${elementById[sp.element].th}</div>
@@ -1533,12 +1683,12 @@ window.openSpecies=openSpecies;
 function openPet(sp, pet){
   const owned=!!pet; const lv=pet?pet.level:1; const st=petStats(sp,lv);
   $('#modalContent').innerHTML=`
-    <div class="pet-stage ${owned?'':'locked'}">${renderCreature(sp,false)}</div>
+    <div class="pet-stage ${owned?'':'locked'}">${renderCreature(sp,false,lv)}</div>
     <div>
       <h2>${owned?(pet.nickname||sp.name):'???'}</h2>
       <p><span class="badge tier-${sp.tier}">${sp.tier}</span> <span class="badge">${elementById[sp.element].icon} ${elementById[sp.element].th}</span> <span class="badge">${sp.id}</span></p>
       <p class="muted">${owned?sp.concept:'ยังไม่เคยได้รับสัตว์ตัวนี้ ฟักไข่เพื่อปลดล็อกข้อมูลเต็ม'}</p>
-      <p><b>สาย:</b> ${sp.role} • <b>ร่าง:</b> ${evoName(lv)} ${owned?`• Lv.${lv}`:''}</p>
+      <p><b>สาย:</b> ${sp.role} • <b>ร่าง:</b> ${evoName(lv)} ${owned?`• Lv.${lv}`:''} • <b>Evolution:</b> ${evoStage(lv)}/6</p>
       <div class="stat-list">
         <div class="stat"><span>HP</span>${st.hp}</div><div class="stat"><span>ATK</span>${st.atk}</div><div class="stat"><span>DEF</span>${st.def}</div><div class="stat"><span>SPD</span>${st.spd}</div>
       </div>
