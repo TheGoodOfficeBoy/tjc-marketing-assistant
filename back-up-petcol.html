@@ -1,0 +1,1876 @@
+<!doctype html>
+<html lang="th">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>TJC ทีมประมูล | Menu & Pet Collection</title>
+
+  <script>
+    try {
+      if (localStorage.getItem("theme") === "dark") {
+        document.documentElement.classList.add("dark");
+      }
+    } catch (e) {}
+  </script>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Nunito:wght@400;700;900&display=swap" />
+  <link rel="stylesheet" href="./styles.css?v=42" />
+
+  <style>
+    :root {
+      --page-bg-1: #eaf6ff;
+      --page-bg-2: #ffffff;
+      --page-bg-3: #d9efff;
+
+      --glass-bg: rgba(255, 255, 255, 0.80);
+      --glass-border: rgba(148, 197, 253, 0.58);
+
+      --text-main: #0f172a;
+      --text-soft: #64748b;
+      --heading: #075985;
+
+      --glow-blue: rgba(56, 189, 248, 0.42);
+      --glow-deep: rgba(37, 99, 235, 0.24);
+      --glow-cyan: rgba(14, 165, 233, 0.28);
+
+      --star-opacity: 0.34;
+    }
+
+    html.dark {
+      --page-bg-1: #020617;
+      --page-bg-2: #0f172a;
+      --page-bg-3: #172554;
+
+      --glass-bg: rgba(15, 23, 42, 0.82);
+      --glass-border: rgba(96, 165, 250, 0.30);
+
+      --text-main: #e5e7eb;
+      --text-soft: #94a3b8;
+      --heading: #93c5fd;
+
+      --glow-blue: rgba(59, 130, 246, 0.32);
+      --glow-deep: rgba(14, 165, 233, 0.20);
+      --glow-cyan: rgba(125, 211, 252, 0.16);
+
+      --star-opacity: 0.26;
+    }
+
+    html {
+      min-height: 100%;
+    }
+
+    body {
+      position: relative;
+      min-height: 100vh;
+      margin: 0;
+      overflow-x: hidden;
+      font-family: "Nunito", sans-serif;
+      color: var(--text-main);
+      background: linear-gradient(135deg, var(--page-bg-1), var(--page-bg-2), var(--page-bg-3));
+      background-size: 220% 220%;
+      animation: pageGradientMove 18s ease-in-out infinite;
+    }
+
+    body::before {
+      content: "";
+      position: fixed;
+      inset: -20%;
+      z-index: -3;
+      pointer-events: none;
+      background:
+        radial-gradient(circle at 12% 20%, var(--glow-blue), transparent 28%),
+        radial-gradient(circle at 88% 18%, var(--glow-deep), transparent 30%),
+        radial-gradient(circle at 52% 92%, var(--glow-cyan), transparent 34%);
+      filter: blur(2px);
+      animation: softBlobMove 24s ease-in-out infinite alternate;
+    }
+
+    body::after {
+      content: "";
+      position: fixed;
+      inset: 0;
+      z-index: -2;
+      pointer-events: none;
+      opacity: var(--star-opacity);
+
+      background-image:
+        url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Cdefs%3E%3ClinearGradient id='g' x1='0' y1='0' x2='1' y2='1'%3E%3Cstop offset='0%25' stop-color='%23ffffff'/%3E%3Cstop offset='18%25' stop-color='%23f1f5f9'/%3E%3Cstop offset='40%25' stop-color='%23bfc9d6'/%3E%3Cstop offset='56%25' stop-color='%23ffffff'/%3E%3Cstop offset='74%25' stop-color='%2394a3b8'/%3E%3Cstop offset='100%25' stop-color='%23ffffff'/%3E%3C/linearGradient%3E%3C/defs%3E%3Cpolygon points='50,6 61,36 94,36 67,55 77,88 50,68 23,88 33,55 6,36 39,36' fill='url(%23g)' stroke='%23e2e8f0' stroke-width='2.5'/%3E%3C/svg%3E"),
+        url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Cdefs%3E%3ClinearGradient id='g2' x1='0' y1='0' x2='1' y2='1'%3E%3Cstop offset='0%25' stop-color='%23ffffff'/%3E%3Cstop offset='25%25' stop-color='%23e2e8f0'/%3E%3Cstop offset='50%25' stop-color='%23ffffff'/%3E%3Cstop offset='75%25' stop-color='%23cbd5e1'/%3E%3Cstop offset='100%25' stop-color='%23ffffff'/%3E%3C/linearGradient%3E%3C/defs%3E%3Cpolygon points='50,10 58,34 84,34 63,49 70,74 50,60 30,74 37,49 16,34 42,34' fill='url(%23g2)' stroke='%23f8fafc' stroke-width='2'/%3E%3C/svg%3E");
+
+      background-size:
+        230px 230px,
+        125px 125px;
+
+      background-position:
+        0 0,
+        95px 115px;
+
+      background-repeat:
+        repeat,
+        repeat;
+
+      filter: drop-shadow(0 8px 18px rgba(148, 163, 184, 0.18));
+      animation: chromeStarsFloat 38s linear infinite;
+    }
+
+    html.dark body::after {
+      filter:
+        drop-shadow(0 10px 22px rgba(125, 211, 252, 0.14))
+        brightness(1.08);
+    }
+
+    .topbar {
+      position: relative;
+      z-index: 1;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 20px;
+      padding: 14px 24px;
+      background: var(--glass-bg);
+      border-bottom: 1px solid var(--glass-border);
+      backdrop-filter: blur(18px);
+      -webkit-backdrop-filter: blur(18px);
+      box-shadow: 0 12px 34px rgba(15, 23, 42, 0.10);
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      min-width: 240px;
+    }
+
+    .brand-logo img {
+      width: 48px;
+      height: 48px;
+      border-radius: 14px;
+      object-fit: cover;
+      box-shadow: 0 8px 22px rgba(15, 23, 42, 0.12);
+    }
+
+    .title {
+      font-weight: 900;
+      font-size: 18px;
+      color: var(--heading);
+    }
+
+    .subtitle {
+      margin-top: 2px;
+      font-size: 13px;
+      color: var(--text-soft);
+    }
+
+    .company-mini {
+      flex: 1;
+      text-align: center;
+      font-size: 13px;
+      line-height: 1.45;
+    }
+
+    .company-name {
+      font-weight: 900;
+      color: var(--heading);
+    }
+
+    .company-sub {
+      color: var(--text-soft);
+    }
+
+    .actions {
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .container {
+      position: relative;
+      z-index: 1;
+      max-width: 1100px;
+      margin: 34px auto;
+      padding: 0 20px;
+    }
+
+    .card {
+      background: var(--glass-bg);
+      border: 1px solid var(--glass-border);
+      border-radius: 28px;
+      padding: 30px;
+      backdrop-filter: blur(18px);
+      -webkit-backdrop-filter: blur(18px);
+      box-shadow:
+        0 24px 60px rgba(15, 23, 42, 0.14),
+        inset 0 1px 0 rgba(255, 255, 255, 0.38);
+    }
+
+    .h1 {
+      margin: 0 0 8px;
+      font-size: 30px;
+      color: var(--heading);
+    }
+
+    .muted {
+      margin: 0;
+      color: var(--text-soft);
+    }
+
+    .menuGrid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 14px;
+      margin-top: 26px;
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 46px;
+      padding: 11px 16px;
+      border-radius: 16px;
+      border: 1px solid rgba(59, 130, 246, 0.28);
+      background: rgba(255, 255, 255, 0.86);
+      color: #075985;
+      font-weight: 900;
+      text-decoration: none;
+      cursor: pointer;
+      box-sizing: border-box;
+      box-shadow: 0 7px 20px rgba(15, 23, 42, 0.07);
+      transition: transform 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
+    }
+
+    .btn:hover {
+      transform: translateY(-2px);
+      background: #eff6ff;
+      box-shadow: 0 14px 30px rgba(37, 99, 235, 0.18);
+    }
+
+    .btn.primary {
+      background: linear-gradient(135deg, #2563eb, #0284c7);
+      color: #ffffff;
+      border-color: rgba(147, 197, 253, 0.50);
+    }
+
+    .btn.secondary {
+      background: linear-gradient(135deg, #0ea5e9, #0284c7);
+      color: #ffffff;
+      border-color: rgba(186, 230, 253, 0.55);
+    }
+
+    .btn.ghost {
+      background: rgba(248, 251, 255, 0.84);
+    }
+
+    .btn.danger {
+      background: rgba(254, 226, 226, 0.92);
+      border-color: rgba(252, 165, 165, 0.65);
+      color: #b91c1c;
+    }
+
+    .btn.wide {
+      width: 100%;
+      text-align: center;
+    }
+
+    .canva-btn {
+      background: linear-gradient(135deg, #e0f2fe, #f0f9ff);
+    }
+
+    .icon svg {
+      width: 18px;
+      height: 18px;
+      fill: currentColor;
+      margin-right: 6px;
+    }
+
+    html.dark .topbar,
+    html.dark .card {
+      box-shadow:
+        0 24px 65px rgba(0, 0, 0, 0.34),
+        inset 0 1px 0 rgba(255, 255, 255, 0.07);
+    }
+
+    html.dark .btn {
+      background: rgba(30, 41, 59, 0.88);
+      color: #dbeafe;
+      border-color: rgba(96, 165, 250, 0.28);
+      box-shadow: 0 8px 22px rgba(0, 0, 0, 0.22);
+    }
+
+    html.dark .btn:hover {
+      background: rgba(51, 65, 85, 0.96);
+      box-shadow: 0 14px 30px rgba(14, 165, 233, 0.16);
+    }
+
+    html.dark .btn.primary {
+      background: linear-gradient(135deg, #2563eb, #0284c7);
+      color: #ffffff;
+    }
+
+    html.dark .btn.secondary {
+      background: linear-gradient(135deg, #0891b2, #0369a1);
+      color: #ffffff;
+    }
+
+    html.dark .btn.danger {
+      background: rgba(127, 29, 29, 0.90);
+      color: #fecaca;
+      border-color: rgba(248, 113, 113, 0.38);
+    }
+
+    @keyframes pageGradientMove {
+      0% {
+        background-position: 0% 45%;
+      }
+
+      50% {
+        background-position: 100% 55%;
+      }
+
+      100% {
+        background-position: 0% 45%;
+      }
+    }
+
+    @keyframes softBlobMove {
+      0% {
+        transform: translate3d(-20px, -10px, 0) scale(1);
+      }
+
+      50% {
+        transform: translate3d(25px, 20px, 0) scale(1.06);
+      }
+
+      100% {
+        transform: translate3d(45px, -25px, 0) scale(1.1);
+      }
+    }
+
+    @keyframes chromeStarsFloat {
+      0% {
+        background-position:
+          0 0,
+          95px 115px;
+      }
+
+      50% {
+        background-position:
+          65px 45px,
+          145px 155px;
+      }
+
+      100% {
+        background-position:
+          130px 90px,
+          195px 220px;
+      }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      body,
+      body::before,
+      body::after {
+        animation: none !important;
+      }
+
+      .btn {
+        transition: none !important;
+      }
+    }
+
+    @media (max-width: 900px) {
+      .topbar {
+        align-items: flex-start;
+        flex-direction: column;
+      }
+
+      .company-mini {
+        text-align: left;
+      }
+
+      .menuGrid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+    }
+
+    @media (max-width: 560px) {
+      .menuGrid {
+        grid-template-columns: 1fr;
+      }
+
+      .card {
+        padding: 22px;
+      }
+
+      .h1 {
+        font-size: 23px;
+      }
+
+      .actions {
+        width: 100%;
+      }
+
+      .actions .btn {
+        flex: 1;
+      }
+    }
+  </style>
+
+  <!-- Pet Collection Game: appended section style -->
+  <style id="pet-game-style">
+
+    #petGameApp{
+      --bg:#0f1533;
+      --bg2:#182255;
+      --panel:#17204aee;
+      --panel2:#22306bcc;
+      --text:#f8fbff;
+      --muted:#aab7ff;
+      --line:#4659b8;
+      --gold:#ffd45a;
+      --pink:#ff6bd6;
+      --cyan:#60efff;
+      --green:#87ff9a;
+      --danger:#ff6969;
+      --shadow: 0 18px 50px rgba(0,0,0,.28);
+      --radius:22px;
+    }
+    #petGameApp.pet-light{
+      --bg:#eaf6ff;
+      --bg2:#ffffff;
+      --panel:#ffffffee;
+      --panel2:#eaf2ffee;
+      --text:#18224d;
+      --muted:#6370aa;
+      --line:#b5c5ff;
+      --shadow: 0 18px 50px rgba(45,70,130,.15);
+    }
+    #petGameApp *{box-sizing:border-box}
+    #petGameApp [hidden]{display:none !important}
+    #petGameApp{min-height:100px}
+    #petGameApp{
+      margin:0;
+      font-family:"Nunito",system-ui,-apple-system,Segoe UI,sans-serif;
+      color:var(--text);
+      background:
+        radial-gradient(circle at 15% 10%, rgba(255,107,214,.32), transparent 28%),
+        radial-gradient(circle at 85% 18%, rgba(96,239,255,.22), transparent 32%),
+        linear-gradient(135deg,var(--bg),var(--bg2));
+      overflow-x:hidden;
+    }
+    #petGameApp::before, #petGameApp::after{
+      content:"";
+      position:absolute;
+      inset:-20%;
+      pointer-events:none;
+      opacity:.35;
+      background-image:
+        radial-gradient(circle, rgba(255,255,255,.85) 0 2px, transparent 3px),
+        radial-gradient(circle, rgba(255,212,90,.95) 0 1.5px, transparent 2.5px);
+      background-size:140px 140px, 88px 88px;
+      animation: petDrift 24s linear infinite;
+      z-index:-2;
+    }
+    #petGameApp::after{animation-duration:38s; opacity:.18; transform:scale(1.3)}
+    @keyframes petDrift{from{transform:translate3d(0,0,0)}to{transform:translate3d(-140px,140px,0)}}
+    #petGameApp .screen{
+      width:min(1280px, calc(100% - 28px));
+      margin:0 auto;
+      padding:18px 0 28px;
+    }
+    #petGameApp .pixel{font-family:"Press Start 2P",monospace; letter-spacing:.02em}
+    #petGameApp .game-sticky-head{
+      position:sticky;
+      top:10px;
+      z-index:30;
+      margin-bottom:14px;
+      padding:0 0 10px;
+      border-radius:30px;
+      background:linear-gradient(180deg,rgba(15,21,51,.96),rgba(15,21,51,.82) 72%,rgba(15,21,51,0));
+      backdrop-filter:blur(10px);
+      -webkit-backdrop-filter:blur(10px);
+    }
+    #petGameApp.pet-light .game-sticky-head{
+      background:linear-gradient(180deg,rgba(234,246,255,.96),rgba(234,246,255,.82) 72%,rgba(234,246,255,0));
+    }
+    #petGameApp .topbar{
+      display:grid;
+      grid-template-columns:1fr auto;
+      gap:14px;
+      align-items:center;
+      padding:14px;
+      border:2px solid rgba(255,255,255,.18);
+      background:linear-gradient(180deg,var(--panel),rgba(18,24,58,.78));
+      border-radius:28px;
+      box-shadow:var(--shadow);
+      position:relative;
+      top:auto;
+      z-index:1;
+      backdrop-filter:blur(14px);
+    }
+    #petGameApp .brand{display:flex;gap:14px;align-items:center;min-width:0}
+    #petGameApp .logo{
+      width:60px;height:60px;border-radius:18px;
+      display:grid;place-items:center;
+      border:3px solid var(--gold);
+      background:linear-gradient(135deg,#6d49ff,#ff6bd6);
+      box-shadow:0 0 0 5px rgba(255,212,90,.15), inset 0 -8px 0 rgba(0,0,0,.18);
+      font-size:30px;
+    }
+    #petGameApp h1{font-size:clamp(20px,3vw,34px);line-height:1.1;margin:0 0 3px;font-weight:900}
+    #petGameApp .subtitle{color:var(--muted);font-weight:800;font-size:14px}
+    #petGameApp .stats{display:flex;flex-wrap:wrap;gap:10px;justify-content:flex-end}
+    #petGameApp .chip{
+      border:2px solid rgba(255,255,255,.18);
+      background:rgba(255,255,255,.09);
+      color:var(--text);
+      border-radius:999px;
+      padding:10px 13px;
+      font-weight:900;
+      display:flex;gap:7px;align-items:center;
+      white-space:nowrap;
+    }
+    #petGameApp .nav{
+      display:flex;gap:10px;overflow:auto;padding:14px 2px 8px;margin:10px 0 0;
+      scrollbar-width:none;
+    }
+    #petGameApp .nav::-webkit-scrollbar{display:none}
+    #petGameApp button, #petGameApp .btn, #petGameApp select, #petGameApp input{
+      font:inherit;
+    }
+    #petGameApp .tab, #petGameApp .btn{
+      border:0;
+      cursor:pointer;
+      color:var(--text);
+      font-weight:900;
+      border-radius:17px;
+      padding:12px 15px;
+      background:linear-gradient(180deg,rgba(255,255,255,.16),rgba(255,255,255,.06));
+      border:2px solid rgba(255,255,255,.18);
+      box-shadow: inset 0 -4px 0 rgba(0,0,0,.12);
+      transition:.18s transform,.18s filter,.18s background;
+      white-space:nowrap;
+    }
+    #petGameApp .tab:hover, #petGameApp .btn:hover{transform:translateY(-1px);filter:brightness(1.06)}
+    #petGameApp .tab.active{background:linear-gradient(180deg,var(--pink),#8f63ff);border-color:rgba(255,255,255,.35)}
+    #petGameApp .btn.primary{background:linear-gradient(180deg,#ffd45a,#ff9f43);color:#271b00}
+    #petGameApp .btn.blue{background:linear-gradient(180deg,#60efff,#3a7dff);color:#031a2f}
+    #petGameApp .btn.green{background:linear-gradient(180deg,#87ff9a,#1ecf77);color:#052510}
+    #petGameApp .btn.red{background:linear-gradient(180deg,#ff8a8a,#ff4d6d);color:#30020c}
+    #petGameApp .btn.ghost{background:transparent;border-color:var(--line);box-shadow:none}
+    #petGameApp .btn:disabled{opacity:.48;cursor:not-allowed;transform:none;filter:grayscale(.2)}
+    #petGameApp .grid{display:grid;grid-template-columns:repeat(12,1fr);gap:14px}
+    #petGameApp .panel{
+      grid-column:span 12;
+      border:2px solid rgba(255,255,255,.16);
+      border-radius:var(--radius);
+      background:linear-gradient(180deg,var(--panel),var(--panel2));
+      box-shadow:var(--shadow);
+      padding:18px;
+      position:relative;
+      overflow:hidden;
+    }
+    #petGameApp .panel:before{
+      content:"";position:absolute;inset:0;pointer-events:none;
+      background:linear-gradient(135deg,rgba(255,255,255,.10),transparent 22%,transparent 78%,rgba(96,239,255,.08));
+    }
+    #petGameApp .panel > *{position:relative}
+    #petGameApp .col-4{grid-column:span 4}#petGameApp .col-5{grid-column:span 5}#petGameApp .col-7{grid-column:span 7}#petGameApp .col-8{grid-column:span 8}#petGameApp .col-6{grid-column:span 6}
+    #petGameApp .title-row{display:flex;justify-content:space-between;gap:12px;align-items:center;margin-bottom:12px}
+    #petGameApp h2{margin:0;font-size:22px;font-weight:900}
+    #petGameApp h3{margin:0 0 10px;font-size:17px;font-weight:900}
+    #petGameApp .muted{color:var(--muted)}
+    #petGameApp .tiny{font-size:12px;color:var(--muted);font-weight:800}
+    #petGameApp .hero{
+      min-height:310px;
+      display:grid;
+      grid-template-columns:1.1fr .9fr;
+      gap:18px;
+      align-items:center;
+    }
+    #petGameApp .hero-copy h2{font-size:clamp(28px,5vw,52px);line-height:1.05;margin-bottom:12px}
+    #petGameApp .hero-copy p{font-size:17px;color:var(--muted);font-weight:800;max-width:660px}
+    #petGameApp .hero-actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:16px}
+    #petGameApp .pet-stage{
+      min-height:260px;border-radius:26px;border:2px solid rgba(255,255,255,.18);
+      background:radial-gradient(circle at 50% 35%,rgba(255,255,255,.18),transparent 38%),linear-gradient(180deg,rgba(255,255,255,.12),rgba(255,255,255,.04));
+      display:grid;place-items:center;overflow:hidden;position:relative;
+    }
+    #petGameApp .pet-stage:after{content:"";position:absolute;bottom:32px;width:72%;height:18px;border-radius:50%;background:rgba(0,0,0,.22);filter:blur(1px)}
+    #petGameApp .creature{width:126px;height:126px;position:relative;image-rendering:pixelated;animation:petBob 2.2s ease-in-out infinite;z-index:1;filter:drop-shadow(0 12px 0 rgba(0,0,0,.2))}
+    @keyframes petBob{0%,100%{transform:translateY(0)}50%{transform:translateY(-9px)}}
+    #petGameApp .body{
+      position:absolute;inset:24px 20px 16px;border-radius:42% 45% 46% 40%;
+      background:linear-gradient(135deg,var(--c1,#ff8a3d),var(--c2,#ffd45a));
+      border:5px solid rgba(255,255,255,.26);
+      box-shadow:inset -14px -18px 0 rgba(0,0,0,.18), inset 10px 10px 0 rgba(255,255,255,.20);
+    }
+    #petGameApp .eye{position:absolute;top:49px;width:12px;height:18px;border-radius:999px;background:#101533;z-index:2;box-shadow:0 3px 0 rgba(255,255,255,.45) inset}
+    #petGameApp .eye.l{left:42px}#petGameApp .eye.r{right:42px}
+    #petGameApp .ear, #petGameApp .wing{position:absolute;background:var(--c2,#ffd45a);border:5px solid rgba(255,255,255,.22);box-shadow:inset -8px -8px 0 rgba(0,0,0,.16)}
+    #petGameApp .ear.l{left:20px;top:12px;width:34px;height:48px;border-radius:80% 20% 50% 30%;transform:rotate(-22deg)}
+    #petGameApp .ear.r{right:20px;top:12px;width:34px;height:48px;border-radius:20% 80% 30% 50%;transform:rotate(22deg)}
+    #petGameApp .wing.l{left:0;top:56px;width:38px;height:48px;border-radius:80% 20% 80% 20%;transform:rotate(-18deg)}
+    #petGameApp .wing.r{right:0;top:56px;width:38px;height:48px;border-radius:20% 80% 20% 80%;transform:rotate(18deg)}
+    #petGameApp .spark{position:absolute;right:13px;top:17px;font-size:24px;animation:petTwinkle 1.4s infinite alternate;z-index:3}#petGameApp .spark.two{left:9px;right:auto;top:80px;font-size:18px;animation-delay:.4s}
+    @keyframes petTwinkle{from{opacity:.45;transform:scale(.8) rotate(0)}to{opacity:1;transform:scale(1.15) rotate(15deg)}}
+    #petGameApp .egg-shop{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px}
+    #petGameApp .egg-card, #petGameApp .inc-card, #petGameApp .pet-card, #petGameApp .collection-card, #petGameApp .quest-card, #petGameApp .work-card{
+      border:2px solid rgba(255,255,255,.16);
+      background:rgba(255,255,255,.08);
+      border-radius:20px;
+      padding:14px;
+      box-shadow:inset 0 -6px 0 rgba(0,0,0,.08);
+    }
+    #petGameApp .egg-visual{width:78px;height:96px;margin:4px auto 12px;border-radius:52% 52% 45% 45%;border:5px solid rgba(255,255,255,.28);box-shadow:inset -10px -16px 0 rgba(0,0,0,.18),0 10px 0 rgba(0,0,0,.14);position:relative;animation:petBob 2.8s ease-in-out infinite}
+    #petGameApp .egg-visual:before{content:"";position:absolute;left:18px;top:16px;width:16px;height:22px;border-radius:50%;background:rgba(255,255,255,.45)}
+    #petGameApp .egg-common{background:linear-gradient(135deg,#fff1c4,#ffae45)}
+    #petGameApp .egg-silver{background:linear-gradient(135deg,#f7fbff,#9bb5d9)}
+    #petGameApp .egg-gold{background:linear-gradient(135deg,#fff0a8,#ffb000)}
+    #petGameApp .egg-rainbow{background:linear-gradient(135deg,#ff5ea8,#ffe45d,#62f0ff,#8a6cff)}
+    #petGameApp .rates{display:grid;grid-template-columns:1fr 1fr;gap:5px;font-size:12px;font-weight:900;color:var(--muted);margin:10px 0}
+    #petGameApp .progress{height:14px;border-radius:999px;background:rgba(0,0,0,.23);overflow:hidden;border:1px solid rgba(255,255,255,.14)}
+    #petGameApp .bar{height:100%;border-radius:999px;background:linear-gradient(90deg,var(--cyan),var(--pink),var(--gold));width:0%;transition:width .25s}
+    #petGameApp .inc-grid, #petGameApp .pet-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
+    #petGameApp .filters{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:12px}
+    #petGameApp select, #petGameApp input{
+      color:var(--text);background:rgba(255,255,255,.09);border:2px solid rgba(255,255,255,.16);border-radius:15px;padding:11px 12px;font-weight:900;outline:none;
+    }
+    #petGameApp.pet-light select, #petGameApp.pet-light input{color:#18224d;background:#fff}
+    #petGameApp .collection-grid{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:12px;max-height:660px;overflow:auto;padding-right:4px}
+    #petGameApp .collection-card{cursor:pointer;min-height:160px;display:flex;flex-direction:column;align-items:center;text-align:center;gap:6px;transition:.16s transform,.16s background}
+    #petGameApp .collection-card:hover{transform:translateY(-2px);background:rgba(255,255,255,.12)}
+    #petGameApp .mini-creature{width:64px;height:64px;position:relative;margin:4px auto;filter:drop-shadow(0 7px 0 rgba(0,0,0,.16))}
+    #petGameApp .mini-creature .body{inset:12px 10px 8px;border-width:3px}#petGameApp .mini-creature .eye{top:26px;width:6px;height:9px}#petGameApp .mini-creature .eye.l{left:22px}#petGameApp .mini-creature .eye.r{right:22px}#petGameApp .mini-creature .ear.l{left:9px;top:4px;width:18px;height:25px;border-width:3px}#petGameApp .mini-creature .ear.r{right:9px;top:4px;width:18px;height:25px;border-width:3px}#petGameApp .mini-creature .wing.l{left:0;top:30px;width:20px;height:25px;border-width:3px}#petGameApp .mini-creature .wing.r{right:0;top:30px;width:20px;height:25px;border-width:3px}#petGameApp .mini-creature .spark{display:none}
+    #petGameApp .locked .mini-creature{filter:grayscale(1) brightness(.15) drop-shadow(0 7px 0 rgba(0,0,0,.18))}
+    #petGameApp .badge{display:inline-flex;border-radius:999px;padding:5px 9px;font-weight:900;font-size:11px;border:1px solid rgba(255,255,255,.22);background:rgba(255,255,255,.10)}
+    #petGameApp .tier-Common{color:#d8e5ff}#petGameApp .tier-Rare{color:#60efff}#petGameApp .tier-Epic{color:#d975ff}#petGameApp .tier-Legendary{color:#ffd45a}#petGameApp .tier-Secret{color:#ff79a8}
+    #petGameApp .owned-mark{color:var(--green);font-weight:900}#petGameApp .unknown{color:var(--muted);font-weight:900}
+    #petGameApp .toast{position:absolute;right:18px;bottom:18px;display:grid;gap:10px;z-index:60}#petGameApp .toast-item{padding:13px 15px;border-radius:16px;background:linear-gradient(180deg,#252f72,#161d4a);color:#fff;border:2px solid rgba(255,255,255,.2);box-shadow:var(--shadow);font-weight:900;animation:petPop .18s ease-out}#petGameApp .light .toast-item{background:#fff;color:#18224d}@keyframes petPop{from{transform:translateY(12px);opacity:0}to{transform:translateY(0);opacity:1}}
+    #petGameApp dialog{border:0;border-radius:28px;padding:0;background:transparent;color:var(--text);max-width:min(760px,calc(100% - 24px));width:760px}
+    #petGameApp dialog::backdrop{background:rgba(3,6,20,.72);backdrop-filter:blur(8px)}
+    #petGameApp .modal{background:linear-gradient(180deg,var(--panel),var(--bg2));border:2px solid rgba(255,255,255,.18);border-radius:28px;padding:18px;box-shadow:var(--shadow)}
+    #petGameApp .modal-grid{display:grid;grid-template-columns:230px 1fr;gap:18px}#petGameApp .modal .pet-stage{min-height:230px}#petGameApp .modal .creature{width:148px;height:148px}
+    #petGameApp .stat-list{display:grid;grid-template-columns:1fr 1fr;gap:10px}#petGameApp .stat{background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.14);border-radius:14px;padding:10px;font-weight:900}#petGameApp .stat span{display:block;color:var(--muted);font-size:12px}
+    #petGameApp .close-x{position:absolute;right:14px;top:14px;border:0;border-radius:12px;background:rgba(255,255,255,.12);color:var(--text);font-weight:900;padding:9px 12px;cursor:pointer}
+    #petGameApp .empty{border:2px dashed rgba(255,255,255,.22);border-radius:18px;padding:24px;text-align:center;color:var(--muted);font-weight:900}
+    #petGameApp .footer-note{margin:14px 2px;color:var(--muted);font-weight:800;font-size:13px;text-align:center}
+    #petGameApp .view{scroll-margin-top:190px}
+    #petGameApp.pet-light .nav{background:linear-gradient(180deg,rgba(255,255,255,.72),rgba(255,255,255,.18))}
+    @media (max-width:960px){#petGameApp .col-4, #petGameApp .col-5, #petGameApp .col-7, #petGameApp .col-8, #petGameApp .col-6{grid-column:span 12}#petGameApp .hero{grid-template-columns:1fr}#petGameApp .egg-shop{grid-template-columns:repeat(2,1fr)}#petGameApp .inc-grid, #petGameApp .pet-grid{grid-template-columns:repeat(2,1fr)}#petGameApp .collection-grid{grid-template-columns:repeat(4,1fr)}#petGameApp .topbar{grid-template-columns:1fr}#petGameApp .stats{justify-content:flex-start}#petGameApp .modal-grid{grid-template-columns:1fr}}
+    @media (max-width:560px){#petGameApp .screen{width:min(100% - 16px,1280px);padding-top:8px}#petGameApp .topbar{border-radius:22px}#petGameApp .logo{width:52px;height:52px}#petGameApp .egg-shop, #petGameApp .inc-grid, #petGameApp .pet-grid{grid-template-columns:1fr}#petGameApp .collection-grid{grid-template-columns:repeat(2,1fr)}#petGameApp .panel{padding:14px}#petGameApp .hero-copy h2{font-size:30px}#petGameApp .chip{font-size:13px;padding:8px 10px}}
+  
+    #petGameApp {
+      position: relative;
+      isolation: isolate;
+      overflow: hidden;
+      margin-top: 34px;
+      padding: 18px 0 28px;
+      border-top: 1px solid rgba(148, 197, 253, 0.38);
+      box-shadow: inset 0 24px 80px rgba(15, 23, 42, 0.08);
+    }
+    #petGameApp::before,
+    #petGameApp::after {
+      z-index: 0;
+    }
+    #petGameApp .screen {
+      position: relative;
+      z-index: 1;
+    }
+    #petGameApp .game-sticky-head {
+      top: 12px;
+    }
+
+    #petGameApp .work-actions{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;margin-bottom:14px}
+    #petGameApp .level-quest-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
+    #petGameApp .work-card.quest-ready{border-color:rgba(135,255,154,.55);box-shadow:0 0 0 3px rgba(135,255,154,.12), inset 0 -6px 0 rgba(0,0,0,.08)}
+    #petGameApp .work-status-title{display:flex;justify-content:space-between;align-items:center;gap:10px;margin:14px 0 10px}
+    @media (max-width:960px){#petGameApp .work-actions,#petGameApp .level-quest-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+    @media (max-width:560px){#petGameApp .work-actions,#petGameApp .level-quest-grid{grid-template-columns:1fr}}
+
+    /* Evolution Form System v1.1.0: pets change silhouette by level and archetype */
+    #petGameApp .creature,
+    #petGameApp .mini-creature{
+      --stageScale:1;
+      --stageGlow:.18;
+      --detailOpacity:.35;
+      --bodyRound:42% 45% 46% 40%;
+      transform-origin:50% 72%;
+    }
+    #petGameApp .creature.evo-1{--stageScale:.86;--stageGlow:.12;--detailOpacity:.18}
+    #petGameApp .creature.evo-2{--stageScale:.94;--stageGlow:.18;--detailOpacity:.34}
+    #petGameApp .creature.evo-3{--stageScale:1.02;--stageGlow:.24;--detailOpacity:.52}
+    #petGameApp .creature.evo-4{--stageScale:1.10;--stageGlow:.32;--detailOpacity:.72}
+    #petGameApp .creature.evo-5{--stageScale:1.18;--stageGlow:.42;--detailOpacity:.88}
+    #petGameApp .creature.evo-6{--stageScale:1.28;--stageGlow:.62;--detailOpacity:1}
+    #petGameApp .mini-creature.evo-1{--stageScale:.86;--detailOpacity:.18}
+    #petGameApp .mini-creature.evo-2{--stageScale:.92;--detailOpacity:.34}
+    #petGameApp .mini-creature.evo-3{--stageScale:1;--detailOpacity:.52}
+    #petGameApp .mini-creature.evo-4{--stageScale:1.06;--detailOpacity:.72}
+    #petGameApp .mini-creature.evo-5{--stageScale:1.12;--detailOpacity:.88}
+    #petGameApp .mini-creature.evo-6{--stageScale:1.18;--detailOpacity:1}
+    #petGameApp .creature{transform:scale(var(--stageScale));}
+    #petGameApp .mini-creature{transform:scale(var(--stageScale));}
+    #petGameApp .creature .evo-aura,
+    #petGameApp .mini-creature .evo-aura{
+      position:absolute;inset:-12px;border-radius:50%;
+      background:radial-gradient(circle, color-mix(in srgb, var(--c2) 60%, transparent), transparent 58%);
+      opacity:var(--stageGlow);filter:blur(7px);display:block;z-index:-1;
+      animation:petAuraPulse 2.8s ease-in-out infinite alternate;
+    }
+    @keyframes petAuraPulse{from{transform:scale(.92);opacity:calc(var(--stageGlow)*.65)}to{transform:scale(1.08);opacity:var(--stageGlow)}}
+    #petGameApp .creature .body,
+    #petGameApp .mini-creature .body{
+      border-radius:var(--bodyRound);
+      transition:.25s border-radius,.25s inset,.25s transform,.25s filter;
+    }
+    #petGameApp .creature.variant-0{--bodyRound:44% 56% 46% 54%}
+    #petGameApp .creature.variant-1{--bodyRound:58% 42% 52% 48%}
+    #petGameApp .creature.variant-2{--bodyRound:38% 62% 42% 58%}
+    #petGameApp .creature.variant-3{--bodyRound:48% 48% 58% 40%}
+    #petGameApp .creature.variant-4{--bodyRound:62% 38% 44% 56%}
+    #petGameApp .creature .ear,
+    #petGameApp .creature .wing,
+    #petGameApp .mini-creature .ear,
+    #petGameApp .mini-creature .wing{display:none;opacity:var(--detailOpacity)}
+    #petGameApp .tail,#petGameApp .horn,#petGameApp .crest,#petGameApp .shell,#petGameApp .leaf,#petGameApp .armor,#petGameApp .snout,#petGameApp .belly,#petGameApp .paw,#petGameApp .mouth{
+      position:absolute;display:none;opacity:var(--detailOpacity);z-index:1;
+    }
+    #petGameApp .belly{display:block;left:45px;top:66px;width:36px;height:34px;border-radius:50%;background:rgba(255,255,255,.20);box-shadow:inset -5px -7px 0 rgba(0,0,0,.08);z-index:2}
+    #petGameApp .mouth{display:block;left:57px;top:73px;width:14px;height:7px;border-bottom:3px solid rgba(16,21,51,.75);border-radius:0 0 999px 999px;z-index:3;opacity:.72}
+    #petGameApp .paw{display:block;bottom:12px;width:24px;height:18px;border-radius:45% 45% 35% 35%;background:var(--c2);border:4px solid rgba(255,255,255,.22);box-shadow:inset -5px -6px 0 rgba(0,0,0,.14);z-index:0;opacity:calc(var(--detailOpacity)*.85)}
+    #petGameApp .paw.l{left:36px}#petGameApp .paw.r{right:36px}
+    #petGameApp .tail{display:block;right:8px;top:66px;width:44px;height:24px;border-radius:50% 80% 80% 50%;background:linear-gradient(135deg,var(--c1),var(--c2));border:5px solid rgba(255,255,255,.22);transform:rotate(28deg);box-shadow:inset -8px -6px 0 rgba(0,0,0,.16);z-index:0}
+    #petGameApp .horn{width:18px;height:34px;background:linear-gradient(180deg,#fff8c9,var(--c2));clip-path:polygon(50% 0,100% 100%,0 100%);filter:drop-shadow(0 2px 0 rgba(0,0,0,.18));z-index:4}
+    #petGameApp .horn.l{left:35px;top:4px;transform:rotate(-18deg)}#petGameApp .horn.r{right:35px;top:4px;transform:rotate(18deg)}
+    #petGameApp .crest{left:51px;top:-2px;width:28px;height:38px;border-radius:50% 50% 16% 16%;background:linear-gradient(180deg,var(--c2),var(--c1));clip-path:polygon(50% 0,70% 30%,100% 45%,72% 62%,78% 100%,50% 78%,22% 100%,28% 62%,0 45%,30% 30%);z-index:5}
+    #petGameApp .shell{left:28px;top:33px;width:72px;height:52px;border-radius:55% 55% 44% 44%;background:linear-gradient(135deg,var(--c2),var(--c1));border:5px solid rgba(255,255,255,.24);box-shadow:inset -12px -12px 0 rgba(0,0,0,.18);z-index:3}
+    #petGameApp .shell:after{content:"";position:absolute;inset:12px;border:3px solid rgba(255,255,255,.25);border-radius:50%;}
+    #petGameApp .leaf{left:47px;top:-8px;width:36px;height:48px;background:linear-gradient(135deg,#a8ff9c,var(--c2));border:4px solid rgba(255,255,255,.18);border-radius:80% 20% 80% 20%;transform:rotate(24deg);box-shadow:inset -6px -8px 0 rgba(0,0,0,.14);z-index:5}
+    #petGameApp .armor{left:26px;top:37px;width:76px;height:62px;border-radius:24px;background:linear-gradient(135deg,rgba(255,255,255,.28),rgba(0,0,0,.10));border:5px solid rgba(255,255,255,.25);box-shadow:inset -10px -10px 0 rgba(0,0,0,.18);z-index:3}
+    #petGameApp .armor:after{content:"";position:absolute;left:14px;right:14px;top:21px;height:5px;background:rgba(255,255,255,.24);box-shadow:0 13px 0 rgba(255,255,255,.18)}
+    #petGameApp .snout{left:50px;top:61px;width:28px;height:20px;border-radius:50%;background:rgba(255,255,255,.22);border:3px solid rgba(255,255,255,.16);z-index:3}
+    #petGameApp .snout:after{content:"";position:absolute;left:10px;top:5px;width:8px;height:6px;border-radius:50%;background:#101533}
+    #petGameApp .shape-fox .ear,#petGameApp .shape-rabbit .ear,#petGameApp .shape-dragon .wing,#petGameApp .shape-moth .wing,#petGameApp .shape-griffin .wing,#petGameApp .shape-legend .wing,#petGameApp .shape-secret .wing{display:block}
+    #petGameApp .shape-fox .tail,#petGameApp .shape-rabbit .tail,#petGameApp .shape-dragon .tail,#petGameApp .shape-naga .tail,#petGameApp .shape-legend .tail,#petGameApp .shape-secret .tail{display:block}
+    #petGameApp .shape-fox .snout,#petGameApp .shape-dragon .snout,#petGameApp .shape-griffin .snout,#petGameApp .shape-turtle .snout,#petGameApp .shape-beetle .snout{display:block}
+    #petGameApp .shape-dragon .horn,#petGameApp .shape-naga .horn,#petGameApp .shape-griffin .crest,#petGameApp .shape-guardian .horn,#petGameApp .shape-legend .horn,#petGameApp .shape-secret .horn{display:block}
+    #petGameApp .shape-turtle .shell,#petGameApp .shape-beetle .shell{display:block}
+    #petGameApp .shape-flora .leaf{display:block}
+    #petGameApp .shape-golem .armor,#petGameApp .shape-guardian .armor{display:block}
+    #petGameApp .shape-wisp .body{border-radius:50%;filter:blur(.1px);animation:petWispFloat 2.4s ease-in-out infinite alternate}
+    #petGameApp .shape-wisp .paw,#petGameApp .shape-wisp .ear,#petGameApp .shape-wisp .tail{display:none}
+    @keyframes petWispFloat{from{transform:translateY(0) scale(.94)}to{transform:translateY(-4px) scale(1.04)}}
+    #petGameApp .shape-golem .body,#petGameApp .shape-guardian .body{border-radius:26% 30% 22% 24%;filter:saturate(.92)}
+    #petGameApp .shape-naga .body{border-radius:54% 46% 70% 30%;transform:rotate(-5deg)}
+    #petGameApp .shape-naga .tail{right:2px;top:78px;width:68px;height:26px;border-radius:999px;transform:rotate(12deg)}
+    #petGameApp .shape-moth .wing.l,#petGameApp .shape-moth .wing.r{width:48px;height:62px;top:38px;opacity:calc(var(--detailOpacity)*1.05)}
+    #petGameApp .shape-moth .body{inset:20px 35px 12px;border-radius:45%}
+    #petGameApp .shape-rabbit .ear.l{height:62px;top:-2px}#petGameApp .shape-rabbit .ear.r{height:62px;top:-2px}
+    #petGameApp .shape-beetle .horn.l{display:block;left:55px;top:0;width:18px;height:28px;transform:rotate(0)}
+    #petGameApp .shape-beetle .horn.r{display:none}
+    #petGameApp .shape-flora .spark{font-size:20px}
+    #petGameApp .shape-secret .evo-aura,#petGameApp .shape-legend .evo-aura{opacity:calc(var(--stageGlow) + .18)}
+    #petGameApp .evo-1 .tail,#petGameApp .evo-1 .horn,#petGameApp .evo-1 .crest,#petGameApp .evo-1 .shell,#petGameApp .evo-1 .leaf,#petGameApp .evo-1 .armor,#petGameApp .evo-1 .snout{opacity:.10;transform:scale(.7)}
+    #petGameApp .evo-1 .wing{transform:scale(.62) rotate(var(--wingRot,0deg));opacity:.10}
+    #petGameApp .evo-2 .tail,#petGameApp .evo-2 .wing,#petGameApp .evo-2 .ear{opacity:.38}
+    #petGameApp .evo-3 .horn,#petGameApp .evo-3 .crest,#petGameApp .evo-3 .shell,#petGameApp .evo-3 .leaf,#petGameApp .evo-3 .armor{opacity:.58}
+    #petGameApp .evo-4 .body{inset:18px 18px 12px}
+    #petGameApp .evo-5 .body{box-shadow:inset -14px -18px 0 rgba(0,0,0,.18), inset 10px 10px 0 rgba(255,255,255,.20),0 0 22px color-mix(in srgb,var(--c2) 45%,transparent)}
+    #petGameApp .evo-6 .body{background:linear-gradient(135deg,var(--c2),#fff,var(--c1));box-shadow:inset -14px -18px 0 rgba(0,0,0,.13), inset 10px 10px 0 rgba(255,255,255,.28),0 0 30px color-mix(in srgb,var(--c2) 55%,transparent)}
+    #petGameApp .evo-6 .spark{font-size:30px;filter:drop-shadow(0 0 8px var(--c2))}
+    #petGameApp .mini-creature .belly{left:22px;top:33px;width:18px;height:17px}
+    #petGameApp .mini-creature .mouth{left:29px;top:37px;width:7px;height:4px;border-bottom-width:2px}
+    #petGameApp .mini-creature .paw{bottom:6px;width:12px;height:9px;border-width:2px}#petGameApp .mini-creature .paw.l{left:18px}#petGameApp .mini-creature .paw.r{right:18px}
+    #petGameApp .mini-creature .tail{right:3px;top:33px;width:23px;height:13px;border-width:3px}
+    #petGameApp .mini-creature .horn{width:9px;height:17px}#petGameApp .mini-creature .horn.l{left:18px;top:2px}#petGameApp .mini-creature .horn.r{right:18px;top:2px}
+    #petGameApp .mini-creature .crest{left:25px;top:-1px;width:14px;height:19px}
+    #petGameApp .mini-creature .shell{left:14px;top:17px;width:36px;height:26px;border-width:3px}
+    #petGameApp .mini-creature .leaf{left:24px;top:-4px;width:18px;height:24px;border-width:2px}
+    #petGameApp .mini-creature .armor{left:13px;top:19px;width:38px;height:31px;border-width:3px}
+    #petGameApp .mini-creature .snout{left:25px;top:31px;width:14px;height:10px;border-width:2px}#petGameApp .mini-creature .snout:after{left:5px;top:2px;width:4px;height:3px}
+    #petGameApp .mini-creature .evo-aura{inset:-6px;filter:blur(4px)}
+
+    @keyframes petBob{0%,100%{transform:translateY(0) scale(var(--stageScale,1))}50%{transform:translateY(-9px) scale(var(--stageScale,1))}}
+    #petGameApp .locked .mini-creature .evo-aura{display:none}
+
+    #petGameApp h1,
+    #petGameApp h2,
+    #petGameApp h3,
+    #petGameApp p {
+      font-family: "Nunito", sans-serif;
+    }
+  </style>
+</head>
+
+<body>
+  <header class="topbar">
+    <div class="brand">
+      <a href="team-members.html" class="brand-logo">
+        <img src="TJC_320x320.png" alt="TJC Group Logo" />
+      </a>
+
+      <div class="brand-text">
+        <div class="title">TJC ทีมประมูล</div>
+        <div class="subtitle" id="whoami">พร้อมใช้งาน</div>
+      </div>
+    </div>
+
+    <div class="company-mini">
+      <div class="company-name">บริษัท ทีเจซี คอร์ปอเรชั่น จำกัด</div>
+      <div class="company-sub">311/1 หมู่ 4 ต.คำน้ำแซบ อ.วารินชำราบ จ.อุบลราชธานี 34190</div>
+      <div class="company-sub">เลขผู้เสียภาษี: 0325563000203</div>
+    </div>
+
+    <div class="actions">
+      <button class="btn ghost" id="themeToggle" type="button">
+        <span class="icon" id="themeIcon">
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M21 12.6A8.5 8.5 0 0 1 11.4 3a7 7 0 1 0 9.6 9.6Z"></path>
+          </svg>
+        </span>
+        <span id="themeLabel">Dark Mode</span>
+      </button>
+
+      <a class="btn ghost" href="profile.html">Profile</a>
+      <button class="btn danger" id="btnLogout" type="button">Logout</button>
+    </div>
+  </header>
+
+  <main class="container">
+    <section class="card">
+      <h1 class="h1">TJC Marketing Assistant</h1>
+      <p class="muted">กดปุ่มเพื่อไปยังหน้าที่ต้องการ</p>
+
+      <div class="menuGrid">
+        <a class="btn primary wide" href="https://tjcgroup.tjc.co.th/login.php" target="_blank" rel="noopener">TJC ONE</a>
+        <a class="btn gold wide" href="https://nods.tjc.co.th/" target="_blank" rel="noopener">TJC WORKS</a>
+        <a class="btn secondary wide" href="https://thegood-918.sg4.quickconnect.to/" target="_blank" rel="noopener">ลิ้งค์ NAS นอกสถานที่</a>
+        <a class="btn wide" href="https://docs.google.com/forms/d/e/1FAIpQLSdKiak_1-ZHw3l1OcOfRp107MMOTna5DWzM95jr4KWAoD-khA/viewform" target="_blank" rel="noopener">ลิ้งค์ เบิกสินค้า IT</a>
+        <a class="btn wide" href="https://docs.google.com/forms/d/e/1FAIpQLSdrUtYurzsDa6wYFRStj9ms_zwqpQTFg1juDKotIbFCTGU2Ig/viewform" target="_blank" rel="noopener">ลิ้งค์ เบิกสต๊อก PD</a>
+        <a class="btn wide" href="https://drive.google.com/drive/folders/1epvdX538AReQgI7m6Kn9xgMKRRtPs1TT?usp=sharing" target="_blank" rel="noopener">Brands Pricelist</a>
+        <a class="btn wide" href="https://drive.google.com/drive/folders/1eyvXrI_grxBX6UoC8zWSOezskrHs_zF8?usp=drive_link" target="_blank" rel="noopener">TOR Stock</a>
+        <a class="btn wide" href="https://THEGOOD-918.quickconnect.to/d/s/17zYYGnAj0ogVmo8RdG4VNuNOSUeahvm/fupBjNIUoRa9eHvz9OFaBebmcShcnotH-Db0AL5NnJw0" target="_blank" rel="noopener">ข้อมูลรวมตารางราคา</a>
+        <a class="btn wide" href="https://calendar.google.com/calendar/u/4?cid=Y19lODY2ZmI5ODA3ZDlkOTdkYWI0NzU3ZGU5NDk4OWQ0Y2ZlZWE5ZTNjMzU4ZThjY2E0NThhY2JjYzRiYTRkMDgzQGdyb3VwLmNhbGVuZGFyLmdvb2dsZS5jb20" target="_blank" rel="noopener">ปฏิทินงานทีมประมูล TJC</a>
+        <a class="btn wide" href="Ot-portal-page.html" target="_blank" rel="noopener">OT Management Portal</a>
+        <a class="btn wide canva-btn" href="https://www.canva.com/" target="_blank" rel="noopener">Canva</a>
+        <a class="btn wide" href="https://chatgpt.com/" target="_blank" rel="noopener">ChatGPT</a>
+        <a class="btn wide" href="https://gemini.google.com/" target="_blank" rel="noopener">Gemini</a>
+      </div>
+    </section>
+  </main>
+
+  <script>
+    const themeToggle = document.getElementById("themeToggle");
+    const themeLabel = document.getElementById("themeLabel");
+    const btnLogout = document.getElementById("btnLogout");
+    const whoami = document.getElementById("whoami");
+
+    function updateThemeLabel() {
+      const isDark = document.documentElement.classList.contains("dark");
+      themeLabel.textContent = isDark ? "Light Mode" : "Dark Mode";
+    }
+
+    updateThemeLabel();
+
+    const currentUser =
+      localStorage.getItem("username") ||
+      localStorage.getItem("userName") ||
+      localStorage.getItem("displayName");
+
+    if (currentUser) {
+      whoami.textContent = "ผู้ใช้งาน: " + currentUser;
+    }
+
+    themeToggle.addEventListener("click", function () {
+      document.documentElement.classList.toggle("dark");
+
+      const isDark = document.documentElement.classList.contains("dark");
+      localStorage.setItem("theme", isDark ? "dark" : "light");
+
+      updateThemeLabel();
+    });
+
+    btnLogout.addEventListener("click", function () {
+      localStorage.removeItem("username");
+      localStorage.removeItem("userName");
+      localStorage.removeItem("displayName");
+      localStorage.removeItem("token");
+
+      window.location.href = "login.html";
+    });
+  </script>
+
+  <!-- Pet Collection Game: Live Release v1.1.0 Evolution -->
+  <section id="petGameApp" aria-label="Pet Collection Game">
+    <div class="screen">
+        <div class="game-sticky-head" id="petGameNav">
+        <section class="topbar">
+          <div class="brand">
+            <div class="logo">🥚</div>
+            <div>
+              <h1>Pet Collection</h1>
+              <div class="subtitle">เกมสะสมสัตว์เลี้ยงแฟนตาซี • Hatch • Feed • Collect</div>
+            </div>
+          </div>
+          <div class="stats">
+            <div class="chip">⭐ <span id="currencyText">0</span> เกล็ดดาว</div>
+            <div class="chip">🔥 Streak <span id="streakText">0</span></div>
+            <div class="chip">📚 <span id="collectionText">0/150</span></div>
+            <button class="btn ghost" id="themeBtn">🌗 Theme</button>
+          </div>
+        </section>
+
+        <nav class="nav" aria-label="Game sections">
+          <button class="tab active" data-tab="home">🏠 หน้าหลัก</button>
+          <button class="tab" data-tab="shop">🥚 ร้านไข่</button>
+          <button class="tab" data-tab="incubator">⏳ ฟักไข่</button>
+          <button class="tab" data-tab="pets">🐾 เลี้ยงสัตว์</button>
+          <button class="tab" data-tab="collection">📚 Collection</button>
+          <button class="tab" data-tab="quests">🎯 ภารกิจ</button>
+        </nav>
+        </div>
+
+        <div class="grid view" id="homeView">
+          <section class="panel hero">
+            <div class="hero-copy">
+              <div class="badge">Live Release v1.1.0 • Evolution Form System</div>
+              <h2>ซื้อไข่ ฟักไข่ สุ่มสัตว์เลี้ยง และสะสมให้ครบ 150 ตัว</h2>
+              <p>เปิดให้เล่นจริงบนหน้าเว็บนี้: เก็บเกล็ดดาวจากการเปิดเว็บ, ซื้อไข่ 4 ระดับ, ฟักแบบ Active/Offline, สุ่มตาม Tier, เลี้ยง Lv.1-50 และสัตว์จะเปลี่ยนรูปร่างตามเลเวลก่อนสะสม Collection ให้ครบ 150 ตัว</p>
+              <div class="hero-actions">
+                <button class="btn primary" onclick="showTab('shop')">ไปซื้อไข่</button>
+                <button class="btn blue" onclick="showTab('incubator')">ดูไข่ที่กำลังฟัก</button>
+                <button class="btn green" id="dailyBtn">รับ Login รายวัน</button>
+              </div>
+              <p class="tiny">เปิดหน้าเว็บอยู่ / ซ่อนแท็บ / เปิดแท็บอื่น = ทุกระบบเดิน 100% • ปิดหน้าเว็บ / ไม่ได้เปิดเว็บ = ทุกระบบเดินต่อ 30%</p>
+            </div>
+            <div class="pet-stage">
+              <div class="creature" id="heroCreature"></div>
+            </div>
+          </section>
+          <section class="panel col-4">
+            <h2>สถานะวันนี้</h2>
+            <p class="muted">เกล็ดดาวจากการเปิดเว็บวันนี้</p>
+            <div class="progress"><div class="bar" id="dailyEarnBar"></div></div>
+            <p><b id="earnedTodayText">0</b> / 300 เกล็ดดาว</p>
+          </section>
+          <section class="panel col-4">
+            <h2>Pity System</h2>
+            <p class="muted">กันซวยจากการสุ่ม</p>
+            <p>Legendary: <b id="pityLegText">0</b> / 50</p>
+            <p>Secret: <b id="pitySecText">0</b> / 200</p>
+          </section>
+          <section class="panel col-4">
+            <h2>ระบบผู้เล่น</h2>
+            <div style="display:flex;gap:10px;flex-wrap:wrap">
+              <button class="btn blue" onclick="requestNotify()">🔔 เปิดแจ้งเตือน</button>
+              <button class="btn ghost" onclick="exportSave()">💾 สำรองเซฟ</button>
+              <label class="btn ghost" for="importSaveInput" style="cursor:pointer">📥 นำเข้าเซฟ</label>
+              <input id="importSaveInput" type="file" accept="application/json,.json" hidden />
+              <button class="btn red" onclick="resetGame()">เริ่มใหม่</button>
+            </div>
+            <p class="tiny">ข้อมูลเกมจะถูกบันทึกไว้ในเบราว์เซอร์ของผู้เล่น ควรสำรองเซฟก่อนเปลี่ยนเครื่องหรือล้างแคช</p>
+          </section>
+        </div>
+
+        <div class="grid view" id="shopView" hidden>
+          <section class="panel">
+            <div class="title-row">
+              <div>
+                <h2>ร้านไข่</h2>
+                <div class="muted">ซื้อไข่แล้วนำไปฟัก ระบบจะสุ่มสัตว์เลี้ยงตามอัตราของไข่นั้น</div>
+              </div>
+            </div>
+            <div class="egg-shop" id="eggShop"></div>
+          </section>
+        </div>
+
+        <div class="grid view" id="incubatorView" hidden>
+          <section class="panel">
+            <div class="title-row">
+              <div>
+                <h2>ตู้ฟักไข่</h2>
+                <div class="muted">เปิดหน้าเว็บอยู่ / ซ่อนแท็บ / เปิดแท็บอื่น = ฟัก 100% • ปิดเว็บ / ไม่ได้เปิดเว็บ = ฟัก 30%</div>
+              </div>
+            </div>
+            <div class="inc-grid" id="incubatorGrid"></div>
+          </section>
+        </div>
+
+        <div class="grid view" id="petsView" hidden>
+          <section class="panel">
+            <div class="title-row">
+              <div>
+                <h2>เลี้ยงสัตว์</h2>
+                <div class="muted">ป้อนอาหารเพื่อเพิ่ม EXP และเปลี่ยนรูปร่างทุกช่วง Lv.10 / 20 / 30 / 40 / 50 สูงสุด Lv.50</div>
+              </div>
+            </div>
+            <div class="pet-grid" id="petGrid"></div>
+          </section>
+          <section class="panel col-12" id="petWorkPanel">
+            <div class="title-row">
+              <div>
+                <h2>Pet Work / ส่งสัตว์ไปทำงาน</h2>
+                <div class="muted">ส่งสัตว์ไปสำรวจเพื่อรับเกล็ดดาว ใช้ Logic เวลาเดียวกับฟักไข่: เปิดเว็บอยู่ 100% / ปิดเว็บ 30%</div>
+              </div>
+            </div>
+            <div class="work-actions" id="petWorkActions"></div>
+            <div class="level-quest-grid" id="petWorkList"></div>
+          </section>
+        </div>
+
+        <div class="grid view" id="collectionView" hidden>
+          <section class="panel">
+            <div class="title-row">
+              <div>
+                <h2>Collection</h2>
+                <div class="muted">ตัวที่ยังไม่เคยได้จะแสดงเป็นเงา ???</div>
+              </div>
+            </div>
+            <div class="filters">
+              <select id="tierFilter">
+                <option value="ALL">ทุก Tier</option>
+                <option>Common</option><option>Rare</option><option>Epic</option><option>Legendary</option><option>Secret</option>
+              </select>
+              <select id="elementFilter">
+                <option value="ALL">ทุกธาตุ</option>
+              </select>
+              <input id="searchInput" placeholder="ค้นหาชื่อ / รหัส" />
+            </div>
+            <div class="collection-grid" id="collectionGrid"></div>
+          </section>
+        </div>
+
+        <div class="grid view" id="questsView" hidden>
+          <section class="panel col-6">
+            <h2>เควสซ้ำหาเกล็ดดาว</h2>
+            <div class="muted" style="margin-bottom:10px">ทำซ้ำได้เรื่อยๆ เพื่อให้ยังมีทางหาเกล็ดดาวหลังรับ Achievement ครบแล้ว</div>
+            <div id="repeatQuestList"></div>
+          </section>
+          <section class="panel col-6">
+            <h2>Collection Milestone</h2>
+            <div class="muted" style="margin-bottom:10px">รับรางวัลตามจำนวน Collection ที่ปลดล็อก</div>
+            <div id="milestoneList"></div>
+          </section>
+          <section class="panel col-6">
+            <h2>ภารกิจรายวัน</h2>
+            <div id="dailyQuestList"></div>
+          </section>
+          <section class="panel col-6">
+            <h2>Achievement</h2>
+            <div id="achievementList"></div>
+          </section>
+        </div>
+
+        <div class="footer-note">Live Release v1.1.0 • Evolution Form + Pet Work + เควสซ้ำ + เวลาเปิดเว็บ 100% / ปิดเว็บ 30%</div>
+      </div>
+
+      <dialog id="petDialog">
+        <div class="modal">
+          <button class="close-x" onclick="document.getElementById('petDialog').close()">✕</button>
+          <div class="modal-grid" id="modalContent"></div>
+        </div>
+      </dialog>
+
+      <div class="toast" id="toast"></div>
+  </section>
+
+  <!-- Pet Collection Game: Live Release script -->
+  <script id="pet-game-script">
+const $ = (q)=>document.querySelector(q);
+const $$ = (q)=>document.querySelectorAll(q);
+const SAVE_KEY = 'pet_collection_app_v1';
+const RELEASE_VERSION = '1.1.0';
+const NOW = ()=>Date.now();
+const TIME_ACTIVE_SPEED = 1;
+const TIME_OFFLINE_SPEED = 0.3;
+const MAX_DAILY_PASSIVE_SHARDS = 300;
+function makeId(prefix='id'){
+  return ((window.crypto && crypto.randomUUID) ? crypto.randomUUID() : prefix + '_' + NOW() + '_' + Math.random().toString(16).slice(2));
+}
+
+const petWorkTypes = {
+  short:{key:'short', name:'สำรวจสั้น', seconds:1800, reward:40, icon:'🧭', desc:'เหมาะสำหรับเก็บเกล็ดดาวเร็ว'},
+  normal:{key:'normal', name:'สำรวจทั่วไป', seconds:7200, reward:130, icon:'🎒', desc:'ใช้เวลาปานกลาง รางวัลคุ้มขึ้น'},
+  long:{key:'long', name:'สำรวจใหญ่', seconds:21600, reward:420, icon:'🏕️', desc:'ใช้เวลานาน เหมาะกับปล่อยทิ้งไว้'}
+};
+const duplicateShardReward = {Common:20, Rare:45, Epic:110, Legendary:320, Secret:900};
+const collectionMilestones = [
+  {target:10, reward:120}, {target:25, reward:300}, {target:50, reward:700},
+  {target:75, reward:1100}, {target:100, reward:1700}, {target:125, reward:2600}, {target:150, reward:5000}
+];
+const repeatQuestDefs = [
+  {key:'buy3', type:'eggsBought', name:'ซื้อไข่ซ้ำ 3 ฟอง', target:3, reward:90},
+  {key:'hatch3', type:'eggsHatched', name:'ฟักไข่ซ้ำ 3 ฟอง', target:3, reward:150},
+  {key:'feed10', type:'feeds', name:'ป้อนอาหารซ้ำ 10 ครั้ง', target:10, reward:120},
+  {key:'work2', type:'workCompleted', name:'รับรางวัล Pet Work 2 ครั้ง', target:2, reward:220},
+  {key:'dupe1', type:'duplicateConverted', name:'แปลงตัวซ้ำ 1 ตัว', target:1, reward:160}
+];
+
+const elements = [
+  {id:'FI', th:'ไฟ', suffix:'เพลิง', colors:['#ff5b35','#ffd45a'], icon:'🔥'},
+  {id:'WA', th:'น้ำ', suffix:'ชล', colors:['#40c9ff','#246bfe'], icon:'💧'},
+  {id:'EA', th:'ดิน', suffix:'ศิลา', colors:['#b8763c','#71ad54'], icon:'⛰️'},
+  {id:'WI', th:'ลม', suffix:'วายุ', colors:['#f3fbff','#9fc7e8'], icon:'🌪️'},
+  {id:'TH', th:'สายฟ้า', suffix:'อัสนี', colors:['#fff45e','#8c5cff'], icon:'⚡'},
+  {id:'IC', th:'น้ำแข็ง', suffix:'หิมะ', colors:['#d9fbff','#79b9ff'], icon:'❄️'},
+  {id:'LI', th:'แสง', suffix:'รัศมี', colors:['#fff8c9','#ffd45a'], icon:'✨'},
+  {id:'DA', th:'ความมืด', suffix:'รัตติกาล', colors:['#21183f','#7f46ff'], icon:'🌙'},
+  {id:'PO', th:'พิษ/ธรรมชาติ', suffix:'พิษ', colors:['#58e66f','#158a52'], icon:'☘️'},
+  {id:'CR', th:'คริสตัล', suffix:'แก้ว', colors:['#c9fff8','#8aa7ff'], icon:'💎'},
+];
+const elementById = Object.fromEntries(elements.map(e=>[e.id,e]));
+
+const eggTypes = {
+  common:{key:'common', name:'ไข่ธรรมดา', price:50, seconds:3600, cls:'egg-common', icon:'🥚', rates:{Common:75,Rare:20,Epic:4.5,Legendary:0.45,Secret:0.05}},
+  silver:{key:'silver', name:'ไข่เงิน', price:150, seconds:10800, cls:'egg-silver', icon:'🥈', rates:{Common:55,Rare:32,Epic:11,Legendary:1.8,Secret:0.2}},
+  gold:{key:'gold', name:'ไข่ทอง', price:400, seconds:28800, cls:'egg-gold', icon:'🥇', rates:{Common:30,Rare:35,Epic:27,Legendary:7,Secret:1}},
+  rainbow:{key:'rainbow', name:'ไข่สายรุ้ง', price:1000, seconds:72000, cls:'egg-rainbow', icon:'🌈', rates:{Common:10,Rare:25,Epic:35,Legendary:25,Secret:5}},
+};
+
+const archetypes = {
+  Common:[
+    {code:'C1', base:'จิ้งจอก', role:'SPD', shape:'fox'},
+    {code:'C2', base:'มังกรน้อย', role:'ATK', shape:'dragon'},
+    {code:'C3', base:'ผีเสื้อ', role:'Support/Magic', shape:'moth'},
+    {code:'C4', base:'โกเลมจิ๋ว', role:'DEF', shape:'golem'},
+    {code:'C5', base:'วิญญาณ', role:'Balanced', shape:'wisp'},
+    {code:'C6', base:'กระต่าย', role:'HP/Support', shape:'rabbit'},
+  ],
+  Rare:[
+    {code:'R1', base:'เต่า', role:'DEF/Tank', shape:'turtle'},
+    {code:'R2', base:'ด้วง', role:'ATK', shape:'beetle'},
+    {code:'R3', base:'พฤกษา', role:'Support/Heal', shape:'flora'},
+    {code:'R4', base:'นาคน้อย', role:'SPD/Magic', shape:'naga'},
+  ],
+  Epic:[
+    {code:'E1', base:'กริฟฟิน', role:'Balanced All-rounder', shape:'griffin'},
+    {code:'E2', base:'นาคา', role:'Magic ATK', shape:'naga'},
+    {code:'E3', base:'อัศวิน', role:'DEF/Tank', shape:'guardian'},
+  ]
+};
+
+const legendary = [
+  ['LG-FI','ราชันเปลวอัคคี','FI','เทพอสูรไฟครองภูเขาไฟนิรันดร์'],['LG-WA','จักรพรรดิสมุทร','WA','ผู้ปกครองท้องทะเลลึก'],['LG-EA','ไททันศิลาทอง','EA','ยักษ์หินโบราณฝังแร่ทองคำ'],['LG-WI','จอมราชันสายลม','WI','เจ้าแห่งพายุปีกกว้าง'],['LG-TH','เทพสายฟ้าราชา','TH','ร่างกายเปล่งกระแสไฟฟ้า'],['LG-IC','จักรพรรดิน้ำแข็งนิรันดร์','IC','ผู้แช่แข็งทุกสิ่งที่สัมผัส'],['LG-LI','เทพแห่งรัศมี','LI','ปีกแสงสง่างาม'],['LG-DA','จ้าวเงามืด','DA','ผู้ปกครองด้านมืด'],['LG-PO','ราชินีพิษมรกต','PO','เจ้าแห่งป่าพิษ'],['LG-CR','จักรพรรดิคริสตัล','CR','ร่างกายเป็นคริสตัลแข็งแกร่ง'],['LG-S1','หงส์รุ่งอรุณ','LI','แสงและเวลา เกิดใหม่ทุกรุ่งเช้า'],['LG-S2','มังกรราตรีนิรันดร์','DA','มังกรปกครองค่ำคืนไม่สิ้นสุด'],['LG-S3','ผู้พิทักษ์กาลเวลา','CR','ควบคุมการไหลของเวลา'],['LG-S4','เทพแห่งมิติ','WI','ร่างซ้อนหลายมิติ'],['LG-S5','วิญญาณแห่งโชคชะตา','LI','เส้นด้ายโชคชะตาพันรอบร่าง']
+];
+const secret = [
+  ['SC-01','ต้นไม้แห่งปฐมกาล','PO','จุดกำเนิดของสัตว์เลี้ยงทุกตัว'],['SC-02','เงาแห่งความว่างเปล่า','DA','สิ่งมีชีวิตจากก่อนกาลเวลา'],['SC-03','นาฬิกาจักรวาล','CR','กลไกที่หมุนควบคุมจักรวาล'],['SC-04','ไข่ดึกดำบรรพ์','FI','จุดเริ่มต้นของทุกไข่'],['SC-05','เทพเจ้าผู้หลับใหล','IC','หากตื่นขึ้น โลกทั้งใบจะเปลี่ยนไป']
+];
+
+function makeSpecies(){
+  const out=[];
+  for(const tier of ['Common','Rare','Epic']){
+    for(const a of archetypes[tier]){
+      for(const e of elements){
+        const id = `${e.id}-${a.code}`;
+        const name = a.base + e.suffix;
+        out.push({id,name,tier,element:e.id,archetype:a.base,role:a.role,shape:a.shape,concept:`${a.base}ธาตุ${e.th} โทนสี${e.suffix} สำหรับสาย ${a.role}`,base:baseStat(tier,a.role)});
+      }
+    }
+  }
+  for(const l of legendary){out.push({id:l[0],name:l[1],tier:'Legendary',element:l[2],archetype:'เทพประจำธาตุ',role:'Legend',shape:'legend',concept:l[3],base:splitStat(200)});}
+  for(const s of secret){out.push({id:s[0],name:s[1],tier:'Secret',element:s[2],archetype:'ตำนานจักรวาล',role:'Secret',shape:'secret',concept:s[3],base:splitStat(300)});}
+  return out;
+}
+function splitStat(total){return {hp:Math.round(total*.28),atk:Math.round(total*.27),def:Math.round(total*.23),spd:Math.round(total*.22)}}
+function baseStat(tier,role){
+  const total = tier==='Common'?50:tier==='Rare'?80:130;
+  let s=splitStat(total);
+  if(role.includes('ATK')) s.atk+=Math.round(total*.12);
+  if(role.includes('DEF')||role.includes('Tank')) s.def+=Math.round(total*.12);
+  if(role.includes('SPD')) s.spd+=Math.round(total*.12);
+  if(role.includes('HP')||role.includes('Support')) s.hp+=Math.round(total*.10);
+  return s;
+}
+const species = makeSpecies();
+const speciesById = Object.fromEntries(species.map(s=>[s.id,s]));
+
+function defaultLifetimeStats(){
+  return {eggsBought:0, eggsHatched:0, feeds:0, workCompleted:0, duplicateConverted:0, repeatQuestClaims:0};
+}
+const tierRank = {Common:1, Rare:2, Epic:3, Legendary:4, Secret:5};
+function collectionCount(){
+  return Object.keys(state && state.collectionLog ? state.collectionLog : {}).length;
+}
+function defaultState(){
+  const today = dayKey();
+  return {
+    version:RELEASE_VERSION,
+    currency:120,
+    earnedToday:0,
+    earningDay:today,
+    activeSeconds:0,
+    loginStreak:0,
+    lastLoginDay:null,
+    lastSeenAt:NOW(),
+    lastSystemSyncAt:NOW(),
+    eggs:[],
+    pets:[],
+    petJobs:[],
+    collectionLog:{},
+    pity:{legendary:0,secret:0},
+    stats:{eggsBought:0,eggsHatched:0,feeds:0,workCompleted:0},
+    lifetimeStats:defaultLifetimeStats(),
+    repeatQuestBase:{},
+    collectionMilestonesClaimed:{},
+    claimedAchievements:{},
+    questsDay:today,
+    theme:'dark'
+  };
+}
+let state = loadState();
+let currentTab='home';
+let lastTick = NOW();
+
+function dayKey(t=NOW()){return new Date(t).toISOString().slice(0,10)}
+function loadState(){
+  try{
+    const saved = JSON.parse(localStorage.getItem(SAVE_KEY)||'{}');
+    return sanitizeState({...defaultState(), ...saved});
+  } catch(e){
+    return defaultState();
+  }
+}
+function sanitizeState(s){
+  s.version = RELEASE_VERSION;
+  s.currency = Number.isFinite(+s.currency) ? Math.max(0, Math.floor(+s.currency)) : 120;
+  s.earnedToday = Number.isFinite(+s.earnedToday) ? Math.min(300, Math.max(0, Math.floor(+s.earnedToday))) : 0;
+  s.activeSeconds = Number.isFinite(+s.activeSeconds) ? Math.max(0, +s.activeSeconds) : 0;
+  s.loginStreak = Number.isFinite(+s.loginStreak) ? Math.min(7, Math.max(0, Math.floor(+s.loginStreak))) : 0;
+  s.lastSystemSyncAt = Number.isFinite(+s.lastSystemSyncAt) ? +s.lastSystemSyncAt : (Number.isFinite(+s.lastSeenAt) ? +s.lastSeenAt : NOW());
+  s.eggs = Array.isArray(s.eggs) ? s.eggs.filter(e=>e && eggTypes[e.type]).map(e=>({
+    id:String(e.id||('egg_'+NOW()+'_'+Math.random().toString(16).slice(2))),
+    type:e.type,
+    required:Number.isFinite(+e.required) ? +e.required : eggTypes[e.type].seconds,
+    progress:Number.isFinite(+e.progress) ? Math.max(0,+e.progress) : 0,
+    status:['incubating','ready'].includes(e.status) ? e.status : 'incubating',
+    boughtAt:Number.isFinite(+e.boughtAt) ? +e.boughtAt : NOW()
+  })) : [];
+  s.pets = Array.isArray(s.pets) ? s.pets.filter(p=>p && speciesById[p.speciesId]).map(p=>({
+    id:String(p.id||('pet_'+NOW()+'_'+Math.random().toString(16).slice(2))),
+    speciesId:p.speciesId,
+    level:Math.min(50, Math.max(1, Math.floor(+p.level||1))),
+    exp:Math.max(0, +p.exp||0),
+    nickname:String(p.nickname||'').slice(0,24),
+    obtainedAt:Number.isFinite(+p.obtainedAt) ? +p.obtainedAt : NOW(),
+    favorite:!!p.favorite
+  })) : [];
+  const petIds = new Set(s.pets.map(p=>p.id));
+  s.petJobs = Array.isArray(s.petJobs) ? s.petJobs.filter(j=>j && petWorkTypes[j.type] && petIds.has(String(j.petId))).map(j=>({
+    id:String(j.id||makeId('job')),
+    type:j.type,
+    petId:String(j.petId),
+    required:Number.isFinite(+j.required) ? Math.max(1,+j.required) : petWorkTypes[j.type].seconds,
+    progress:Number.isFinite(+j.progress) ? Math.max(0,+j.progress) : 0,
+    status:['working','ready'].includes(j.status) ? j.status : 'working',
+    startedAt:Number.isFinite(+j.startedAt) ? +j.startedAt : NOW()
+  })) : [];
+  s.collectionLog = (s.collectionLog && typeof s.collectionLog==='object') ? s.collectionLog : {};
+  for(const pet of s.pets){ s.collectionLog[pet.speciesId]=true; }
+  s.pity = {...{legendary:0,secret:0}, ...(s.pity||{})};
+  s.stats = {...{eggsBought:0,eggsHatched:0,feeds:0,workCompleted:0}, ...(s.stats||{})};
+  s.lifetimeStats = {...defaultLifetimeStats(), ...(s.lifetimeStats||{})};
+  for(const k of ['eggsBought','eggsHatched','feeds','workCompleted']){
+    s.lifetimeStats[k] = Math.max(+s.lifetimeStats[k] || 0, +s.stats[k] || 0);
+  }
+  s.repeatQuestBase = (s.repeatQuestBase && typeof s.repeatQuestBase==='object') ? s.repeatQuestBase : {};
+  s.collectionMilestonesClaimed = (s.collectionMilestonesClaimed && typeof s.collectionMilestonesClaimed==='object') ? s.collectionMilestonesClaimed : {};
+  s.claimedAchievements = (s.claimedAchievements && typeof s.claimedAchievements==='object') ? s.claimedAchievements : {};
+  s.theme = s.theme === 'light' ? 'light' : 'dark';
+  return s;
+}
+function save(){
+  try{
+    state = sanitizeState(state);
+    state.lastSeenAt = NOW();
+    localStorage.setItem(SAVE_KEY, JSON.stringify(state));
+  } catch(e){
+    toast('บันทึกเซฟไม่สำเร็จ พื้นที่เบราว์เซอร์อาจเต็ม');
+  }
+}
+function toast(msg){
+  const box=$('#toast'); const el=document.createElement('div'); el.className='toast-item'; el.textContent=msg; box.appendChild(el); setTimeout(()=>el.remove(),3600);
+}
+function resetDailyIfNeeded(){
+  const today=dayKey();
+  if(state.earningDay!==today){state.earningDay=today;state.earnedToday=0;state.activeSeconds=0;}
+  if(state.questsDay!==today){state.questsDay=today;state.stats.eggsBought=0;state.stats.eggsHatched=0;state.stats.feeds=0;state.stats.workCompleted=0;}
+}
+function addPassiveShardProgress(effectiveSeconds){
+  if(effectiveSeconds <= 0) return;
+  state.activeSeconds += effectiveSeconds;
+  while(state.activeSeconds>=60 && state.earnedToday<MAX_DAILY_PASSIVE_SHARDS){
+    state.activeSeconds-=60;
+    state.earnedToday++;
+    state.currency++;
+  }
+}
+function advanceEggProgress(effectiveSeconds, showToast=false){
+  for(const egg of state.eggs.filter(e=>e.status==='incubating')){
+    const before = egg.status;
+    egg.progress = Math.min(egg.required, egg.progress + effectiveSeconds);
+    if(egg.progress>=egg.required){
+      egg.status='ready';
+      if(showToast && before!=='ready') toast('มีไข่พร้อมฟักแล้ว!');
+    }
+  }
+}
+function advancePetWorkProgress(effectiveSeconds, showToast=false){
+  for(const job of state.petJobs.filter(j=>j.status==='working')){
+    const before = job.status;
+    job.progress = Math.min(job.required, job.progress + effectiveSeconds);
+    if(job.progress>=job.required){
+      job.status='ready';
+      const pet = state.pets.find(p=>p.id===job.petId);
+      const sp = pet ? speciesById[pet.speciesId] : null;
+      if(showToast && before!=='ready') toast(`${sp ? sp.name : 'Pet Work'} สำรวจเสร็จแล้ว!`);
+    }
+  }
+}
+function advanceTimedSystems(realSeconds, speed=TIME_ACTIVE_SPEED, options={}){
+  const elapsed = Math.max(0, realSeconds || 0);
+  const effectiveSeconds = elapsed * speed;
+  if(effectiveSeconds <= 0) return;
+  resetDailyIfNeeded();
+  addPassiveShardProgress(effectiveSeconds);
+  advanceEggProgress(effectiveSeconds, !!options.toastReady);
+  advancePetWorkProgress(effectiveSeconds, !!options.toastReady);
+}
+function syncOpenPageProgress(showToast=false){
+  const now = NOW();
+  const last = Number.isFinite(+state.lastSystemSyncAt) ? +state.lastSystemSyncAt : now;
+  const elapsed = Math.max(0,(now-last)/1000);
+  if(elapsed>0){
+    advanceTimedSystems(elapsed, TIME_ACTIVE_SPEED, {toastReady:showToast});
+  }
+  state.lastSystemSyncAt = now;
+  lastTick = now;
+}
+function applyOfflineProgress(){
+  const now = NOW();
+  const last = Number.isFinite(+state.lastSystemSyncAt) ? +state.lastSystemSyncAt : (state.lastSeenAt || now);
+  const elapsed = Math.max(0,(now-last)/1000);
+  if(elapsed>2){
+    advanceTimedSystems(elapsed, TIME_OFFLINE_SPEED, {toastReady:false});
+  }
+  state.lastSystemSyncAt = now;
+  lastTick = now;
+}
+function fmtTime(sec){
+  sec=Math.max(0,Math.ceil(sec)); const h=Math.floor(sec/3600), m=Math.floor((sec%3600)/60), s=sec%60;
+  if(h>0) return `${h}ชม. ${m}น.`; if(m>0) return `${m}น. ${s}วิ.`; return `${s}วิ.`;
+}
+function expNeed(lv){return 50*lv}
+function evoStage(lv){ if(lv>=50)return 6; if(lv>=40)return 5; if(lv>=30)return 4; if(lv>=20)return 3; if(lv>=10)return 2; return 1; }
+function evoName(lv){ const names=['','Hatchling','Juvenile','Adolescent','Adult','Elder','Awakened']; return names[evoStage(lv)] || 'Hatchling'; }
+function speciesVisualVariant(sp){ return Array.from(sp.id).reduce((sum,ch)=>sum+ch.charCodeAt(0),0)%5; }
+function petStats(sp,lv){ const grow=1+0.08*(lv-1); return Object.fromEntries(Object.entries(sp.base).map(([k,v])=>[k,Math.round(v*grow)])); }
+
+function renderCreature(sp, mini=false, lv=1){
+  const e=elementById[sp.element] || elements[0];
+  const cls=mini?'mini-creature':'creature';
+  const stage=evoStage(lv||1);
+  const variant=speciesVisualVariant(sp);
+  const shapeClass=`shape-${sp.shape||'wisp'}`;
+  const tierClass=`tierform-${String(sp.tier||'Common').toLowerCase()}`;
+  return `<div class="${cls} ${shapeClass} ${tierClass} evo-${stage} variant-${variant}" data-evo="${stage}" style="--c1:${e.colors[0]};--c2:${e.colors[1]}">
+    <i class="evo-aura"></i>
+    <i class="tail"></i>
+    <i class="wing l"></i><i class="wing r"></i>
+    <i class="ear l"></i><i class="ear r"></i>
+    <i class="horn l"></i><i class="horn r"></i>
+    <i class="crest"></i>
+    <i class="shell"></i>
+    <i class="leaf"></i>
+    <i class="armor"></i>
+    <i class="body"></i>
+    <i class="belly"></i>
+    <i class="snout"></i>
+    <i class="eye l"></i><i class="eye r"></i>
+    <i class="mouth"></i>
+    <i class="paw l"></i><i class="paw r"></i>
+    <b class="spark">${e.icon}</b><b class="spark two">✦</b>
+  </div>`;
+}
+
+function scrollToGameView(tab){
+  const target = $(`#${tab}View`);
+  if(!target) return;
+  requestAnimationFrame(()=>{
+    target.scrollIntoView({behavior:'smooth', block:'start'});
+  });
+}
+function showTab(tab, options={}){
+  const target = $(`#${tab}View`);
+  if(!target) return;
+  currentTab=tab;
+  $$('#petGameApp .tab').forEach(b=>b.classList.toggle('active',b.dataset.tab===tab));
+  $$('#petGameApp .view').forEach(v=>v.hidden=true);
+  target.hidden=false;
+  render();
+  if(options.scroll !== false) scrollToGameView(tab);
+}
+window.showTab = showTab;
+window.scrollToGameView = scrollToGameView;
+
+function render(){
+  resetDailyIfNeeded();
+  document.getElementById('petGameApp').classList.toggle('pet-light', state.theme==='light');
+  $('#currencyText').textContent = Math.floor(state.currency).toLocaleString();
+  $('#streakText').textContent = state.loginStreak||0;
+  $('#collectionText').textContent = `${Object.keys(state.collectionLog||{}).length}/150`;
+  $('#earnedTodayText').textContent = Math.floor(state.earnedToday||0);
+  $('#dailyEarnBar').style.width = `${Math.min(100,((state.earnedToday||0)/300)*100)}%`;
+  $('#pityLegText').textContent = state.pity.legendary||0;
+  $('#pitySecText').textContent = state.pity.secret||0;
+  const showcasePet = state.pets[0] || null;
+  const showcase = showcasePet ? speciesById[showcasePet.speciesId] : speciesById['FI-C1'];
+  $('#heroCreature').outerHTML = renderCreature(showcase,false,showcasePet ? showcasePet.level : 1).replace('class="creature', 'id="heroCreature" class="creature');
+  renderShop(); renderIncubator(); renderPets(); renderPetWork(); renderCollection(); renderQuests();
+  save();
+}
+
+function renderShop(){
+  const box=$('#eggShop');
+  box.innerHTML = Object.values(eggTypes).map(egg=>`
+    <div class="egg-card">
+      <div class="egg-visual ${egg.cls}"></div>
+      <h3>${egg.name}</h3>
+      <div class="muted">ราคา <b>⭐ ${egg.price}</b> • ฟัก ${fmtTime(egg.seconds)}</div>
+      <div class="rates">${Object.entries(egg.rates).map(([k,v])=>`<span class="tier-${k}">${k}</span><span>${v}%</span>`).join('')}</div>
+      <button class="btn primary" onclick="buyEgg('${egg.key}')" ${state.currency<egg.price?'disabled':''}>ซื้อไข่</button>
+    </div>`).join('');
+}
+function buyEgg(key){
+  const egg=eggTypes[key]; if(state.currency<egg.price) return toast('เกล็ดดาวไม่พอ');
+  state.currency-=egg.price;
+  state.eggs.unshift({id:makeId('egg'),type:key,required:egg.seconds,progress:0,status:'incubating',createdAt:NOW()});
+  state.stats.eggsBought++; state.lifetimeStats.eggsBought = (state.lifetimeStats.eggsBought||0)+1;
+  toast(`ซื้อ ${egg.name} แล้ว`);
+  showTab('incubator');
+}
+window.buyEgg=buyEgg;
+
+function renderIncubator(){
+  const box=$('#incubatorGrid');
+  if(!state.eggs.length){ box.innerHTML='<div class="empty" style="grid-column:1/-1">ยังไม่มีไข่ ไปซื้อไข่ก่อนนะ</div>'; return; }
+  box.innerHTML=state.eggs.map(eg=>{
+    const egg=eggTypes[eg.type]; const pct=Math.min(100,(eg.progress/eg.required)*100); const ready=eg.status==='ready'||eg.progress>=eg.required;
+    return `<div class="inc-card">
+      <div class="egg-visual ${egg.cls}"></div>
+      <h3>${egg.name}</h3>
+      <div class="progress"><div class="bar" style="width:${pct}%"></div></div>
+      <p><b>${Math.floor(pct)}%</b> • ${ready?'พร้อมฟักแล้ว':`เหลือ ${fmtTime(eg.required-eg.progress)}`}</p>
+      <button class="btn green" onclick="hatchEgg('${eg.id}')" ${ready?'':'disabled'}>ฟักไข่</button>
+    </div>`
+  }).join('');
+}
+function chooseTier(egg){
+  if((state.pity.secret||0)>=200) return 'Secret';
+  if((state.pity.legendary||0)>=50) return 'Legendary';
+  const roll=Math.random()*100; let acc=0;
+  for(const [tier,rate] of Object.entries(egg.rates)){acc+=rate; if(roll<=acc) return tier;}
+  return 'Common';
+}
+function hatchEgg(id){
+  const idx=state.eggs.findIndex(e=>e.id===id); if(idx<0)return;
+  const eg=state.eggs[idx]; if(eg.progress<eg.required && eg.status!=='ready') return toast('ไข่ยังฟักไม่เสร็จ');
+  const egg=eggTypes[eg.type]; const tier=chooseTier(egg);
+  const pool=species.filter(s=>s.tier===tier); const sp=pool[Math.floor(Math.random()*pool.length)];
+  state.eggs.splice(idx,1);
+  const wasOwned = !!state.collectionLog[sp.id];
+  state.pets.unshift({id:makeId('pet'),speciesId:sp.id,level:1,exp:0,nickname:'',obtainedAt:NOW(),favorite:false});
+  state.collectionLog[sp.id]=true;
+  if(tier==='Secret'){state.pity.secret=0;state.pity.legendary=0;} else if(tier==='Legendary'){state.pity.legendary=0;state.pity.secret++;} else {state.pity.legendary++;state.pity.secret++;}
+  state.stats.eggsHatched++; state.lifetimeStats.eggsHatched = (state.lifetimeStats.eggsHatched||0)+1;
+  toast(wasOwned ? `ฟักได้ตัวซ้ำ ${sp.name} (${tier}) — แปลงเป็นเกล็ดดาวได้` : `ฟักได้ ${sp.name} (${tier})!`);
+  if('Notification' in window && Notification.permission==='granted') new Notification('ไข่ฟักแล้ว!',{body:`คุณได้รับ ${sp.name} (${tier})`});
+  showTab('pets');
+  openPet(sp, state.pets[0]);
+}
+window.hatchEgg=hatchEgg;
+
+function renderPets(){
+  const box=$('#petGrid');
+  if(!state.pets.length){ box.innerHTML='<div class="empty" style="grid-column:1/-1">ยังไม่มีสัตว์เลี้ยง ฟักไข่เพื่อเริ่มสะสม</div>'; return; }
+  box.innerHTML=state.pets.map(p=>{
+    const sp=speciesById[p.speciesId]; const need=p.level>=50?0:expNeed(p.level); const pct=p.level>=50?100:(p.exp/need)*100;
+    return `<div class="pet-card">
+      ${renderCreature(sp,true,p.level)}
+      <h3>${p.nickname||sp.name}</h3>
+      <div><span class="badge tier-${sp.tier}">${sp.tier}</span> <span class="badge">${elementById[sp.element].th}</span></div>
+      <p>Lv.${p.level} • ${evoName(p.level)}</p>
+      <div class="progress"><div class="bar" style="width:${Math.min(100,pct)}%"></div></div>
+      <p class="tiny">EXP ${Math.floor(p.exp)} / ${need||'MAX'}</p>
+      <div style="display:flex;gap:8px;flex-wrap:wrap">
+        <button class="btn primary" onclick="feedPet('${p.id}')" ${p.level>=50||state.currency<10||isPetOnWork(p.id)?'disabled':''}>ป้อนอาหาร ⭐10</button>
+        <button class="btn ghost" onclick="openPetById('${p.id}')">ดูรายละเอียด</button>
+        <button class="btn blue" onclick="startPetWork('short','${p.id}')" ${isPetOnWork(p.id)?'disabled':''}>ส่งสำรวจ</button>
+        <button class="btn red" onclick="convertDuplicatePet('${p.id}')" ${duplicateCount(p.speciesId)<=1||isPetOnWork(p.id)?'disabled':''}>แปลงตัวซ้ำ</button>
+      </div>
+    </div>`;
+  }).join('');
+}
+function feedPet(id){
+  const p=state.pets.find(x=>x.id===id);
+  if(!p || p.level>=50)return;
+  if(isPetOnWork(id)) return toast('สัตว์ตัวนี้กำลังทำงานอยู่');
+  if(state.currency<10)return toast('เกล็ดดาวไม่พอ');
+  const sp = speciesById[p.speciesId];
+  const beforeLevel = p.level;
+  const beforeStage = evoStage(p.level);
+  state.currency-=10;
+  p.exp+=100;
+  state.stats.feeds++;
+  state.lifetimeStats.feeds = (state.lifetimeStats.feeds||0)+1;
+  let leveledUp = false;
+  while(p.level<50 && p.exp>=expNeed(p.level)){
+    p.exp-=expNeed(p.level);
+    p.level++;
+    leveledUp = true;
+    toast(`${sp.name} เลเวลอัปเป็น Lv.${p.level}`);
+  }
+  const afterStage = evoStage(p.level);
+  if(afterStage > beforeStage){
+    toast(`✨ วิวัฒนาการ! ${sp.name} เปลี่ยนร่างเป็น ${evoName(p.level)} แล้ว`);
+  } else if(leveledUp && p.level > beforeLevel){
+    toast(`อีก ${Math.max(0, (afterStage===1?10:afterStage===2?20:afterStage===3?30:afterStage===4?40:50)-p.level)} เลเวลจะเปลี่ยนร่างถัดไป`);
+  }
+  render();
+}
+window.feedPet=feedPet;
+function openPetById(id){ const p=state.pets.find(x=>x.id===id); if(p) openPet(speciesById[p.speciesId],p); }
+window.openPetById=openPetById;
+function isPetOnWork(petId){
+  return state.petJobs.some(j=>j.petId===petId);
+}
+function duplicateCount(speciesId){
+  return state.pets.filter(p=>p.speciesId===speciesId).length;
+}
+function duplicateRewardForPet(p){
+  const sp = speciesById[p.speciesId];
+  const base = duplicateShardReward[sp.tier] || 20;
+  return base + Math.max(0, (p.level||1)-1) * 2;
+}
+function convertDuplicatePet(id){
+  const idx = state.pets.findIndex(p=>p.id===id);
+  if(idx<0) return;
+  const p = state.pets[idx];
+  const sp = speciesById[p.speciesId];
+  if(duplicateCount(p.speciesId)<=1) return toast('ตัวนี้เป็นตัวสุดท้ายของสายพันธุ์นี้ แปลงไม่ได้');
+  if(isPetOnWork(id)) return toast('ตัวนี้กำลังทำงานอยู่ แปลงไม่ได้');
+  const reward = duplicateRewardForPet(p);
+  state.pets.splice(idx,1);
+  state.currency += reward;
+  state.lifetimeStats.duplicateConverted = (state.lifetimeStats.duplicateConverted||0)+1;
+  toast(`แปลงตัวซ้ำ ${sp.name} เป็น ⭐${reward}`);
+  render();
+}
+window.convertDuplicatePet = convertDuplicatePet;
+function availableWorkPets(){
+  return state.pets.filter(p=>!isPetOnWork(p.id)).sort((a,b)=>(b.level-a.level));
+}
+function workReward(job){
+  const type = petWorkTypes[job.type];
+  const pet = state.pets.find(p=>p.id===job.petId);
+  const sp = pet ? speciesById[pet.speciesId] : null;
+  const tierBonus = sp ? (tierRank[sp.tier]||0) * 20 : 0;
+  const levelBonus = pet ? Math.floor((pet.level||1) * 2) : 0;
+  return (type.reward || 0) + tierBonus + levelBonus;
+}
+function startPetWork(typeKey, petId=null){
+  const type = petWorkTypes[typeKey];
+  if(!type) return;
+  const pet = petId ? state.pets.find(p=>p.id===petId) : availableWorkPets()[0];
+  if(!pet) return toast('ยังไม่มีสัตว์ว่างสำหรับส่งไปทำงาน');
+  if(isPetOnWork(pet.id)) return toast('สัตว์ตัวนี้กำลังทำงานอยู่');
+  state.petJobs.unshift({id:makeId('job'), type:typeKey, petId:pet.id, required:type.seconds, progress:0, status:'working', startedAt:NOW()});
+  toast(`ส่ง ${speciesById[pet.speciesId].name} ไป${type.name}`);
+  showTab('pets', {scroll:false});
+  renderPetWork();
+  requestAnimationFrame(()=>{
+    const panel = document.getElementById('petWorkPanel');
+    if(panel) panel.scrollIntoView({behavior:'smooth', block:'start'});
+  });
+}
+window.startPetWork = startPetWork;
+function claimPetWork(id){
+  const idx = state.petJobs.findIndex(j=>j.id===id);
+  if(idx<0) return;
+  const job = state.petJobs[idx];
+  if(job.progress < job.required && job.status!=='ready') return toast('Pet Work ยังไม่เสร็จ');
+  const reward = workReward(job);
+  state.currency += reward;
+  state.stats.workCompleted = (state.stats.workCompleted||0)+1;
+  state.lifetimeStats.workCompleted = (state.lifetimeStats.workCompleted||0)+1;
+  state.petJobs.splice(idx,1);
+  toast(`รับรางวัล Pet Work ⭐${reward}`);
+  render();
+}
+window.claimPetWork = claimPetWork;
+function renderPetWork(){
+  const actions = $('#petWorkActions');
+  const list = $('#petWorkList');
+  if(!actions || !list) return;
+  const available = availableWorkPets();
+  actions.innerHTML = Object.values(petWorkTypes).map(type=>`
+    <div class="work-card">
+      <h3>${type.icon} ${type.name}</h3>
+      <p class="muted">${type.desc}</p>
+      <p>เวลา ${fmtTime(type.seconds)} • รางวัลพื้นฐาน ⭐${type.reward}</p>
+      <button class="btn blue" onclick="startPetWork('${type.key}')" ${available.length?'':'disabled'}>ส่งสัตว์ว่างไปทำงาน</button>
+    </div>`).join('');
+
+  const jobs = Array.isArray(state.petJobs) ? state.petJobs : [];
+  const working = jobs.filter(j=>j.status==='working').length;
+  const readyCount = jobs.filter(j=>j.status==='ready' || j.progress>=j.required).length;
+  const header = `<div class="work-status-title"><h3>สถานะงานที่กำลังทำ</h3><span class="badge">กำลังทำ ${working} • พร้อมรับ ${readyCount}</span></div>`;
+
+  if(!jobs.length){
+    list.innerHTML = header + '<div class="empty" style="grid-column:1/-1">ยังไม่มีงานที่กำลังทำอยู่ — กด “ส่งสัตว์ว่างไปทำงาน” ด้านบน หรือกด “ส่งสำรวจ” จากการ์ดสัตว์เลี้ยง</div>';
+    return;
+  }
+  list.innerHTML = header + jobs.map(job=>{
+    const type = petWorkTypes[job.type] || petWorkTypes.short;
+    const pet = state.pets.find(p=>p.id===job.petId);
+    const sp = pet ? speciesById[pet.speciesId] : null;
+    const pct = Math.min(100,(job.progress/job.required)*100);
+    const ready = job.status==='ready' || job.progress>=job.required;
+    const remaining = Math.max(0, job.required-job.progress);
+    return `<div class="quest-card work-card ${ready?'quest-ready':''}">
+      <h3>${type.icon} ${type.name}</h3>
+      <p class="tiny">${sp ? sp.name : 'สัตว์เลี้ยง'} ${pet ? `Lv.${pet.level}` : ''} • รางวัลประมาณ ⭐${workReward(job)}</p>
+      <div class="progress"><div class="bar" style="width:${pct}%"></div></div>
+      <p><b>${Math.floor(pct)}%</b> • ${ready?'พร้อมรับรางวัลแล้ว':`เหลือ ${fmtTime(remaining)}`}</p>
+      <p class="tiny">เวลาเดิน 100% เมื่อหน้าเว็บยังเปิดอยู่ แม้ซ่อนแท็บ/เปิดแท็บอื่น • ปิดเว็บเดิน 30%</p>
+      <button class="btn green" onclick="claimPetWork('${job.id}')" ${ready?'':'disabled'}>${ready?'รับรางวัล':'กำลังทำงานอยู่'}</button>
+    </div>`;
+  }).join('');
+}
+
+function renderCollection(){
+  const box=$('#collectionGrid');
+  if(!box) return;
+  const tier=$('#tierFilter') ? $('#tierFilter').value : 'ALL', ele=$('#elementFilter') ? $('#elementFilter').value : 'ALL', q=($('#searchInput') ? $('#searchInput').value : '').toLowerCase().trim();
+  let list=species.slice();
+  if(tier!=='ALL') list=list.filter(s=>s.tier===tier);
+  if(ele!=='ALL') list=list.filter(s=>s.element===ele);
+  if(q) list=list.filter(s=>s.name.toLowerCase().includes(q)||s.id.toLowerCase().includes(q));
+  const order={Common:1,Rare:2,Epic:3,Legendary:4,Secret:5};
+  list.sort((a,b)=>order[a.tier]-order[b.tier] || a.element.localeCompare(b.element) || a.id.localeCompare(b.id));
+  box.innerHTML=list.map(sp=>{
+    const owned=!!state.collectionLog[sp.id];
+    const best=state.pets.filter(p=>p.speciesId===sp.id).sort((a,b)=>b.level-a.level)[0];
+    return `<div class="collection-card ${owned?'':'locked'}" onclick="openSpecies('${sp.id}')">
+      ${renderCreature(sp,true,best?best.level:1)}
+      <div class="badge tier-${sp.tier}">${sp.tier}</div>
+      <b>${owned?sp.name:'???'}</b>
+      <div class="tiny">${sp.id} • ${elementById[sp.element].th}</div>
+      <div class="${owned?'owned-mark':'unknown'}">${owned?`ได้แล้ว ${best?`Lv.${best.level}`:''}`:'ยังไม่พบ'}</div>
+    </div>`;
+  }).join('');
+}
+function openSpecies(id){
+  const sp=speciesById[id]; const owned=state.pets.filter(p=>p.speciesId===id).sort((a,b)=>b.level-a.level)[0];
+  openPet(sp, owned || null);
+}
+window.openSpecies=openSpecies;
+
+function openPet(sp, pet){
+  const owned=!!pet; const lv=pet?pet.level:1; const st=petStats(sp,lv);
+  $('#modalContent').innerHTML=`
+    <div class="pet-stage ${owned?'':'locked'}">${renderCreature(sp,false,lv)}</div>
+    <div>
+      <h2>${owned?(pet.nickname||sp.name):'???'}</h2>
+      <p><span class="badge tier-${sp.tier}">${sp.tier}</span> <span class="badge">${elementById[sp.element].icon} ${elementById[sp.element].th}</span> <span class="badge">${sp.id}</span></p>
+      <p class="muted">${owned?sp.concept:'ยังไม่เคยได้รับสัตว์ตัวนี้ ฟักไข่เพื่อปลดล็อกข้อมูลเต็ม'}</p>
+      <p><b>สาย:</b> ${sp.role} • <b>ร่าง:</b> ${evoName(lv)} ${owned?`• Lv.${lv}`:''} • <b>Evolution:</b> ${evoStage(lv)}/6</p>
+      <div class="stat-list">
+        <div class="stat"><span>HP</span>${st.hp}</div><div class="stat"><span>ATK</span>${st.atk}</div><div class="stat"><span>DEF</span>${st.def}</div><div class="stat"><span>SPD</span>${st.spd}</div>
+      </div>
+      ${owned?`<div style="margin-top:12px;display:flex;gap:8px;flex-wrap:wrap"><button class="btn primary" onclick="feedPet('${pet.id}');petDialog.close()" ${pet.level>=50||state.currency<10?'disabled':''}>ป้อนอาหาร</button></div>`:''}
+    </div>`;
+  petDialog.showModal();
+}
+window.openPet=openPet;
+
+function repeatQuestValue(def){
+  const lt = state.lifetimeStats || defaultLifetimeStats();
+  return Math.max(0, +lt[def.type] || 0);
+}
+function renderRepeatQuests(){
+  const box = $('#repeatQuestList');
+  if(!box) return;
+  box.innerHTML = repeatQuestDefs.map(def=>{
+    const base = Math.max(0, +state.repeatQuestBase[def.key] || 0);
+    const now = repeatQuestValue(def);
+    const progress = Math.max(0, now - base);
+    const done = progress >= def.target;
+    return `<div class="quest-card ${done?'quest-ready':''}" style="margin-bottom:10px">
+      <h3>${def.name}</h3>
+      <div class="progress"><div class="bar" style="width:${Math.min(100,progress/def.target*100)}%"></div></div>
+      <p>${Math.min(progress,def.target)} / ${def.target} • รางวัล ⭐${def.reward}</p>
+      <button class="btn green" onclick="claimRepeatQuest('${def.key}')" ${done?'':'disabled'}>รับรางวัลแล้วเริ่มรอบใหม่</button>
+    </div>`;
+  }).join('');
+}
+function claimRepeatQuest(key){
+  const def = repeatQuestDefs.find(x=>x.key===key);
+  if(!def) return;
+  const base = Math.max(0, +state.repeatQuestBase[def.key] || 0);
+  const now = repeatQuestValue(def);
+  if(now - base < def.target) return toast('เควสซ้ำยังไม่ครบ');
+  state.repeatQuestBase[def.key] = now;
+  state.currency += def.reward;
+  state.lifetimeStats.repeatQuestClaims = (state.lifetimeStats.repeatQuestClaims||0)+1;
+  toast(`รับรางวัลเควสซ้ำ ⭐${def.reward}`);
+  render();
+}
+window.claimRepeatQuest = claimRepeatQuest;
+function renderCollectionMilestones(){
+  const box = $('#milestoneList');
+  if(!box) return;
+  const count = collectionCount();
+  box.innerHTML = collectionMilestones.map(m=>{
+    const claimed = !!state.collectionMilestonesClaimed[m.target];
+    const done = count >= m.target;
+    return `<div class="quest-card ${done&&!claimed?'quest-ready':''}" style="margin-bottom:10px">
+      <h3>สะสมครบ ${m.target} / ${species.length} ตัว</h3>
+      <div class="progress"><div class="bar" style="width:${Math.min(100,count/m.target*100)}%"></div></div>
+      <p>${Math.min(count,m.target)} / ${m.target} • รางวัล ⭐${m.reward}</p>
+      <button class="btn primary" onclick="claimCollectionMilestone(${m.target})" ${done&&!claimed?'':'disabled'}>${claimed?'รับแล้ว':'รับรางวัล'}</button>
+    </div>`;
+  }).join('');
+}
+function claimCollectionMilestone(target){
+  const m = collectionMilestones.find(x=>x.target===target);
+  if(!m) return;
+  if(state.collectionMilestonesClaimed[target]) return;
+  if(collectionCount() < target) return toast('Collection ยังไม่ครบ milestone นี้');
+  state.collectionMilestonesClaimed[target] = true;
+  state.currency += m.reward;
+  toast(`รับรางวัล Collection ${target} ตัว ⭐${m.reward}`);
+  render();
+}
+window.claimCollectionMilestone = claimCollectionMilestone;
+
+function renderQuests(){
+  renderRepeatQuests();
+  renderCollectionMilestones();
+  if(!$('#dailyQuestList') || !$('#achievementList')) return;
+
+  const daily=[
+    {name:'ซื้อไข่ 1 ฟอง', now:state.stats.eggsBought||0, target:1, reward:30},
+    {name:'ฟักไข่ 1 ฟอง', now:state.stats.eggsHatched||0, target:1, reward:50},
+    {name:'ป้อนอาหาร 3 ครั้ง', now:state.stats.feeds||0, target:3, reward:40},
+    {name:'รับรางวัล Pet Work 1 ครั้ง', now:state.stats.workCompleted||0, target:1, reward:70},
+  ];
+  $('#dailyQuestList').innerHTML=daily.map((q,i)=>{
+    const done=q.now>=q.target; const key=`daily-${state.questsDay}-${i}`; const claimed=state.claimedAchievements[key];
+    return `<div class="quest-card" style="margin-bottom:10px"><h3>${q.name}</h3><div class="progress"><div class="bar" style="width:${Math.min(100,q.now/q.target*100)}%"></div></div><p>${Math.min(q.now,q.target)} / ${q.target} • รางวัล ⭐${q.reward}</p><button class="btn green" onclick="claimReward('${key}',${q.reward})" ${done&&!claimed?'':'disabled'}>${claimed?'รับแล้ว':'รับรางวัล'}</button></div>`
+  }).join('');
+  const achievements=[
+    {key:'firstEgg',name:'ซื้อไข่ครั้งแรก',done:(state.stats.eggsBought||0)>0,reward:80},
+    {key:'firstHatch',name:'ฟักไข่ครั้งแรก',done:(state.pets.length)>0,reward:100},
+    {key:'collect10',name:'สะสมครบ 10 ตัว',done:Object.keys(state.collectionLog).length>=10,reward:200},
+    {key:'firstLegend',name:'ได้ Legendary ครั้งแรก',done:state.pets.some(p=>speciesById[p.speciesId].tier==='Legendary'),reward:400},
+  ];
+  $('#achievementList').innerHTML=achievements.map(a=>`<div class="quest-card" style="margin-bottom:10px"><h3>${a.name}</h3><p>${a.done?'สำเร็จแล้ว':'ยังไม่สำเร็จ'} • รางวัล ⭐${a.reward}</p><button class="btn primary" onclick="claimReward('${a.key}',${a.reward})" ${a.done&&!state.claimedAchievements[a.key]?'':'disabled'}>${state.claimedAchievements[a.key]?'รับแล้ว':'รับรางวัล'}</button></div>`).join('');
+}
+function claimReward(key,amount){ if(state.claimedAchievements[key])return; state.claimedAchievements[key]=true; state.currency+=amount; toast(`รับรางวัล ⭐${amount}`); render(); }
+window.claimReward=claimReward;
+
+function claimDailyLogin(){
+  const today=dayKey(); const last=state.lastLoginDay;
+  if(last===today) return toast('วันนี้รับ Login แล้ว');
+  const yesterday=dayKey(NOW()-86400000);
+  state.loginStreak = last===yesterday ? Math.min(7,(state.loginStreak||0)+1) : 1;
+  state.lastLoginDay=today;
+  const rewards=[0,20,35,50,70,95,120,150]; const reward=rewards[state.loginStreak]||150;
+  state.currency+=reward; toast(`รับ Login Day ${state.loginStreak} +${reward} เกล็ดดาว`); render();
+}
+$('#dailyBtn').addEventListener('click',claimDailyLogin);
+
+function activeTick(){
+  syncOpenPageProgress(true);
+  save();
+  if(['incubator','home','pets','quests'].includes(currentTab)) render(); else updateTopOnly();
+}
+function updateTopOnly(){ $('#currencyText').textContent=Math.floor(state.currency).toLocaleString(); $('#collectionText').textContent=`${Object.keys(state.collectionLog||{}).length}/150`; }
+setInterval(activeTick,1000);
+document.addEventListener('visibilitychange',()=>{ syncOpenPageProgress(false); save(); });
+
+function exportSave(){
+  save();
+  const data = JSON.stringify({app:'TJC Pet Collection', version:RELEASE_VERSION, exportedAt:new Date().toISOString(), save:state}, null, 2);
+  const blob = new Blob([data], {type:'application/json'});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = `tjc-pet-save-v${RELEASE_VERSION}-${dayKey()}.json`;
+  document.body.appendChild(a);
+  a.click();
+  a.remove();
+  URL.revokeObjectURL(url);
+  toast('สร้างไฟล์สำรองเซฟแล้ว');
+}
+window.exportSave=exportSave;
+function importSaveFile(file){
+  if(!file) return;
+  const reader = new FileReader();
+  reader.onload = ()=>{
+    try{
+      const payload = JSON.parse(reader.result);
+      const imported = payload.save || payload;
+      if(!confirm('นำเข้าเซฟนี้แทนข้อมูลเกมปัจจุบัน?')) return;
+      state = sanitizeState({...defaultState(), ...imported});
+      save();
+      toast('นำเข้าเซฟสำเร็จ');
+      render();
+      showTab('home');
+    }catch(e){
+      toast('ไฟล์เซฟไม่ถูกต้อง');
+    }
+  };
+  reader.readAsText(file);
+}
+function requestNotify(){ if(!('Notification' in window)) return toast('เบราว์เซอร์นี้ไม่รองรับ Notification'); Notification.requestPermission().then(p=>toast(p==='granted'?'เปิดแจ้งเตือนแล้ว':'ยังไม่ได้อนุญาตแจ้งเตือน')); }
+window.requestNotify=requestNotify;
+function resetGame(){ if(confirm('รีเซ็ตข้อมูลเกมทั้งหมดในเครื่องนี้?')){localStorage.removeItem(SAVE_KEY); state=defaultState(); toast('รีเซ็ตแล้ว'); render(); showTab('home');} }
+window.resetGame=resetGame;
+$$('#petGameApp .tab').forEach(btn=>{
+  btn.addEventListener('click',()=>showTab(btn.dataset.tab));
+});
+const gameHashMap = {
+  '#pet-home':'home',
+  '#pet-shop':'shop',
+  '#pet-incubator':'incubator',
+  '#pet-pets':'pets',
+  '#pet-collection':'collection',
+  '#pet-quests':'quests'
+};
+function handleGameHash(){
+  const tab = gameHashMap[location.hash];
+  if(tab) showTab(tab);
+}
+window.addEventListener('hashchange', handleGameHash);
+$('#themeBtn').addEventListener('click',()=>{state.theme=state.theme==='light'?'dark':'light';render();});
+$('#importSaveInput').addEventListener('change',(ev)=>{ importSaveFile(ev.target.files && ev.target.files[0]); ev.target.value=''; });
+$('#tierFilter').addEventListener('change',renderCollection);
+$('#elementFilter').addEventListener('change',renderCollection);
+$('#searchInput').addEventListener('input',renderCollection);
+
+function init(){
+  $('#elementFilter').innerHTML += elements.map(e=>`<option value="${e.id}">${e.icon} ${e.th}</option>`).join('');
+  resetDailyIfNeeded(); applyOfflineProgress(); render();
+  handleGameHash();
+}
+window.addEventListener('beforeunload', ()=>{ syncOpenPageProgress(false); save(); });
+init();
+  </script>
+</body>
+</html>
