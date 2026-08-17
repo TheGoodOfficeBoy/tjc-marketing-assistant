@@ -836,6 +836,8 @@
         <span id="themeLabel">Dark Mode</span>
       </button>
 
+      <button class="btn ghost" id="petGameToggle" type="button">🐾 Pet Collection</button>
+
       <a class="btn ghost" href="profile.html">Profile</a>
       <button class="btn danger" id="btnLogout" type="button">Logout</button>
     </div>
@@ -903,10 +905,31 @@
 
       window.location.href = "login.html";
     });
+
+    // Pet Collection Game toggle
+    const petGameToggle = document.getElementById("petGameToggle");
+    const petGameApp = document.getElementById("petGameApp");
+
+    function updatePetGameToggleLabel() {
+      petGameToggle.textContent = petGameApp.hidden
+        ? "🐾 Pet Collection"
+        : "🐾 ซ่อน Pet Collection";
+    }
+
+    updatePetGameToggleLabel();
+
+    petGameToggle.addEventListener("click", function () {
+      petGameApp.hidden = !petGameApp.hidden;
+      updatePetGameToggleLabel();
+
+      if (!petGameApp.hidden) {
+        petGameApp.scrollIntoView({ behavior: "smooth", block: "start" });
+      }
+    });
   </script>
 
   <!-- Pet Collection Game: Live Release v1.1.0 Evolution -->
-  <section id="petGameApp" aria-label="Pet Collection Game">
+  <section id="petGameApp" aria-label="Pet Collection Game" hidden>
     <div class="screen">
         <div class="game-sticky-head" id="petGameNav">
         <section class="topbar">
